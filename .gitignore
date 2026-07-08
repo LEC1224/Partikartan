@@ -4,3 +4,6 @@ dist/
 .env.*
 *.local
 vite-dev*.log
+server-test*.log
+feedback-data/*.txt
+!feedback-data/.gitkeep

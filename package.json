@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "serve": "node server.js",
+    "app": "npm run build && npm run serve"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

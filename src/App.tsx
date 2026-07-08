@@ -6,9 +6,14 @@ import {
   ChevronRight,
   CircleHelp,
   Compass,
+  ExternalLink,
+  FileText,
+  GitBranch,
   Info,
+  MessageSquare,
   RefreshCw,
   Scale,
+  Send,
   ShieldCheck,
   Sparkles,
   X,
@@ -22,7 +27,14 @@ import type { Answers, AnswerValue, Coordinate, Party, TopicId } from './types'
 
 type View = 'start' | 'priorities' | 'quiz' | 'result'
 type SavedProgress = { answers: Answers; priorities: TopicId[] }
+type FeedbackReason =
+  | 'Jag hittade bias i koden'
+  | 'Jag tror att mitt resultat är fel'
+  | 'Jag tycker att en fråga är vinklat formulerad'
+  | 'Annat'
 const STORAGE_KEY = 'partikartan-progress'
+const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
+const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
 
 const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
   { value: 1, short: '1', label: 'Håller inte alls med' },
@@ -31,6 +43,13 @@ const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
   { value: 4, short: '4', label: 'Håller mestadels med' },
   { value: 5, short: '5', label: 'Håller helt med' },
   { value: null, short: '?', label: 'Vet ej' },
+]
+
+const feedbackReasons: FeedbackReason[] = [
+  'Jag hittade bias i koden',
+  'Jag tror att mitt resultat är fel',
+  'Jag tycker att en fråga är vinklat formulerad',
+  'Annat',
 ]
 
 function readSavedProgress(): SavedProgress {
@@ -58,6 +77,7 @@ function App() {
   const [answers, setAnswers] = useState<Answers>(initialProgress.answers)
   const [questionIndex, setQuestionIndex] = useState(0)
   const [methodOpen, setMethodOpen] = useState(false)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, priorities }))
@@ -96,6 +116,7 @@ function App() {
       <Header
         onLogo={() => setView('start')}
         onMethod={() => setMethodOpen(true)}
+        onFeedback={() => setFeedbackOpen(true)}
         answeredCount={answeredCount}
         onResume={beginQuiz}
       />
@@ -106,6 +127,7 @@ function App() {
             onStart={() => setView('priorities')}
             onResume={beginQuiz}
             onMethod={() => setMethodOpen(true)}
+            onFeedback={() => setFeedbackOpen(true)}
           />
         )}
         {view === 'priorities' && (
@@ -132,12 +154,14 @@ function App() {
             priorities={priorities}
             onEdit={beginQuiz}
             onMethod={() => setMethodOpen(true)}
+            onFeedback={() => setFeedbackOpen(true)}
             onReset={reset}
           />
         )}
       </main>
-      <Footer />
+      <Footer onFeedback={() => setFeedbackOpen(true)} />
       {methodOpen && <MethodDialog onClose={() => setMethodOpen(false)} />}
+      {feedbackOpen && <FeedbackDialog onClose={() => setFeedbackOpen(false)} />}
     </div>
   )
 }
@@ -145,11 +169,13 @@ function App() {
 function Header({
   onLogo,
   onMethod,
+  onFeedback,
   answeredCount,
   onResume,
 }: {
   onLogo: () => void
   onMethod: () => void
+  onFeedback: () => void
   answeredCount: number
   onResume: () => void
 }) {
@@ -160,7 +186,9 @@ function Header({
         <span>Partikartan</span>
       </button>
       <nav aria-label="Huvudmeny">
+        <a className="nav-link" href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
         <button className="nav-link" onClick={onMethod}>Så fungerar det</button>
+        <button className="nav-link" onClick={onFeedback}>Feedback</button>
         {answeredCount > 0 && answeredCount < questions.length && (
           <button className="resume-link" onClick={onResume}>
             Fortsätt <span>{answeredCount}/{questions.length}</span>
@@ -176,11 +204,13 @@ function StartPage({
   onStart,
   onResume,
   onMethod,
+  onFeedback,
 }: {
   answeredCount: number
   onStart: () => void
   onResume: () => void
   onMethod: () => void
+  onFeedback: () => void
 }) {
   return (
     <>
@@ -189,7 +219,7 @@ function StartPage({
           <p className="eyebrow"><span /> Sverige · Politik · 2026</p>
           <h1>Var står du<br />politiskt?</h1>
           <p className="hero-intro">
-            Utforska dina värderingar på en karta anpassad efter svensk politik — och jämför med partierna utan dolda genvägar.
+            Utforska dina värderingar på en karta anpassad efter svensk politik. Partikartan är avsedd att vara objektiv, källkritisk och möjlig att granska öppet.
           </p>
           <div className="hero-actions">
             <button className="primary-button" onClick={answeredCount ? onResume : onStart}>
@@ -200,8 +230,8 @@ function StartPage({
           </div>
           <div className="hero-meta">
             <span><Check size={15} /> {questions.length} frågor</span>
-            <span><Check size={15} /> cirka 10 minuter</span>
-            <span><Check size={15} /> sparas bara lokalt</span>
+            <span><Check size={15} /> öppen källkod</span>
+            <span><Check size={15} /> open prompts</span>
           </div>
         </div>
         <div className="hero-visual" aria-label="Illustration av den politiska kompassen">
@@ -221,7 +251,39 @@ function StartPage({
           <Feature icon={<Sparkles />} title="Dina prioriteringar" text="Välj tre ämnen som betyder extra mycket. Frågorna där får 1,75 gånger större vikt." />
         </div>
       </section>
+      <TransparencySection onFeedback={onFeedback} />
     </>
+  )
+}
+
+function TransparencySection({ onFeedback }: { onFeedback: () => void }) {
+  return (
+    <section className="transparency">
+      <div className="page-width transparency-grid">
+        <div className="section-heading">
+          <p className="eyebrow"><span /> Öppen granskning</p>
+          <h2>Objektiv ambition,<br />öppen process.</h2>
+        </div>
+        <article className="transparency-item">
+          <div className="feature-icon"><GitBranch /></div>
+          <h3>Koden finns på GitHub</h3>
+          <p>Frågor, vikter, scoring och framtida partibelägg ska kunna granskas i repo:t.</p>
+          <a className="inline-link" href={GITHUB_URL} target="_blank" rel="noreferrer">Öppna GitHub <ExternalLink size={15} /></a>
+        </article>
+        <article className="transparency-item">
+          <div className="feature-icon"><FileText /></div>
+          <h3>Open prompts</h3>
+          <p>Prompterna som styr utvecklingen dokumenteras i en öppen markdown-fil.</p>
+          <a className="inline-link" href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer">Läs prompts <ExternalLink size={15} /></a>
+        </article>
+        <article className="transparency-item">
+          <div className="feature-icon"><MessageSquare /></div>
+          <h3>Feedbackspår</h3>
+          <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar ska kunna rapporteras.</p>
+          <button className="inline-link button-link" onClick={onFeedback}>Skicka feedback <ChevronRight size={15} /></button>
+        </article>
+      </div>
+    </section>
   )
 }
 
@@ -402,12 +464,14 @@ function ResultPage({
   priorities,
   onEdit,
   onMethod,
+  onFeedback,
   onReset,
 }: {
   coordinate: Coordinate
   priorities: TopicId[]
   onEdit: () => void
   onMethod: () => void
+  onFeedback: () => void
   onReset: () => void
 }) {
   const partyResults = parties
@@ -469,6 +533,7 @@ function ResultPage({
         <div className="result-actions">
           <button className="secondary-button" onClick={onEdit}>Ändra svar</button>
           <button className="secondary-button" onClick={onMethod}>Granska metoden</button>
+          <button className="secondary-button" onClick={onFeedback}>Skicka feedback</button>
           <button className="danger-link" onClick={onReset}><RefreshCw size={15} /> Börja om</button>
         </div>
       </div>
@@ -560,6 +625,10 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
             {partyCodingRules.map((rule) => <li key={rule}>{rule}</li>)}
           </ul>
         </div>
+        <div className="method-links">
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer"><GitBranch size={16} /> Källkod</a>
+          <a href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer"><FileText size={16} /> Open prompts</a>
+        </div>
         <div className="method-caveat"><Info size={19} /><p>Ingen modell är helt värderingsfri: val av frågor och axlar påverkar resultatet. Därför ligger frågetexter, vikter och partibelägg öppet i projektets datafiler.</p></div>
         <button className="primary-button" onClick={onClose}>Jag förstår</button>
       </section>
@@ -567,10 +636,93 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
   )
 }
 
-function Footer() {
+function FeedbackDialog({ onClose }: { onClose: () => void }) {
+  const [reason, setReason] = useState<FeedbackReason>(feedbackReasons[0])
+  const [message, setMessage] = useState('')
+  const [status, setStatus] = useState<{ kind: 'idle' | 'success' | 'error' | 'submitting'; text: string }>({
+    kind: 'idle',
+    text: '',
+  })
+
+  async function submitFeedback(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setStatus({ kind: 'submitting', text: 'Skickar feedback...' })
+
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          reason,
+          message,
+          page: window.location.href,
+        }),
+      })
+      const data = (await response.json()) as { ok?: boolean; error?: string }
+      if (!response.ok || !data.ok) throw new Error(data.error ?? 'Feedbacken kunde inte sparas.')
+
+      setMessage('')
+      setStatus({ kind: 'success', text: 'Tack. Feedbacken sparades som textfil.' })
+    } catch (error) {
+      setStatus({
+        kind: 'error',
+        text: error instanceof Error ? error.message : 'Feedbacken kunde inte skickas.',
+      })
+    }
+  }
+
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <section className="modal feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
+        <button className="modal-close" onClick={onClose} aria-label="Stäng"><X size={20} /></button>
+        <p className="eyebrow"><span /> Hjälp oss granska</p>
+        <h2 id="feedback-title">Skicka feedback</h2>
+        <form className="feedback-form" onSubmit={submitFeedback}>
+          <label htmlFor="feedback-reason">
+            Anledning
+            <select id="feedback-reason" value={reason} onChange={(event) => setReason(event.target.value as FeedbackReason)}>
+              {feedbackReasons.map((item) => <option key={item} value={item}>{item}</option>)}
+            </select>
+          </label>
+          <label htmlFor="feedback-message">
+            Utveckla
+            <textarea
+              id="feedback-message"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              minLength={12}
+              maxLength={4000}
+              rows={7}
+              required
+              placeholder="Skriv vad du såg, vilken fråga det gäller eller varför resultatet känns fel."
+            />
+          </label>
+          {status.kind !== 'idle' && (
+            <p className={`feedback-status ${status.kind}`} aria-live="polite">{status.text}</p>
+          )}
+          <div className="modal-actions">
+            <button className="secondary-button" type="button" onClick={onClose}>Stäng</button>
+            <button className="primary-button" type="submit" disabled={status.kind === 'submitting'}>
+              Skicka <Send size={16} />
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  )
+}
+
+function Footer({ onFeedback }: { onFeedback: () => void }) {
   return (
     <footer>
-      <div className="page-width"><span>Partikartan</span><span>En öppen prototyp för svensk politik</span></div>
+      <div className="page-width">
+        <span>Partikartan</span>
+        <span className="footer-links">
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
+          <a href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer">Open prompts</a>
+          <button onClick={onFeedback}>Feedback</button>
+        </span>
+      </div>
     </footer>
   )
 }
