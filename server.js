@@ -11,6 +11,8 @@ const MAX_BODY_BYTES = 16 * 1024
 const VALID_REASONS = new Set([
   'Jag hittade bias i koden',
   'Jag tror att mitt resultat är fel',
+  'Jag tror att ett partis position i koordinatsystemet är felaktigt',
+  'Jag saknar ett parti i sammanfattningen',
   'Jag tycker att en fråga är vinklat formulerad',
   'Annat',
 ])
@@ -146,4 +148,3 @@ const server = createServer(async (request, response) => {
 server.listen(PORT, '127.0.0.1', () => {
   console.log(`Partikartan server listening at http://127.0.0.1:${PORT}/`)
 })
-

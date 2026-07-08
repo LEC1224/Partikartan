@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   ArrowLeft,
   ArrowRight,
+  Bot,
   Check,
   ChevronRight,
   CircleHelp,
@@ -12,7 +13,9 @@ import {
   Info,
   MessageSquare,
   RefreshCw,
+  ShieldCheck,
   Send,
+  UserRound,
   X,
 } from 'lucide-react'
 import { parties } from './data/parties'
@@ -27,6 +30,8 @@ type SavedProgress = { answers: Answers; priorities: TopicId[] }
 type FeedbackReason =
   | 'Jag hittade bias i koden'
   | 'Jag tror att mitt resultat är fel'
+  | 'Jag tror att ett partis position i koordinatsystemet är felaktigt'
+  | 'Jag saknar ett parti i sammanfattningen'
   | 'Jag tycker att en fråga är vinklat formulerad'
   | 'Annat'
 const STORAGE_KEY = 'partikartan-progress'
@@ -45,6 +50,8 @@ const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
 const feedbackReasons: FeedbackReason[] = [
   'Jag hittade bias i koden',
   'Jag tror att mitt resultat är fel',
+  'Jag tror att ett partis position i koordinatsystemet är felaktigt',
+  'Jag saknar ett parti i sammanfattningen',
   'Jag tycker att en fråga är vinklat formulerad',
   'Annat',
 ]
@@ -73,6 +80,7 @@ function App() {
   const [priorities, setPriorities] = useState<TopicId[]>(initialProgress.priorities)
   const [answers, setAnswers] = useState<Answers>(initialProgress.answers)
   const [questionIndex, setQuestionIndex] = useState(0)
+  const [aboutOpen, setAboutOpen] = useState(false)
   const [methodOpen, setMethodOpen] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
@@ -112,6 +120,7 @@ function App() {
     <div className="app-shell">
       <Header
         onLogo={() => setView('start')}
+        onAbout={() => setAboutOpen(true)}
         onMethod={() => setMethodOpen(true)}
         onFeedback={() => setFeedbackOpen(true)}
         answeredCount={answeredCount}
@@ -123,8 +132,10 @@ function App() {
             answeredCount={answeredCount}
             onStart={() => setView('priorities')}
             onResume={beginQuiz}
+            onResult={() => setView('result')}
             onMethod={() => setMethodOpen(true)}
             onFeedback={() => setFeedbackOpen(true)}
+            onReset={reset}
           />
         )}
         {view === 'priorities' && (
@@ -156,7 +167,20 @@ function App() {
           />
         )}
       </main>
-      <Footer onFeedback={() => setFeedbackOpen(true)} />
+      <Footer onAbout={() => setAboutOpen(true)} onFeedback={() => setFeedbackOpen(true)} />
+      {aboutOpen && (
+        <AboutDialog
+          onClose={() => setAboutOpen(false)}
+          onFeedback={() => {
+            setAboutOpen(false)
+            setFeedbackOpen(true)
+          }}
+          onMethod={() => {
+            setAboutOpen(false)
+            setMethodOpen(true)
+          }}
+        />
+      )}
       {methodOpen && <MethodDialog onClose={() => setMethodOpen(false)} />}
       {feedbackOpen && <FeedbackDialog onClose={() => setFeedbackOpen(false)} />}
     </div>
@@ -165,12 +189,14 @@ function App() {
 
 function Header({
   onLogo,
+  onAbout,
   onMethod,
   onFeedback,
   answeredCount,
   onResume,
 }: {
   onLogo: () => void
+  onAbout: () => void
   onMethod: () => void
   onFeedback: () => void
   answeredCount: number
@@ -184,6 +210,7 @@ function Header({
       </button>
       <nav aria-label="Huvudmeny">
         <a className="nav-link" href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
+        <button className="nav-link" onClick={onAbout}>Om sidan</button>
         <button className="nav-link" onClick={onMethod}>Så fungerar det</button>
         <button className="nav-link" onClick={onFeedback}>Feedback</button>
         {answeredCount > 0 && answeredCount < questions.length && (
@@ -200,15 +227,22 @@ function StartPage({
   answeredCount,
   onStart,
   onResume,
+  onResult,
   onMethod,
   onFeedback,
+  onReset,
 }: {
   answeredCount: number
   onStart: () => void
   onResume: () => void
+  onResult: () => void
   onMethod: () => void
   onFeedback: () => void
+  onReset: () => void
 }) {
+  const complete = answeredCount === questions.length
+  const hasProgress = answeredCount > 0
+
   return (
     <>
       <section className="hero page-width">
@@ -216,14 +250,17 @@ function StartPage({
           <p className="eyebrow"><span /> Sverige · Politik · 2026</p>
           <h1>Var står du<br />politiskt?</h1>
           <p className="hero-intro">
-            Utforska dina värderingar på en karta anpassad efter svensk politik. Partikartan är avsedd att vara objektiv, källkritisk och möjlig att granska öppet.
+            Utforska dina värderingar på en karta anpassad efter svensk politik. Partikartan är avsedd att vara objektiv, oberoende och transparent.
           </p>
           <div className="hero-actions">
-            <button className="primary-button" onClick={answeredCount ? onResume : onStart}>
-              {answeredCount ? 'Fortsätt där du slutade' : 'Starta kompassen'}
+            <button className="primary-button" onClick={complete ? onResult : hasProgress ? onResume : onStart}>
+              {complete ? 'Visa ditt resultat' : hasProgress ? 'Fortsätt där du slutade' : 'Starta kompassen'}
               <ArrowRight size={18} />
             </button>
-            <button className="text-button" onClick={onMethod}>Se hur vi räknar <ChevronRight size={16} /></button>
+            {hasProgress && (
+              <button className="secondary-button" onClick={onReset}>Börja om <RefreshCw size={16} /></button>
+            )}
+            <button className="text-button" onClick={onMethod}>Se hur det räknas <ChevronRight size={16} /></button>
           </div>
           <div className="hero-meta">
             <span><Check size={15} /> {questions.length} frågor</span>
@@ -241,6 +278,71 @@ function StartPage({
         <TransparencySection onFeedback={onFeedback} />
       </section>
     </>
+  )
+}
+
+function AboutDialog({
+  onClose,
+  onFeedback,
+  onMethod,
+}: {
+  onClose: () => void
+  onFeedback: () => void
+  onMethod: () => void
+}) {
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <section className="modal about-modal" role="dialog" aria-modal="true" aria-labelledby="about-title">
+        <button className="modal-close" onClick={onClose} aria-label="Stäng"><X size={20} /></button>
+        <div className="about-intro">
+          <p className="eyebrow"><span /> Om Partikartan</p>
+          <h2 id="about-title">Vem driver sidan?</h2>
+          <p>
+            Sidan är helt oberoende, reklamfri och icke-vinstdrivande. Den är inte knuten till något parti, företag eller kampanj, och den har inget ekonomiskt incitament att styra användare mot ett visst resultat.
+          </p>
+          <p>
+            Jag som driver Partikartan heter Carl Månsson och är mjukvaruutvecklare från Göteborg. Jag byggde sidan för att jag saknade en valkompass som ger partirelativa svar för både vänster-höger och GAL-TAN, känns saklig, responsiv och möjlig att granska.
+          </p>
+          <p>
+            Målet är inte att påstå att kompassen är perfekt neutral. Målet är att göra antaganden, källor och möjliga fel synliga nog för att kunna granskas, kritiseras och förbättras.
+          </p>
+        </div>
+        <div className="about-card">
+          <span className="about-card-icon"><UserRound size={20} /></span>
+          <h2>Drift och ansvar</h2>
+          <p>
+            Frågor, viktning, partipositioner, promptar och kod hålls öppna i projektets repo. Partikartan är nästan helt utvecklad genom prompting i Codex, vilket också gör utvecklingsprocessen möjlig att följa.
+          </p>
+        </div>
+        <div className="about-steps">
+          <article>
+            <span><FileText size={18} /></span>
+            <h2>Partiernas egna texter som grund</h2>
+            <p>
+              Partipositionerna kodas i första hand från partiernas egna partiprogram, principprogram, idéprogram och valmanifest. Där materialet inte räcker används kompletterande officiella källor från partierna.
+            </p>
+          </article>
+          <article>
+            <span><Bot size={18} /></span>
+            <h2>AI som arbetsverktyg</h2>
+            <p>
+              GPT-5.5 och Codex har använts för att generera algoritmerna, bygga tjänsten och rapportera in partiernas svar utifrån källmaterialet. Det kan minska min direkta bias, men kan samtidigt föra in bias från OpenAI:s modeller.
+            </p>
+          </article>
+          <article>
+            <span><ShieldCheck size={18} /></span>
+            <h2>Kontroller mot vinklade frågor</h2>
+            <p>
+              Testet har kontrollerats genom att svara 1 på alla frågor och 5 på alla frågor. Att båda resultaten hamnar hyfsat nära origo tyder på att frågorna inte systematiskt lutar åt ett håll.
+            </p>
+          </article>
+        </div>
+        <div className="about-actions modal-actions">
+          <button className="secondary-button" onClick={onMethod}>Granska metoden <ChevronRight size={16} /></button>
+          <button className="primary-button" onClick={onFeedback}>Skicka feedback <MessageSquare size={17} /></button>
+        </div>
+      </section>
+    </div>
   )
 }
 
@@ -265,7 +367,7 @@ function TransparencySection({ onFeedback }: { onFeedback: () => void }) {
       </article>
       <article className="transparency-item">
         <div className="feature-icon"><MessageSquare /></div>
-        <h3>Feedbackspår</h3>
+        <h3>Feedback till mig</h3>
         <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar ska kunna rapporteras.</p>
         <button className="inline-link button-link" onClick={onFeedback}>Skicka feedback <ChevronRight size={15} /></button>
       </article>
@@ -651,7 +753,7 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section className="modal feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
         <button className="modal-close" onClick={onClose} aria-label="Stäng"><X size={20} /></button>
-        <p className="eyebrow"><span /> Hjälp oss granska</p>
+        <p className="eyebrow"><span /> Hjälp mig utforma tjänsten</p>
         <h2 id="feedback-title">Skicka feedback</h2>
         <form className="feedback-form" onSubmit={submitFeedback}>
           <label htmlFor="feedback-reason">
@@ -670,7 +772,7 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
               maxLength={4000}
               rows={7}
               required
-              placeholder="Skriv vad du såg, vilken fråga det gäller eller varför resultatet känns fel."
+              placeholder="Skriv din feedback här."
             />
           </label>
           {status.kind !== 'idle' && (
@@ -688,7 +790,7 @@ function FeedbackDialog({ onClose }: { onClose: () => void }) {
   )
 }
 
-function Footer({ onFeedback }: { onFeedback: () => void }) {
+function Footer({ onAbout, onFeedback }: { onAbout: () => void; onFeedback: () => void }) {
   return (
     <footer>
       <div className="page-width">
@@ -696,6 +798,7 @@ function Footer({ onFeedback }: { onFeedback: () => void }) {
         <span className="footer-links">
           <a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
           <a href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer">Open prompts</a>
+          <button onClick={onAbout}>Om sidan</button>
           <button onClick={onFeedback}>Feedback</button>
         </span>
       </div>

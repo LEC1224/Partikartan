@@ -2,7 +2,7 @@
 
 En Sverige-centrerad valkompass byggd som en Vite/React-app.
 
-Partikartan är avsedd att vara objektiv, transparent och granskbar. Det betyder inte att modellen automatiskt är perfekt eller fri från alla antaganden, men att frågor, viktning, scoring, partibelägg och prompts ska kunna granskas öppet.
+Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder inte att modellen automatiskt är perfekt eller fri från alla antaganden, men att frågor, viktning, scoring, partibelägg och prompts ska kunna granskas öppet.
 
 ## Funktioner
 
@@ -12,6 +12,7 @@ Partikartan är avsedd att vara objektiv, transparent och granskbar. Det betyder
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.
 - Svenska riksdagspartier initieras i origo tills källbelagda partisvar finns.
 - Partisvar kan lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`.
+- Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
 - Öppen källkod på GitHub.
 - Open prompts i `OPEN_PROMPTS.md`.
 - Feedbackformulär som kan spara inkommande synpunkter som textfiler i `feedback-data/`.
@@ -38,12 +39,14 @@ Tillåtna feedbackanledningar:
 
 - `Jag hittade bias i koden`
 - `Jag tror att mitt resultat är fel`
+- `Jag tror att ett partis position i koordinatsystemet är felaktigt`
+- `Jag saknar ett parti i sammanfattningen`
 - `Jag tycker att en fråga är vinklat formulerad`
 - `Annat`
 
 ## Open prompts
 
-Se `OPEN_PROMPTS.md`. Där loggas projektägarens prompts till Codex så att även utvecklingsprocessen kan granskas.
+Se `OPEN_PROMPTS.md`. Där loggas Carl Månssons prompts till Codex så att även utvecklingsprocessen kan granskas.
 
 ## Koda partisvar från partiprogram
 

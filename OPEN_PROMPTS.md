@@ -53,3 +53,21 @@ Kontext: prompten kom tillsammans med lokala PDF-filer för Vänsterpartiet, Soc
 > Här kommer sen salig blandning av princip/ide/partiprogram som du kan ha som källmaterial för att tillskriva responses till partierna i listan för valkompassen. Jag hittade inte en nedladdnignsbar pdf från Centerpartiet. Du får använda sök för det. Använd även sök för andra frågor du inte hittar svar på.
 >
 > Jag tilldelar dig Extra Hög arbetsförmåga i denna prompten för att du ska kunna ta din tid. Avsluta med att uppdatera Prompts-markdown filen också, och commita.
+
+## Prompt 8
+
+> Kan du lägga till en flik på hemsidan där det beskrivs vem som driver sidan, jag, och hur jag gått till väga för att hålla den fri från min egen bias (Använda partiernas egna partiprogram som grund, låta GPT 5.5 generera algoritmerna och rapportera in partiernas svar utifrån partiprogram (vilket vi också borde nämna kan medföra bias från OpenAI), kontrollerat testet genom att "Svara 1 på alla frågor" eller "Svara 5 på alla frågor" resulterar i hyfsat origo-nära svar, vilket indikerar att frågorna inte är formulerat på ett vinklat sett.
+>
+> När du ändå jobbar på det, lägg till nya anledningar i feedback-formuläret: "Jag tror att ett partis position i koordinatsystemet är felaktigt" och "Jag saknar ett parti i sammanfattningen"
+
+## Prompt 9
+
+> På framsidan står det "Utforska dina värderingar på en karta anpassad efter svensk politik. Partikartan är avsedd att vara objektiv, källkritisk och möjlig att granska öppet.". Kan vi byta ut slutet måt "vara objektiv, oberoende och transparent", samt lägga till ett stycke på den nya About-sidan där vi beskriver att sidan är helt oberoende, reklamfri och icke-vinstdrivande som ytterligare underlag till att den är pålitlig, samt att jag heter Carl Månsson, är en mjukvaruutvecklare från Göteborg, bryr mig om hederlig dialog och demokratisk process, samt att sidan är nästan helt utvecklad genom prompting i Codex. Allt detta ska såklart inte stå i samma stycke, utan där det passar. För att det ska se konsistent ut borde vi också ersätta allt som antyder att det är ett team bakom sidan med text som antyder att det är en ensam utvecklare. T.ex. i feedback-rutan står det "Hjälp oss granska". Det kanske borde stå "Hjälp mig utforma tjänsten"
+
+## Prompt 10
+
+> Nu står det bara "Fortsätt där du slutade" för mig. Man kanske skulle lägga till en "Börja om" knapp för folk som är mitt i att svara eller redan gjort testet. Du borde också ta bort "Om sidan" knappen bredvid gör testet knappen, och göra om "Om sidan" fliken till en popup ruta såsom "Så fungerar det" och "Feedback" är! Ändra också feedback-textfältsrutans hint-text till något simplare och mindre ledande.
+
+## Prompt 11
+
+> Kan du lägga till en /source-data/ folder på git med partiprogramen och en underfil SOURCES.md som inkluderar källor du hittat där partiprogrammen inte räckte till?
