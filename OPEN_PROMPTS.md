@@ -45,3 +45,11 @@ Kontext: prompten innehöll en bifogad screenshot med två markerade sektioner, 
 ## Prompt 6
 
 > Uppdatera prompt-filen och pusha
+
+## Prompt 7
+
+Kontext: prompten kom tillsammans med lokala PDF-filer för Vänsterpartiet, Socialdemokraterna, Miljöpartiet, Liberalerna, Kristdemokraterna, Moderaterna och Sverigedemokraterna. Projektägaren uppgav att någon nedladdningsbar PDF från Centerpartiet inte fanns i materialet och bad därför uttryckligen om webbsök för Centerpartiet och för eventuella kompletterande frågor där svar saknades i PDF:erna.
+
+> Här kommer sen salig blandning av princip/ide/partiprogram som du kan ha som källmaterial för att tillskriva responses till partierna i listan för valkompassen. Jag hittade inte en nedladdnignsbar pdf från Centerpartiet. Du får använda sök för det. Använd även sök för andra frågor du inte hittar svar på.
+>
+> Jag tilldelar dig Extra Hög arbetsförmåga i denna prompten för att du ska kunna ta din tid. Avsluta med att uppdatera Prompts-markdown filen också, och commita.
