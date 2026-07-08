@@ -12,10 +12,7 @@ import {
   Info,
   MessageSquare,
   RefreshCw,
-  Scale,
   Send,
-  ShieldCheck,
-  Sparkles,
   X,
 } from 'lucide-react'
 import { parties } from './data/parties'
@@ -241,59 +238,38 @@ function StartPage({
         </div>
       </section>
       <section className="principles">
-        <div className="page-width principle-grid">
-          <div className="section-heading">
-            <p className="eyebrow"><span /> Vår utgångspunkt</p>
-            <h2>En kompass som visar<br />hur den tänker.</h2>
-          </div>
-          <Feature icon={<Scale />} title="Svensk måttstock" text="Skalan beskriver skiljelinjer inom svensk politik — inte var Sverige råkar ligga jämfört med USA." />
-          <Feature icon={<ShieldCheck />} title="Källor framför magkänsla" text="Partier placeras först när svar kan stödjas av program, beslut eller tydliga uttalanden." />
-          <Feature icon={<Sparkles />} title="Dina prioriteringar" text="Välj tre ämnen som betyder extra mycket. Frågorna där får 1,75 gånger större vikt." />
-        </div>
+        <TransparencySection onFeedback={onFeedback} />
       </section>
-      <TransparencySection onFeedback={onFeedback} />
     </>
   )
 }
 
 function TransparencySection({ onFeedback }: { onFeedback: () => void }) {
   return (
-    <section className="transparency">
-      <div className="page-width transparency-grid">
-        <div className="section-heading">
-          <p className="eyebrow"><span /> Öppen granskning</p>
-          <h2>Objektiv ambition,<br />öppen process.</h2>
-        </div>
-        <article className="transparency-item">
-          <div className="feature-icon"><GitBranch /></div>
-          <h3>Koden finns på GitHub</h3>
-          <p>Frågor, vikter, scoring och framtida partibelägg ska kunna granskas i repo:t.</p>
-          <a className="inline-link" href={GITHUB_URL} target="_blank" rel="noreferrer">Öppna GitHub <ExternalLink size={15} /></a>
-        </article>
-        <article className="transparency-item">
-          <div className="feature-icon"><FileText /></div>
-          <h3>Open prompts</h3>
-          <p>Prompterna som styr utvecklingen dokumenteras i en öppen markdown-fil.</p>
-          <a className="inline-link" href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer">Läs prompts <ExternalLink size={15} /></a>
-        </article>
-        <article className="transparency-item">
-          <div className="feature-icon"><MessageSquare /></div>
-          <h3>Feedbackspår</h3>
-          <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar ska kunna rapporteras.</p>
-          <button className="inline-link button-link" onClick={onFeedback}>Skicka feedback <ChevronRight size={15} /></button>
-        </article>
+    <div className="page-width transparency-grid">
+      <div className="section-heading">
+        <p className="eyebrow"><span /> Öppen granskning</p>
+        <h2>Objektiv ambition,<br />öppen process.</h2>
       </div>
-    </section>
-  )
-}
-
-function Feature({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
-  return (
-    <article className="feature">
-      <div className="feature-icon">{icon}</div>
-      <h3>{title}</h3>
-      <p>{text}</p>
-    </article>
+      <article className="transparency-item">
+        <div className="feature-icon"><GitBranch /></div>
+        <h3>Koden finns på GitHub</h3>
+        <p>Frågor, vikter, scoring och framtida partibelägg ska kunna granskas i repo:t.</p>
+        <a className="inline-link" href={GITHUB_URL} target="_blank" rel="noreferrer">Öppna GitHub <ExternalLink size={15} /></a>
+      </article>
+      <article className="transparency-item">
+        <div className="feature-icon"><FileText /></div>
+        <h3>Open prompts</h3>
+        <p>Prompterna som styr utvecklingen dokumenteras i en öppen markdown-fil.</p>
+        <a className="inline-link" href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer">Läs prompts <ExternalLink size={15} /></a>
+      </article>
+      <article className="transparency-item">
+        <div className="feature-icon"><MessageSquare /></div>
+        <h3>Feedbackspår</h3>
+        <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar ska kunna rapporteras.</p>
+        <button className="inline-link button-link" onClick={onFeedback}>Skicka feedback <ChevronRight size={15} /></button>
+      </article>
+    </div>
   )
 }
 

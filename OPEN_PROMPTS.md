@@ -36,3 +36,12 @@ En tidigare Codex-chatt fick en prompt som enligt projektägaren var identisk me
 >
 > Hemsidan behöver inkludera en länk till vår github, och dessutom måste man kunna skicka feedback. Feedbacken kan bli en textfil på /feedback-data/ och man ska kunna välja feedback-anledning mellan "Jag hittade bias i koden", "Jag tror att mitt resultat är fel", "Jag tycker att en fråga är vinklat formulerad" och "Annat", samt ett textfält där man får utveckla.
 
+## Prompt 5
+
+Kontext: prompten innehöll en bifogad screenshot med två markerade sektioner, där den övre gröna sektionen skulle behållas som format och den nedre ljusa sektionens innehåll skulle flyttas dit.
+
+> Ta bort den översta raden av grejer som är lite clicheigt, och ersätt med den nedre, fortfarande i ett grönt horisontellt fält, det var snyggt tycker jag. Alltså kommer det vita fältet och innehållet som just nu är i det gröna fältet försvinna
+
+## Prompt 6
+
+> Uppdatera prompt-filen och pusha
