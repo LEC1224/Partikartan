@@ -4,6 +4,7 @@ import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import { extname, join, normalize, resolve } from 'node:path'
 
 const PORT = Number(process.env.PORT ?? 4173)
+const HOST = process.env.HOST ?? '127.0.0.1'
 const ROOT = resolve('.')
 const DIST_DIR = resolve(ROOT, 'dist')
 const FEEDBACK_DIR = resolve(ROOT, 'feedback-data')
@@ -145,6 +146,6 @@ const server = createServer(async (request, response) => {
   await serveStatic(request, response)
 })
 
-server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Partikartan server listening at http://127.0.0.1:${PORT}/`)
+server.listen(PORT, HOST, () => {
+  console.log(`Partikartan server listening at http://${HOST}:${PORT}/`)
 })

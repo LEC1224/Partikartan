@@ -1,6 +1,6 @@
 import type { Evidence, Party, PartyResponse } from '../types'
 
-const ACCESSED_AT = '2026-07-08'
+const ACCESSED_AT = '2026-07-09'
 
 const source = (url: string, title: string): Evidence => ({
   url,
@@ -25,6 +25,10 @@ const sources = {
     'https://www.vansterpartiet.se/wp-content/uploads/2024/11/partiprogram_2024_skrivare.pdf',
     'Vänsterpartiets partiprogram 2024',
   ),
+  vNuclear: source(
+    'https://www.vansterpartiet.se/var-politik/politik-a-o/karnkraft/',
+    'Vänsterpartiet om kärnkraft',
+  ),
   sProgram: source(
     'https://www.socialdemokraterna.se/download/18.66b0e5c8197581879ca15ce/1749742402637/Socialdemokraternas%20partiprogram%202025.pdf',
     'Socialdemokraternas partiprogram 2025',
@@ -33,9 +37,33 @@ const sources = {
     'https://www.socialdemokraterna.se/download/18.66b0e5c8197581879cad79/1749654527283/A-E%20Politiska%20riktlinjer%202025_beslutat.pdf',
     'Socialdemokraternas politiska riktlinjer 2025',
   ),
+  sNuclear: source(
+    'https://www.socialdemokraterna.se/var-politik/a-till-o/karnkraft',
+    'Socialdemokraterna om kärnkraft',
+  ),
+  sRecord: source(
+    'https://www.socialdemokraterna.se/var-politik/det-gjorde-socialdemokraterna-2014-2022',
+    'Det gjorde Socialdemokraterna 2014-2022',
+  ),
   mpProgram: source(
     'https://www.mp.se/wp-content/uploads/2025/12/miljopartiets-partiprogram-2025.pdf',
     'Miljöpartiets partiprogram 2025',
+  ),
+  mpEuManifest: source(
+    'https://www.mp.se/valmanifest-till-eu-valet-2024/',
+    'Miljöpartiets valmanifest till EU-valet 2024',
+  ),
+  mpActionProgram: source(
+    'https://www.mp.se/wp-content/uploads/2026/04/politiskt-handlingsprogram-2026-2030.pdf',
+    'Miljöpartiets politiska handlingsprogram 2026-2030',
+  ),
+  mpDemocracy: source(
+    'https://www.mp.se/politik/demokrati-och-mr/',
+    'Miljöpartiet om demokrati och mänskliga rättigheter',
+  ),
+  mpCulture: source(
+    'https://www.mp.se/politik/kultur/',
+    'Miljöpartiet om kulturpolitik',
   ),
   cIdea: source(
     'https://www.centerpartiet.se/download/18.3f55a43d19b2bd455d0a5da5/1768991589484/Centerpartiet_Id%C3%A9program_l%C3%A4ttl%C3%A4st_2022.pdf',
@@ -45,9 +73,29 @@ const sources = {
     'https://val2026.centerpartiet.se/wp-content/uploads/2026/06/Valmanifest-2026.pdf',
     'Centerpartiets valmanifest 2026',
   ),
+  cUkraine: source(
+    'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/utrikes--och-bistandsfragor/kriget-i-ukraina',
+    'Centerpartiet om kriget i Ukraina',
+  ),
+  cSpringBudget: source(
+    'https://www.centerpartiet.se/download/18.35b6d81319c986cebc41e926/1772704814456/Va%CC%8Arbudget%20Centerpartiet%202025.pdf',
+    'Centerpartiets vårbudget 2025',
+  ),
+  cMedia: source(
+    'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/kultur-media-och-idrott/media-och-public-service',
+    'Centerpartiet om media och public service',
+  ),
+  cDemocracy: source(
+    'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/demokrati',
+    'Centerpartiet om demokrati',
+  ),
   lManifest: source(
     'https://www.liberalerna.se/wp-content/uploads/liberalernas-valmanifest-2026-40s-komprimerad.pdf',
     'Liberalernas valmanifest 2026',
+  ),
+  lStudyPeace: source(
+    'https://www.liberalerna.se/politik/trygghet-och-studiero',
+    'Liberalerna om trygghet och studiero',
   ),
   mIdea: source(
     'https://moderaterna.se/app/uploads/2022/01/Ideprogram_digitalt_9dec.pdf',
@@ -77,6 +125,22 @@ const sources = {
     'https://moderaterna.se/ostergotland/var-politik/eu/',
     'Moderaterna om EU',
   ),
+  mDefense: source(
+    'https://moderaterna.se/var-politik/forsvar-och-krisberedskap/',
+    'Moderaterna om försvar och krisberedskap',
+  ),
+  mNuclear: source(
+    'https://moderaterna.se/nyhet/ny-karnkraft-ringhals/',
+    'Moderaterna vill se ny kärnkraft vid Ringhals',
+  ),
+  mFuelTax: source(
+    'https://moderaterna.se/nyhet/vanstersidan-kan-chockhoja-branslepriset-med-tio-kronor-per-liter/',
+    'Moderaterna om sänkt skatt på bensin och diesel',
+  ),
+  mSchoolPropositions: source(
+    'https://moderaterna.se/app/uploads/2023/10/Propositionsbok.pdf',
+    'Moderaternas propositionsbok 2023',
+  ),
   kdProgram: source(
     'https://kristdemokraterna.se/download/18.7932b3db19c9887db6c221c/1773136182639/Principprogram%20hemsida.pdf',
     'Kristdemokraternas principprogram 2025',
@@ -104,6 +168,22 @@ const sources = {
   kdWitnesses: source(
     'https://kristdemokraterna.se/var-politik/politik-a-till-o/anonyma-vittnen',
     'Kristdemokraterna om anonyma vittnen',
+  ),
+  kdDefense: source(
+    'https://kristdemokraterna.se/arkiv/nyheter/2022/2022-01-09-forsvarspolitisk-inriktning',
+    'Kristdemokraternas försvarspolitiska inriktning',
+  ),
+  kdNuclearReport: source(
+    'https://kristdemokraterna.se/download/18.226014ea19a154a9e25c81/1762937139823/Samha%CC%88llsbyggarkommitterapport%20251022.pdf',
+    'Kristdemokraternas samhällsbyggarkommittérapport',
+  ),
+  kdFuelBudget: source(
+    'https://kristdemokraterna.se/arkiv/nyheter/2023/2023-09-27-en-stottande-budget-i-en-tuff-tid',
+    'Kristdemokraterna om sänkt skatt på bensin och diesel',
+  ),
+  kdStateHealthcare: source(
+    'https://wp.kristdemokraterna.se/vg/jamlik-sjukvard-omojligt-utan-statligt-ansvar/',
+    'Kristdemokraterna om statligt ansvar för sjukvården',
   ),
   sdProgram: source(
     'https://www.sd.se/wp-content/uploads/2024/01/sverigedemokraternas-principprogram-2023.pdf',
@@ -133,6 +213,22 @@ const sources = {
     'https://www.sd.se/vasternorrland/wp-content/uploads/sites/107/2024/10/rattvis-tandvard-for-battre-folkhalsa-erica.pdf',
     'Rättvis tandvård för bättre folkhälsa',
   ),
+  sdSwedenOnTrack: source(
+    'https://www.sd.se/vad-vi-vill/sverige-pa-vag/',
+    'Sverigedemokraterna: Sverige på väg',
+  ),
+  sdPublicService: source(
+    'https://event.sd.se/wp-content/uploads/2025/09/politiska-motioner-am-lo_final.pdf?251121090338=',
+    'Sverigedemokraternas motionshandlingar 2025',
+  ),
+  sdElectionPlatform: source(
+    'https://www.sd.se/wp-content/uploads/2022/07/sverigedemokraternas-valplattform-2022-april.pdf',
+    'Sverigedemokraternas valplattform 2022',
+  ),
+  sdSpringBudget: source(
+    'https://www.sd.se/wp-content/uploads/2022/07/varbudget-2022-formgiven.pdf',
+    'Sverigedemokraternas vårbudget 2022',
+  ),
 }
 
 export const parties: Party[] = [
@@ -151,6 +247,10 @@ export const parties: Party[] = [
       response('s23', 5, 'high', sources.vProgram),
       response('s28', 5, 'high', sources.vProgram),
       response('s30', 1, 'high', sources.vProgram),
+      response('s34', 1, 'high', [sources.vProgram, sources.vNuclear]),
+      response('s37', 5, 'high', sources.vProgram),
+      response('s38', 5, 'high', sources.vProgram),
+      response('s39', 1, 'high', sources.vProgram),
       response('v01', 5, 'high', sources.vProgram),
       response('v03', 5, 'high', sources.vProgram),
       response('v04', 1, 'high', sources.vProgram),
@@ -161,6 +261,8 @@ export const parties: Party[] = [
       response('v15', 5, 'high', sources.vProgram),
       response('v17', 5, 'high', sources.vProgram),
       response('v19', 2, 'high', sources.vProgram),
+      response('v22', 2, 'medium', sources.vProgram),
+      response('v23', 5, 'high', sources.vProgram),
     ],
   },
   {
@@ -176,6 +278,10 @@ export const parties: Party[] = [
       response('s18', 4, 'high', sources.sGuidelines),
       response('s20', 5, 'high', sources.sGuidelines),
       response('s30', 4, 'high', sources.sGuidelines),
+      response('s34', 4, 'high', sources.sNuclear),
+      response('s38', 4, 'medium', sources.sProgram),
+      response('s39', 1, 'high', sources.sProgram),
+      response('s41', 4, 'medium', sources.sRecord),
       response('v01', 5, 'high', sources.sProgram),
       response('v03', 5, 'high', sources.sProgram),
       response('v04', 1, 'high', sources.sProgram),
@@ -188,6 +294,7 @@ export const parties: Party[] = [
       response('v15', 4, 'high', sources.sGuidelines),
       response('v18', 4, 'high', sources.sGuidelines),
       response('v19', 4, 'high', sources.sGuidelines),
+      response('v23', 5, 'medium', sources.sProgram),
     ],
   },
   {
@@ -205,6 +312,10 @@ export const parties: Party[] = [
       response('s26', 5, 'high', sources.mpProgram),
       response('s27', 4, 'medium', sources.mpProgram),
       response('s30', 4, 'high', sources.mpProgram),
+      response('s32', 5, 'high', sources.mpEuManifest),
+      response('s34', 1, 'high', [sources.mpProgram, sources.mpActionProgram]),
+      response('s37', 5, 'high', [sources.mpProgram, sources.mpActionProgram]),
+      response('s39', 1, 'high', sources.mpCulture),
       response('v01', 4, 'high', sources.mpProgram),
       response('v03', 4, 'medium', sources.mpProgram),
       response('v06', 1, 'high', sources.mpProgram),
@@ -215,6 +326,8 @@ export const parties: Party[] = [
       response('v15', 5, 'high', sources.mpProgram),
       response('v17', 5, 'high', sources.mpProgram),
       response('v19', 5, 'high', sources.mpProgram),
+      response('v22', 2, 'medium', [sources.mpProgram, sources.mpActionProgram]),
+      response('v23', 5, 'high', sources.mpDemocracy),
     ],
   },
   {
@@ -231,6 +344,11 @@ export const parties: Party[] = [
       response('s27', 5, 'high', sources.cManifest),
       response('s28', 5, 'high', sources.cManifest),
       response('s30', 4, 'high', [sources.cIdea, sources.cManifest]),
+      response('s31', 4, 'medium', sources.cSpringBudget),
+      response('s32', 5, 'high', sources.cUkraine),
+      response('s35', 5, 'high', [sources.cIdea, sources.cManifest]),
+      response('s38', 5, 'high', sources.cDemocracy),
+      response('s39', 1, 'high', sources.cMedia),
       response('v01', 2, 'medium', sources.cManifest),
       response('v02', 5, 'high', [sources.cIdea, sources.cManifest]),
       response('v03', 2, 'high', sources.cIdea),
@@ -242,6 +360,9 @@ export const parties: Party[] = [
       response('v15', 4, 'high', [sources.cIdea, sources.cManifest]),
       response('v17', 5, 'high', sources.cManifest),
       response('v19', 5, 'high', [sources.cIdea, sources.cManifest]),
+      response('v21', 4, 'medium', sources.cSpringBudget),
+      response('v22', 4, 'medium', [sources.cIdea, sources.cManifest]),
+      response('v23', 5, 'high', [sources.cDemocracy, sources.cMedia]),
     ],
   },
   {
@@ -256,6 +377,10 @@ export const parties: Party[] = [
       response('s18', 5, 'high', sources.lManifest),
       response('s28', 5, 'high', sources.lManifest),
       response('s30', 5, 'high', sources.lManifest),
+      response('s32', 5, 'high', sources.lManifest),
+      response('s34', 5, 'high', sources.lManifest),
+      response('s39', 1, 'high', sources.lManifest),
+      response('s41', 5, 'high', sources.lStudyPeace),
       response('v01', 2, 'medium', sources.lManifest),
       response('v02', 5, 'high', sources.lManifest),
       response('v04', 4, 'medium', sources.lManifest),
@@ -269,6 +394,7 @@ export const parties: Party[] = [
       response('v17', 5, 'high', sources.lManifest),
       response('v18', 4, 'high', sources.lManifest),
       response('v19', 5, 'high', sources.lManifest),
+      response('v22', 5, 'high', sources.lManifest),
     ],
   },
   {
@@ -284,6 +410,12 @@ export const parties: Party[] = [
       response('s20', 5, 'high', sources.mCrime),
       response('s24', 4, 'high', sources.mEu),
       response('s30', 4, 'high', sources.mEu),
+      response('s31', 5, 'high', sources.mDefense),
+      response('s32', 5, 'high', sources.mDefense),
+      response('s34', 5, 'high', sources.mNuclear),
+      response('s36', 4, 'medium', sources.mFuelTax),
+      response('s38', 5, 'high', sources.mIdea),
+      response('s41', 5, 'high', sources.mSchoolPropositions),
       response('v02', 5, 'high', [sources.mIdea, sources.mEconomy]),
       response('v04', 5, 'high', sources.mIdea),
       response('v06', 5, 'high', sources.mIdea),
@@ -296,6 +428,9 @@ export const parties: Party[] = [
       response('v18', 5, 'high', [sources.mIdea, sources.mCrime]),
       response('v19', 4, 'high', sources.mEu),
       response('v20', 4, 'high', sources.mIdea),
+      response('v21', 5, 'high', [sources.mIdea, sources.mDefense]),
+      response('v22', 5, 'high', [sources.mIdea, sources.mNuclear]),
+      response('v23', 5, 'high', sources.mIdea),
     ],
   },
   {
@@ -309,6 +444,11 @@ export const parties: Party[] = [
       response('s18', 5, 'high', [sources.kdMigration, sources.kdCitizenship]),
       response('s19', 5, 'high', sources.kdWitnesses),
       response('s20', 5, 'high', sources.kdCameras),
+      response('s31', 4, 'high', sources.kdDefense),
+      response('s34', 5, 'high', sources.kdNuclearReport),
+      response('s36', 4, 'medium', sources.kdFuelBudget),
+      response('s39', 2, 'medium', sources.kdProgram),
+      response('s40', 5, 'high', sources.kdStateHealthcare),
       response('v02', 4, 'high', sources.kdRut),
       response('v03', 2, 'high', sources.kdProgram),
       response('v04', 4, 'medium', sources.kdProgram),
@@ -319,6 +459,8 @@ export const parties: Party[] = [
       response('v16', 5, 'high', [sources.kdMigration, sources.kdCitizenship]),
       response('v18', 5, 'high', [sources.kdWitnesses, sources.kdCameras]),
       response('v20', 5, 'high', sources.kdProgram),
+      response('v21', 5, 'medium', [sources.kdProgram, sources.kdDefense]),
+      response('v22', 4, 'medium', [sources.kdProgram, sources.kdNuclearReport]),
     ],
   },
   {
@@ -328,6 +470,7 @@ export const parties: Party[] = [
     color: '#DDDD00',
     responses: [
       response('s02', 4, 'medium', sources.sdProgram),
+      response('s07', 4, 'high', sources.sdProgram),
       response('s09', 4, 'medium', sources.sdDental),
       response('s17', 5, 'high', sources.sdParadigm),
       response('s18', 5, 'high', sources.sdCitizenship),
@@ -336,6 +479,10 @@ export const parties: Party[] = [
       response('s24', 1, 'high', sources.sdEu),
       response('s29', 5, 'high', sources.sdProgram),
       response('s30', 1, 'high', sources.sdEu),
+      response('s31', 5, 'medium', [sources.sdProgram, sources.sdSpringBudget]),
+      response('s34', 5, 'high', sources.sdSwedenOnTrack),
+      response('s36', 5, 'high', sources.sdSwedenOnTrack),
+      response('s39', 5, 'high', sources.sdPublicService),
       response('v03', 2, 'medium', sources.sdProgram),
       response('v11', 2, 'medium', sources.sdProgram),
       response('v12', 5, 'high', sources.sdCameras),
@@ -346,6 +493,8 @@ export const parties: Party[] = [
       response('v18', 5, 'high', sources.sdWitnesses),
       response('v19', 1, 'high', sources.sdEu),
       response('v20', 5, 'high', sources.sdProgram),
+      response('v21', 5, 'high', sources.sdProgram),
+      response('v22', 5, 'high', sources.sdElectionPlatform),
     ],
   },
 ]

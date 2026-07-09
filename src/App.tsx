@@ -34,7 +34,7 @@ type FeedbackReason =
   | 'Jag saknar ett parti i sammanfattningen'
   | 'Jag tycker att en fråga är vinklat formulerad'
   | 'Annat'
-const STORAGE_KEY = 'partikartan-progress'
+const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
 

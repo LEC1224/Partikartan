@@ -71,3 +71,25 @@ Kontext: prompten kom tillsammans med lokala PDF-filer för Vänsterpartiet, Soc
 ## Prompt 11
 
 > Kan du lägga till en /source-data/ folder på git med partiprogramen och en underfil SOURCES.md som inkluderar källor du hittat där partiprogrammen inte räckte till?
+
+## Prompt 12
+
+> Analysera de 50 frågor vi inkluderat i det här politiska testet, och fundera om vi har några blinda fläckar sakpolitiskt och värderingsmässigt. Rapportera de till mig här sen
+
+## Prompt 13
+
+> Gör upp en plan för hur du ska justera/lägga till/ta bort frågor för att tackla de brister du funnit. Det behöver inte vara 50 totalt. Blir det fler så blir det bara ett noggrannare test. Men du måste vara noga med att frågorna formulering och frågornas ämnesdistribution bevarar en neutral vinkling. En bra måttstock för det kan vara att om man svarar bara 1 eller bara 5 på alla frågor så ska man hamna hyfsat nära origo.
+>
+> Uppdatera även partiernas svar till de frågor du ändrar, lägger till och eventuellt tar bort.
+
+## Prompt 14
+
+> Implement the proposed plan.
+
+## Prompt 15
+
+> Csn you quickly make the site reachable from devices on the same network or tsilscale?
+
+## Prompt 16
+
+> Uppdatera prompt-md, commita och pusha detta

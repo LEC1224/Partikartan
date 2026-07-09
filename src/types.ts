@@ -7,6 +7,8 @@ export type TopicId =
   | 'valfard'
   | 'arbete'
   | 'bostad'
+  | 'forsvar'
+  | 'energi'
   | 'klimat'
   | 'lagordning'
   | 'migration'
