@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest'
 import type { Answers, Question } from '../types'
 import {
   PRIORITY_MULTIPLIER,
+  answerSimilarity,
   answerToScore,
+  calculatePartyMatch,
   calculateCoordinate,
   calculatePartyCoordinate,
-  matchPercentage,
 } from './scoring'
 
 const sampleQuestions: Question[] = [
@@ -70,14 +71,70 @@ describe('party scoring', () => {
   it('keeps parties without coded responses in origin', () => {
     expect(
       calculatePartyCoordinate(
-        { id: 'test', shortName: 'T', name: 'Testpartiet', color: '#000', responses: [] },
+        {
+          id: 'test',
+          shortName: 'T',
+          name: 'Testpartiet',
+          color: '#000',
+          responses: sampleQuestions.map((question) => ({
+            questionId: question.id,
+            value: null,
+            confidence: 'unknown',
+            evidence: [],
+          })),
+        },
         sampleQuestions,
       ),
     ).toEqual({ x: 0, y: 0, answered: 0 })
   })
 
-  it('returns a full match for identical coordinates', () => {
-    expect(matchPercentage({ x: 20, y: -30, answered: 10 }, { x: 20, y: -30, answered: 8 })).toBe(100)
+  it('scores adjacent party answers as a strong but partial match', () => {
+    expect(answerSimilarity(4, 5)).toBe(0.75)
+    expect(answerSimilarity(1, 5)).toBe(0)
+  })
+
+  it('compares parties question by question instead of by chart distance', () => {
+    const answers: Answers = { q1: 5, q2: 4, q3: null }
+    const match = calculatePartyMatch(
+      answers,
+      {
+        id: 'test',
+        shortName: 'T',
+        name: 'Testpartiet',
+        color: '#000',
+        responses: [
+          { questionId: 'q1', value: 5, confidence: 'high', evidence: [] },
+          { questionId: 'q2', value: 5, confidence: 'high', evidence: [] },
+          { questionId: 'q3', value: 1, confidence: 'high', evidence: [] },
+        ],
+      },
+      sampleQuestions,
+    )
+
+    expect(match).toEqual({
+      percent: 88,
+      exactMatches: 1,
+      nearMatches: 1,
+      comparedQuestions: 2,
+      knownPartyAnswers: 2,
+      unknownPartyAnswers: 0,
+    })
+  })
+
+  it('counts party Vet ej as missing agreement for answered user questions', () => {
+    const match = calculatePartyMatch(
+      { q1: 5 },
+      {
+        id: 'test',
+        shortName: 'T',
+        name: 'Testpartiet',
+        color: '#000',
+        responses: [{ questionId: 'q1', value: null, confidence: 'unknown', evidence: [] }],
+      },
+      sampleQuestions,
+    )
+
+    expect(match.percent).toBe(0)
+    expect(match.unknownPartyAnswers).toBe(1)
   })
 })
-

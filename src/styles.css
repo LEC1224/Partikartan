@@ -283,6 +283,7 @@ main { flex: 1; }
   font-size: .84rem;
   margin: 0;
 }
+.about-card p + p { margin-top: 10px; }
 .about-steps {
   display: grid;
   grid-template-columns: 1fr;
@@ -472,6 +473,24 @@ main { flex: 1; }
 .result-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .danger-link { background: none; color: #99533f; padding: 10px; font-size: .75rem; }
 
+.answer-comparison { margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
+.answer-comparison-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 28px; margin-bottom: 18px; }
+.answer-comparison-heading h2 { font: 500 2rem/1.05 Georgia, serif; margin: 6px 0 0; }
+.answer-comparison-heading p { max-width: 480px; margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.55; }
+.answer-table { max-height: min(760px, 78vh); overflow: auto; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,254,249,.72); }
+.comparison-row { display: grid; grid-template-columns: minmax(230px, .75fr) minmax(430px, 1.25fr); gap: 20px; padding: 18px; border-bottom: 1px solid #e2dfd5; }
+.comparison-row:last-child { border-bottom: 0; }
+.answer-question span { display: block; color: var(--green); font-size: .62rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.answer-question h3 { font: 500 1rem/1.32 Georgia, serif; margin: 8px 0; }
+.answer-question p { margin: 0; color: var(--muted); font-size: .74rem; line-height: 1.45; }
+.answer-options { display: grid; grid-template-columns: repeat(6, minmax(64px, 1fr)); gap: 8px; min-width: 430px; }
+.answer-option { min-height: 124px; display: grid; grid-template-rows: 24px 1fr; justify-items: center; gap: 8px; padding: 9px 6px; border: 1px solid #e1ded3; border-radius: 4px; background: rgba(247,245,236,.66); }
+.answer-option-label { display: grid; place-items: center; min-width: 31px; height: 22px; color: var(--ink); font-size: .68rem; font-weight: 850; }
+.answer-token-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 74px; }
+.answer-token { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; font-size: .54rem; font-weight: 850; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.08); }
+.answer-token.you-token { outline: 2px solid rgba(237, 113, 79, .22); outline-offset: 2px; }
+.answer-token-placeholder { width: 27px; height: 27px; opacity: 0; }
+
 .modal-backdrop { position: fixed; inset: 0; background: rgba(12,27,20,.62); z-index: 50; display: grid; place-items: center; padding: 20px; backdrop-filter: blur(5px); }
 .modal { position: relative; width: min(700px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; background: var(--paper); border-radius: 7px; padding: 42px; box-shadow: 0 30px 90px rgba(0,0,0,.28); }
 .modal-close { position: absolute; top: 17px; right: 17px; width: 35px; height: 35px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #e8e4da; color: var(--ink); cursor: pointer; }
@@ -536,6 +555,9 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .result-heading { align-items: flex-start; flex-direction: column; }
   .result-layout { grid-template-columns: 1fr; }
   .chart-card { min-height: auto; }
+  .answer-comparison-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .comparison-row { grid-template-columns: 1fr; }
+  .answer-options { width: 100%; min-width: 0; overflow-x: auto; }
 }
 
 @media (max-width: 640px) {
@@ -587,6 +609,13 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .chart-legend { font-size: .56rem; }
   .result-details { align-items: flex-start; flex-direction: column; }
   .result-actions { justify-content: flex-start; }
+  .answer-comparison-heading h2 { font-size: 1.65rem; }
+  .answer-table { max-height: 72vh; }
+  .comparison-row { padding: 14px; }
+  .answer-options { grid-template-columns: repeat(6, 58px); min-width: 0; gap: 7px; }
+  .answer-option { min-height: 116px; padding-inline: 5px; }
+  .answer-token, .answer-token-placeholder { width: 24px; height: 24px; }
+  .answer-token { font-size: .49rem; }
   .modal { padding: 38px 22px 26px; }
   .modal h2 { font-size: 2.2rem; }
   .modal-actions { align-items: stretch; flex-direction: column-reverse; }

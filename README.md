@@ -9,9 +9,10 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 - 51 sakfrågor och 23 värderingsfrågor.
 - Svarsskala 1-5 plus `Vet ej`.
 - Resultat på två axlar: ekonomisk vänster-höger och GAL-TAN.
+- Partijämförelse som räknas fråga för fråga, där nära svar ger delpoäng.
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.
-- Svenska riksdagspartier initieras i origo tills källbelagda partisvar finns.
-- Partisvar kan lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`.
+- Svenska riksdagspartier visas både på kartan och i en skrollbar svarsmatris.
+- Partisvar lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`; saknade eller oklara belägg visas som `Vet ej`.
 - Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
 - Öppen källkod på GitHub.
 - Open prompts i `OPEN_PROMPTS.md`.
@@ -57,8 +58,8 @@ Principer:
 - Koda endast ett svar när källan faktiskt tar ställning till frågan.
 - Använd `value: 5` för tydligt stöd för påståendet och `value: 1` för tydligt motstånd.
 - Använd `value: 3` när partiet uttryckligen intar en mellanposition.
-- Lämna frågan okodad om belägget är oklart, motsägelsefullt eller bara indirekt.
-- Sätt `confidence` till `high`, `medium` eller `low` efter hur direkt belägget är.
-- Lägg alltid in minst en primärkälla i `evidence`.
+- Använd `value: null` och `confidence: unknown` när belägget är oklart, motsägelsefullt eller bara indirekt.
+- Sätt `confidence` till `high`, `medium` eller `low` efter hur direkt belägget är för källbelagda svar.
+- Lägg alltid in minst en primärkälla i `evidence` för källbelagda svar.
 
-Det är medvetet att partier utan analyserade svar ligger kvar i origo. Det undviker att appen låtsas veta mer än den gör.
+Exporterade partier ska ha ett svar för varje fråga. Frågor utan tillräckligt belägg fylls därför som `Vet ej`, vilket gör svarsmatrisen komplett utan att appen låtsas veta mer än den gör.

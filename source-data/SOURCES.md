@@ -97,3 +97,9 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ## Åtkomstdatum
 
 De kompletterande källorna användes vid kodningen den 2026-07-08 och 2026-07-09. Centerpartiets PDF-filer hämtades till den här katalogen den 2026-07-09.
+
+## Kvarvarande hål och Vet ej
+
+Den 2026-07-09 kompletterades datamodellen så att varje parti exporterar ett svar för varje fråga. Där arkiverade program, manifest, kompletterande partikälla eller riktat webbsök inte gav ett tydligt och tillförlitligt belägg kodas frågan som `value: null`, `confidence: unknown` och visas som `Vet ej` i resultatsidans svarsmatris.
+
+Detta är avsiktligt konservativt: `Vet ej` betyder inte att partiet saknar åsikt, utan att projektet inte har tillräckligt robust belägg för att redovisa en 1-5-position öppet.

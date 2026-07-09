@@ -48,8 +48,8 @@ export interface Evidence {
 
 export interface PartyResponse {
   questionId: string
-  value: Exclude<AnswerValue, null>
-  confidence: 'high' | 'medium' | 'low'
+  value: AnswerValue
+  confidence: 'high' | 'medium' | 'low' | 'unknown'
   evidence: Evidence[]
 }
 

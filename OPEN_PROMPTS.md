@@ -123,3 +123,15 @@ Kontext: prompten innehöll en bifogad screenshot där argumentpanelen visade "F
 Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen där rubriken "Drift och ansvar" låg under ikonen i stället för bredvid den.
 
 > Borde inte drift och ansvar hamna bredvid ikonen så som  nedre gör?
+
+## Prompt 23
+
+> Hur lagras oklara formulär nu? Det är väl i browser sessionen och inte på vår lokala server? Det kan vara nice att inkludera ett stycke om att vi inte lagrar svar och resultat, utan bara inskickade feedback-meddelanden
+
+## Prompt 24
+
+> Just nu hamnar jag på 99% Liberalerna, trots att jag inte håller med de i 99% av frågorna. Jag misstänker att procent-kalkylen görs enbart i hur man totalt sett hamnar på höger-vänster-gal-tan-kartan relativt partierna. Det har vi ju redan kartan för. Ens partijämförelser borde istället visa i hur många sak/värderingsfrågor man matchar eller nästan matchar partierna. Har du något bra förslag på hur man ska vikta t.ex. om jag svarar 4 på en fråga där ett parti svarar 5? Det borde ju anses som gynnande för partiets procentsats men inte helt. Jag har svårt att förstå hur man löser det exakt för att vara som mest rättvisande.
+>
+> I samband med den här ändringen behöver ju varje parti ha svar på varje fråga, så du kommer också behöva göra research för alla kvarvarande hål nu. Om svar från partierna är svåra eller opålitliga att hitta källa på, simulera det som att de valt "vet ej". Då kan vi skapa ett stort, skrollbart segment längst ner i resultatsidan där man kan se svar på alla enskilda frågor, där man både ser vad man själv svarade och vad alla partier svarade. Inklusive 1-5 och Vet ej. Symbolerna för partier och "Du" kan gott vara desamma som på 2D-kartan. Där flera partier svarat likadant ska deras ikoner staplat vertikalt över svars-alternativet (1-5 + vet ej).
+>
+> Detta är en stor uppgift så det är nog bäst att göra en plan! Om du förbrukar alla inkluderade tokenkrediter, pausa istället för att gå över på mina tillköpta reservkrediter. Avsluta med att uppdatera open prompts och commita

@@ -23,8 +23,14 @@ import { partyCodingRules } from './data/partyCoding'
 import { questionArguments } from './data/questionArguments'
 import { issueQuestions, questions, valueQuestions } from './data/questions'
 import { topics } from './data/topics'
-import { calculateCoordinate, calculatePartyCoordinate, matchPercentage } from './lib/scoring'
+import {
+  calculateCoordinate,
+  calculatePartyCoordinate,
+  calculatePartyMatch,
+  countKnownPartyResponses,
+} from './lib/scoring'
 import type { Answers, AnswerValue, Coordinate, Party, TopicId } from './types'
+import type { PartyMatch } from './lib/scoring'
 
 type View = 'start' | 'priorities' | 'quiz' | 'result'
 type SavedProgress = { answers: Answers; priorities: TopicId[] }
@@ -57,6 +63,10 @@ const feedbackReasons: FeedbackReason[] = [
   'Jag tycker att en fråga är vinklat formulerad',
   'Annat',
 ]
+
+function markerTextColor(party: Party): string {
+  return party.id === 'sd' || party.id === 'm' ? '#1c2520' : '#fff'
+}
 
 function readSavedProgress(): SavedProgress {
   if (typeof window === 'undefined') return { answers: {}, priorities: [] }
@@ -161,6 +171,7 @@ function App() {
         {view === 'result' && (
           <ResultPage
             coordinate={coordinate}
+            answers={answers}
             priorities={priorities}
             onEdit={beginQuiz}
             onMethod={() => setMethodOpen(true)}
@@ -314,6 +325,9 @@ function AboutDialog({
           <h2>Drift och ansvar</h2>
           <p>
             Frågor, viktning, partipositioner, promptar och kod hålls öppna i projektets repo. Partikartan är nästan helt utvecklad genom prompting i Codex, vilket också gör utvecklingsprocessen möjlig att följa.
+          </p>
+          <p>
+            Dina svar, prioriterade ämnen och ditt resultat skickas inte till servern. Pågående svar sparas bara i webbläsarens lokala lagring så att du kan fortsätta testet senare; det enda som sparas av Partikartan är feedbackmeddelanden du själv skickar in.
           </p>
         </div>
         <div className="about-steps">
@@ -568,6 +582,7 @@ function QuestionDots({ index, answers, onIndex }: { index: number; answers: Ans
 
 function ResultPage({
   coordinate,
+  answers,
   priorities,
   onEdit,
   onMethod,
@@ -575,6 +590,7 @@ function ResultPage({
   onReset,
 }: {
   coordinate: Coordinate
+  answers: Answers
   priorities: TopicId[]
   onEdit: () => void
   onMethod: () => void
@@ -584,16 +600,16 @@ function ResultPage({
   const partyResults = parties
     .map((party) => {
       const partyCoordinate = calculatePartyCoordinate(party, questions)
-      return { party, coordinate: partyCoordinate, match: matchPercentage(coordinate, partyCoordinate) }
+      return { party, coordinate: partyCoordinate, match: calculatePartyMatch(answers, party, questions, priorities) }
     })
     .sort((left, right) => {
-      const leftSourced = left.party.responses.length > 0
-      const rightSourced = right.party.responses.length > 0
+      const leftSourced = countKnownPartyResponses(left.party) > 0
+      const rightSourced = countKnownPartyResponses(right.party) > 0
       if (leftSourced !== rightSourced) return Number(rightSourced) - Number(leftSourced)
-      if (leftSourced && rightSourced) return right.match - left.match
+      if (leftSourced && rightSourced) return right.match.percent - left.match.percent
       return 0
     })
-  const allUnscored = partyResults.every(({ party }) => party.responses.length === 0)
+  const allUnscored = partyResults.every(({ party }) => countKnownPartyResponses(party) === 0)
 
   return (
     <section className="result-page page-width">
@@ -644,17 +660,18 @@ function ResultPage({
           <button className="danger-link" onClick={onReset}><RefreshCw size={15} /> Börja om</button>
         </div>
       </div>
+      <AnswerComparison answers={answers} />
     </section>
   )
 }
 
-function PartyRow({ party, coordinate, match }: { party: Party; coordinate: Coordinate; match: number }) {
-  const sourced = party.responses.length > 0
+function PartyRow({ party, coordinate, match }: { party: Party; coordinate: Coordinate; match: PartyMatch }) {
+  const sourced = countKnownPartyResponses(party)
   return (
     <div className="party-row">
-      <span className="party-logo" style={{ background: party.color, color: party.id === 'sd' ? '#1c2520' : '#fff' }}>{party.shortName}</span>
-      <div><strong>{party.name}</strong><small>{sourced ? `${party.responses.length} källbelagda svar` : 'Ej analyserat'}</small></div>
-      <div className="match-value"><strong>{sourced ? `${match}%` : '—'}</strong><small>{sourced ? 'matchning' : 'i origo'}</small></div>
+      <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
+      <div><strong>{party.name}</strong><small>{sourced} källbelagda, {party.responses.length - sourced} Vet ej</small></div>
+      <div className="match-value"><strong>{sourced ? `${match.percent}%` : '—'}</strong><small>{match.comparedQuestions ? `${match.exactMatches} exakta, ${match.nearMatches} nära` : 'inga svar'}</small></div>
       <span className="party-coordinate">{Math.round(coordinate.x)}, {Math.round(coordinate.y)}</span>
     </div>
   )
@@ -665,13 +682,13 @@ function PoliticalChart({
   partyResults,
 }: {
   user: Coordinate
-  partyResults: { party: Party; coordinate: Coordinate; match: number }[]
+  partyResults: { party: Party; coordinate: Coordinate; match: PartyMatch }[]
 }) {
   const clampToChart = (value: number) => Math.max(-CHART_AXIS_LIMIT, Math.min(CHART_AXIS_LIMIT, value))
   const toX = (x: number) => 8 + ((clampToChart(x) + CHART_AXIS_LIMIT) / (CHART_AXIS_LIMIT * 2)) * 84
   const toY = (y: number) => 8 + ((CHART_AXIS_LIMIT - clampToChart(y)) / (CHART_AXIS_LIMIT * 2)) * 84
-  const unscored = partyResults.filter(({ party }) => party.responses.length === 0)
-  const scored = partyResults.filter(({ party }) => party.responses.length > 0)
+  const unscored = partyResults.filter(({ party }) => countKnownPartyResponses(party) === 0)
+  const scored = partyResults.filter(({ party }) => countKnownPartyResponses(party) > 0)
 
   return (
     <div className="chart-card">
@@ -692,7 +709,7 @@ function PoliticalChart({
         {scored.map(({ party, coordinate }) => (
           <g key={party.id} transform={`translate(${toX(coordinate.x)} ${toY(coordinate.y)})`}>
             <circle r="3.1" fill={party.color} stroke="#fff" strokeWidth="0.8" />
-            <text y="1.25" textAnchor="middle" fontSize="3.4" fontWeight="800" fill={party.id === 'sd' ? '#1c2520' : '#fff'}>{party.shortName}</text>
+            <text y="1.25" textAnchor="middle" fontSize="3.4" fontWeight="800" fill={markerTextColor(party)}>{party.shortName}</text>
           </g>
         ))}
         {unscored.length > 0 && (
@@ -713,6 +730,78 @@ function PoliticalChart({
   )
 }
 
+function AnswerComparison({ answers }: { answers: Answers }) {
+  return (
+    <section className="answer-comparison">
+      <div className="answer-comparison-heading">
+        <div>
+          <span className="overline">Svar fråga för fråga</span>
+          <h2>Din matchning mot partierna</h2>
+        </div>
+        <p>Partier utan tydligt källbelägg visas som Vet ej. Procenten ovan bygger på dina besvarade frågor, där ett steg ifrån ger delträff.</p>
+      </div>
+      <div className="answer-table" role="table" aria-label="Svar per fråga och parti">
+        {questions.map((question, index) => {
+          const userAnswered = question.id in answers
+          const userAnswer = answers[question.id]
+          const topic = topics.find((item) => item.id === question.topic)
+
+          return (
+            <article className="comparison-row" key={question.id} role="row">
+              <div className="answer-question">
+                <span>{index + 1}. {question.kind === 'sakfraga' ? 'Sakfråga' : 'Värdering'} · {topic?.label}</span>
+                <h3>{question.statement}</h3>
+                <p>Du: {userAnswered ? answerLabel(userAnswer) : 'Ej besvarad'}</p>
+              </div>
+              <div className="answer-options">
+                {answerOptions.map((option) => {
+                  const markers = [
+                    ...(userAnswered && userAnswer === option.value
+                      ? [{ id: 'you', shortName: 'DU', name: 'Du', color: '#ed714f', textColor: '#fff' }]
+                      : []),
+                    ...parties
+                      .filter((party) => party.responses.find((response) => response.questionId === question.id)?.value === option.value)
+                      .map((party) => ({
+                        id: party.id,
+                        shortName: party.shortName,
+                        name: party.name,
+                        color: party.color,
+                        textColor: markerTextColor(party),
+                      })),
+                  ]
+
+                  return (
+                    <div className="answer-option" key={option.short} role="cell">
+                      <span className="answer-option-label" title={option.label}>{option.short === '?' ? 'Vet ej' : option.short}</span>
+                      <div className="answer-token-stack">
+                        {markers.length > 0 ? markers.map((marker) => (
+                          <span
+                            className={`answer-token ${marker.id === 'you' ? 'you-token' : ''}`}
+                            key={marker.id}
+                            style={{ background: marker.color, color: marker.textColor }}
+                            title={marker.name}
+                          >
+                            {marker.shortName}
+                          </span>
+                        )) : <span className="answer-token-placeholder" aria-hidden="true" />}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function answerLabel(value: AnswerValue | undefined): string {
+  if (value == null) return 'Vet ej'
+  return `${value} - ${answerOptions.find((option) => option.value === value)?.label ?? ''}`
+}
+
 function MethodDialog({ onClose }: { onClose: () => void }) {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
@@ -724,8 +813,9 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>1</strong><p><b>Varje påstående har en fördefinierad riktning.</b> Ekonomiska frågor påverkar vänster–höger. Frågor om frihet, tradition och auktoritet påverkar GAL–TAN.</p></div>
           <div><strong>2</strong><p><b>Svarsskalan omvandlas symmetriskt.</b> 1–5 blir −1, −0,5, 0, +0,5 och +1. Omvända formuleringar minskar risken för ja-sägareffekt.</p></div>
           <div><strong>3</strong><p><b>“Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
-          <div><strong>4</strong><p><b>Resultatet normaliseras till −100…+100.</b> Skalan är relativ till svenska politiska skiljelinjer och ska inte jämföras direkt med amerikanska kompasser.</p></div>
-          <div><strong>5</strong><p><b>Partisvar kräver belägg.</b> Varje kodat svar kan bära källa, citat, datum och säkerhetsnivå. Motstridiga eller oklara belägg ska markeras — inte gissas bort.</p></div>
+          <div><strong>4</strong><p><b>Kartresultatet normaliseras till −100…+100.</b> Skalan är relativ till svenska politiska skiljelinjer och ska inte jämföras direkt med amerikanska kompasser.</p></div>
+          <div><strong>5</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent.</p></div>
+          <div><strong>6</strong><p><b>Partisvar kräver belägg.</b> När källorna är oklara, indirekta eller motsägelsefulla visas partiet som Vet ej i den frågan i stället för att få en gissad position.</p></div>
         </div>
         <div className="coding-rules">
           <h3>Regler för partiprogram</h3>

@@ -49,4 +49,12 @@ describe('question data', () => {
       expect(party.responses.every((response) => questionIds.has(response.questionId))).toBe(true)
     }
   })
+
+  it('exports one explicit party response per question', () => {
+    const questionIds = questions.map((question) => question.id).sort()
+
+    for (const party of parties) {
+      expect(party.responses.map((response) => response.questionId).sort()).toEqual(questionIds)
+    }
+  })
 })

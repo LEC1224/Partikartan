@@ -1,4 +1,4 @@
-import type { Answers, Coordinate, Party, Question, TopicId } from '../types'
+import type { AnswerValue, Answers, Coordinate, Party, Question, TopicId } from '../types'
 
 export const PRIORITY_MULTIPLIER = 1.75
 
@@ -44,8 +44,69 @@ export function calculatePartyCoordinate(party: Party, questions: Question[]): C
   return calculateCoordinate(answers, questions)
 }
 
-export function matchPercentage(user: Coordinate, party: Coordinate): number {
-  const maxDistance = Math.sqrt(200 ** 2 + 200 ** 2)
-  const distance = Math.hypot(user.x - party.x, user.y - party.y)
-  return Math.max(0, Math.round((1 - distance / maxDistance) * 100))
+export interface PartyMatch {
+  percent: number
+  exactMatches: number
+  nearMatches: number
+  comparedQuestions: number
+  knownPartyAnswers: number
+  unknownPartyAnswers: number
+}
+
+export function answerSimilarity(
+  userAnswer: Exclude<AnswerValue, null>,
+  partyAnswer: Exclude<AnswerValue, null>,
+): number {
+  return Math.max(0, 1 - Math.abs(userAnswer - partyAnswer) / 4)
+}
+
+export function countKnownPartyResponses(party: Party): number {
+  return party.responses.filter((response) => response.value != null).length
+}
+
+export function calculatePartyMatch(
+  answers: Answers,
+  party: Party,
+  questions: Question[],
+  priorities: TopicId[] = [],
+): PartyMatch {
+  const responsesByQuestion = new Map(party.responses.map((response) => [response.questionId, response]))
+  let weightedScore = 0
+  let weightedPossible = 0
+  let exactMatches = 0
+  let nearMatches = 0
+  let comparedQuestions = 0
+  let knownPartyAnswers = 0
+  let unknownPartyAnswers = 0
+
+  for (const question of questions) {
+    const userAnswer = answers[question.id]
+    if (userAnswer == null) continue
+
+    const weight = priorities.includes(question.topic) ? PRIORITY_MULTIPLIER : 1
+    const partyAnswer = responsesByQuestion.get(question.id)?.value ?? null
+    weightedPossible += weight
+    comparedQuestions += 1
+
+    if (partyAnswer == null) {
+      unknownPartyAnswers += 1
+      continue
+    }
+
+    knownPartyAnswers += 1
+    weightedScore += answerSimilarity(userAnswer, partyAnswer) * weight
+
+    const distance = Math.abs(userAnswer - partyAnswer)
+    if (distance === 0) exactMatches += 1
+    if (distance === 1) nearMatches += 1
+  }
+
+  return {
+    percent: weightedPossible ? Math.round((weightedScore / weightedPossible) * 100) : 0,
+    exactMatches,
+    nearMatches,
+    comparedQuestions,
+    knownPartyAnswers,
+    unknownPartyAnswers,
+  }
 }

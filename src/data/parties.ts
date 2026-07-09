@@ -1,4 +1,5 @@
-import type { Evidence, Party, PartyResponse } from '../types'
+import type { AnswerValue, Evidence, Party, PartyResponse } from '../types'
+import { questions } from './questions'
 
 const ACCESSED_AT = '2026-07-09'
 
@@ -10,7 +11,7 @@ const source = (url: string, title: string): Evidence => ({
 
 const response = (
   questionId: string,
-  value: PartyResponse['value'],
+  value: Exclude<AnswerValue, null>,
   confidence: PartyResponse['confidence'],
   evidence: Evidence | Evidence[],
 ): PartyResponse => ({
@@ -19,6 +20,23 @@ const response = (
   confidence,
   evidence: Array.isArray(evidence) ? evidence : [evidence],
 })
+
+const unknownResponse = (questionId: string): PartyResponse => ({
+  questionId,
+  value: null,
+  confidence: 'unknown',
+  evidence: [],
+})
+
+const completeResponses = (responses: PartyResponse[]): PartyResponse[] => {
+  const codedIds = new Set(responses.map((partyResponse) => partyResponse.questionId))
+  return [
+    ...responses,
+    ...questions
+      .filter((question) => !codedIds.has(question.id))
+      .map((question) => unknownResponse(question.id)),
+  ]
+}
 
 const sources = {
   vProgram: source(
@@ -259,7 +277,7 @@ const sources = {
   ),
 }
 
-export const parties: Party[] = [
+const codedParties: Party[] = [
   {
     id: 'v',
     shortName: 'V',
@@ -533,3 +551,8 @@ export const parties: Party[] = [
     ],
   },
 ]
+
+export const parties: Party[] = codedParties.map((party) => ({
+  ...party,
+  responses: completeResponses(party.responses),
+}))
