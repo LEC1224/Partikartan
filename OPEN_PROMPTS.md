@@ -135,3 +135,11 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 > I samband med den här ändringen behöver ju varje parti ha svar på varje fråga, så du kommer också behöva göra research för alla kvarvarande hål nu. Om svar från partierna är svåra eller opålitliga att hitta källa på, simulera det som att de valt "vet ej". Då kan vi skapa ett stort, skrollbart segment längst ner i resultatsidan där man kan se svar på alla enskilda frågor, där man både ser vad man själv svarade och vad alla partier svarade. Inklusive 1-5 och Vet ej. Symbolerna för partier och "Du" kan gott vara desamma som på 2D-kartan. Där flera partier svarat likadant ska deras ikoner staplat vertikalt över svars-alternativet (1-5 + vet ej).
 >
 > Detta är en stor uppgift så det är nog bäst att göra en plan! Om du förbrukar alla inkluderade tokenkrediter, pausa istället för att gå över på mina tillköpta reservkrediter. Avsluta med att uppdatera open prompts och commita
+
+## Prompt 25
+
+> Oj, va många frågor många partier står på vet ej på. Kan du försöka hitta lite mer information om vart partierna står. Det här känns som för svagt underlag för att skapa en bra bild av partiernas orientering
+
+## Prompt 26
+
+> Så funkar det-sidan behöver uppdateras för den stämmer inte helt längre. T.ex. står det fortfarande -100-+100 där det ska vara +-140. Kan du lägga till ett förtydligande på resultatsidan att "Vet ej"-svar för partier inte betyder att partiet är osäkra, utan att jag inte kunnat hitta källor till partiets stångpunkt. Avsluta med Open-prompt uppdatering och commit.

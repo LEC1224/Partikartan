@@ -45,6 +45,7 @@ const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
 const CHART_AXIS_LIMIT = 140
+const CHART_AXIS_LABEL = `±${CHART_AXIS_LIMIT}`
 
 const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
   { value: 1, short: '1', label: 'Håller inte alls med' },
@@ -620,8 +621,8 @@ function ResultPage({
           <p>Det här är en riktning, inte en etikett. Närliggande positioner kan bygga på ganska olika svar.</p>
         </div>
         <div className="coordinate-readout">
-          <div><span>Ekonomi</span><strong>{formatAxis(coordinate.x, 'Vänster', 'Höger')}</strong><small>{Math.abs(Math.round(coordinate.x))} / 100</small></div>
-          <div><span>Värderingar</span><strong>{formatAxis(coordinate.y, 'TAN', 'GAL')}</strong><small>{Math.abs(Math.round(coordinate.y))} / 100</small></div>
+          <div><span>Ekonomi</span><strong>{formatAxis(coordinate.x, 'Vänster', 'Höger')}</strong><small>{Math.abs(Math.round(coordinate.x))} / {CHART_AXIS_LIMIT}</small></div>
+          <div><span>Värderingar</span><strong>{formatAxis(coordinate.y, 'TAN', 'GAL')}</strong><small>{Math.abs(Math.round(coordinate.y))} / {CHART_AXIS_LIMIT}</small></div>
           <div><span>Inräknade svar</span><strong>{coordinate.answered}</strong><small>av {questions.length}</small></div>
         </div>
       </div>
@@ -738,7 +739,7 @@ function AnswerComparison({ answers }: { answers: Answers }) {
           <span className="overline">Svar fråga för fråga</span>
           <h2>Din matchning mot partierna</h2>
         </div>
-        <p>Partier utan tydligt källbelägg visas som Vet ej. Procenten ovan bygger på dina besvarade frågor, där ett steg ifrån ger delträff.</p>
+        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på dina besvarade frågor, där ett steg ifrån ger delträff.</p>
       </div>
       <div className="answer-table" role="table" aria-label="Svar per fråga och parti">
         {questions.map((question, index) => {
@@ -813,7 +814,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>1</strong><p><b>Varje påstående har en fördefinierad riktning.</b> Ekonomiska frågor påverkar vänster–höger. Frågor om frihet, tradition och auktoritet påverkar GAL–TAN.</p></div>
           <div><strong>2</strong><p><b>Svarsskalan omvandlas symmetriskt.</b> 1–5 blir −1, −0,5, 0, +0,5 och +1. Omvända formuleringar minskar risken för ja-sägareffekt.</p></div>
           <div><strong>3</strong><p><b>“Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
-          <div><strong>4</strong><p><b>Kartresultatet normaliseras till −100…+100.</b> Skalan är relativ till svenska politiska skiljelinjer och ska inte jämföras direkt med amerikanska kompasser.</p></div>
+          <div><strong>4</strong><p><b>Kartan visas på en skala på {CHART_AXIS_LABEL} åt båda håll.</b> Själva resultatet räknas som en riktning inom svenska politiska skiljelinjer och visas på en utzoomad karta så att mer radikala svar får utrymme utanför riksdagspartiernas tyngdpunkt.</p></div>
           <div><strong>5</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent.</p></div>
           <div><strong>6</strong><p><b>Partisvar kräver belägg.</b> När källorna är oklara, indirekta eller motsägelsefulla visas partiet som Vet ej i den frågan i stället för att få en gissad position.</p></div>
         </div>
