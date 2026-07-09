@@ -1,6 +1,7 @@
 import type { AnswerValue, Answers, Coordinate, Party, Question, TopicId } from '../types'
 
 export const PRIORITY_MULTIPLIER = 1.75
+export const COORDINATE_SCALE = 140
 
 export function answerToScore(answer: number): number {
   return (answer - 3) / 2
@@ -31,8 +32,8 @@ export function calculateCoordinate(
   }
 
   return {
-    x: xWeight ? (xTotal / xWeight) * 100 : 0,
-    y: yWeight ? (yTotal / yWeight) * 100 : 0,
+    x: xWeight ? (xTotal / xWeight) * COORDINATE_SCALE : 0,
+    y: yWeight ? (yTotal / yWeight) * COORDINATE_SCALE : 0,
     answered,
   }
 }

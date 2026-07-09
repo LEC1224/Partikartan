@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Answers, Question } from '../types'
 import {
   PRIORITY_MULTIPLIER,
+  COORDINATE_SCALE,
   answerSimilarity,
   answerToScore,
   calculatePartyMatch,
@@ -51,7 +52,7 @@ describe('calculateCoordinate', () => {
     const answers: Answers = { q1: 5, q2: null }
 
     expect(calculateCoordinate(answers, sampleQuestions)).toEqual({
-      x: 100,
+      x: COORDINATE_SCALE,
       y: 0,
       answered: 1,
     })

@@ -27,6 +27,7 @@ import {
   calculateCoordinate,
   calculatePartyCoordinate,
   calculatePartyMatch,
+  COORDINATE_SCALE,
   countKnownPartyResponses,
 } from './lib/scoring'
 import type { Answers, AnswerValue, Coordinate, Party, TopicId } from './types'
@@ -44,7 +45,7 @@ type FeedbackReason =
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
-const CHART_AXIS_LIMIT = 140
+const CHART_AXIS_LIMIT = COORDINATE_SCALE
 const CHART_AXIS_LABEL = `±${CHART_AXIS_LIMIT}`
 
 const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
@@ -814,7 +815,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>1</strong><p><b>Varje påstående har en fördefinierad riktning.</b> Ekonomiska frågor påverkar vänster–höger. Frågor om frihet, tradition och auktoritet påverkar GAL–TAN.</p></div>
           <div><strong>2</strong><p><b>Svarsskalan omvandlas symmetriskt.</b> 1–5 blir −1, −0,5, 0, +0,5 och +1. Omvända formuleringar minskar risken för ja-sägareffekt.</p></div>
           <div><strong>3</strong><p><b>“Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
-          <div><strong>4</strong><p><b>Kartan visas på en skala på {CHART_AXIS_LABEL} åt båda håll.</b> Själva resultatet räknas som en riktning inom svenska politiska skiljelinjer och visas på en utzoomad karta så att mer radikala svar får utrymme utanför riksdagspartiernas tyngdpunkt.</p></div>
+          <div><strong>4</strong><p><b>Koordinaterna skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: dina och partiernas svar räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala. Om dina svar är mer konsekventa åt ett håll än partiernas källbelagda svar hamnar du därför utanför dem på kartan.</p></div>
           <div><strong>5</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent.</p></div>
           <div><strong>6</strong><p><b>Partisvar kräver belägg.</b> När källorna är oklara, indirekta eller motsägelsefulla visas partiet som Vet ej i den frågan i stället för att få en gissad position.</p></div>
         </div>

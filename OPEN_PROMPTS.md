@@ -143,3 +143,9 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 26
 
 > Så funkar det-sidan behöver uppdateras för den stämmer inte helt längre. T.ex. står det fortfarande -100-+100 där det ska vara +-140. Kan du lägga till ett förtydligande på resultatsidan att "Vet ej"-svar för partier inte betyder att partiet är osäkra, utan att jag inte kunnat hitta källor till partiets stångpunkt. Avsluta med Open-prompt uppdatering och commit.
+
+## Prompt 27
+
+> Vänta lite... Om varje svar bara get +-1 som mest, och det är drygt 70 frågor, hur kan man hamna långt ut mot 140? Skalas svaren i efterhand?
+>
+> Men min avsikt är ju att om man är extrem, t.ex. mer auktoritär än SD, som ligger nära 100 på TAN, så ska man hamna utanför SD på GAL-TAN-skalan. Se till att om man svarar mer extremt än något parti åt något håll, att det faktiskt syns på resultatet.
