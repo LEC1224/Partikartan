@@ -1,7 +1,7 @@
 import type { AnswerValue, Answers, Coordinate, Party, Question, TopicId } from '../types'
 
 export const PRIORITY_MULTIPLIER = 1.75
-export const COORDINATE_SCALE = 140
+export const COORDINATE_SCALE = 100
 
 export function answerToScore(answer: number): number {
   return (answer - 3) / 2
@@ -39,10 +39,31 @@ export function calculateCoordinate(
 }
 
 export function calculatePartyCoordinate(party: Party, questions: Question[]): Coordinate {
-  const answers: Answers = Object.fromEntries(
-    party.responses.map((response) => [response.questionId, response.value]),
-  )
-  return calculateCoordinate(answers, questions)
+  const responsesByQuestion = new Map(party.responses.map((response) => [response.questionId, response.value]))
+  let xTotal = 0
+  let yTotal = 0
+  let xPossibleWeight = 0
+  let yPossibleWeight = 0
+  let answered = 0
+
+  for (const question of questions) {
+    xPossibleWeight += Math.abs(question.weights.x)
+    yPossibleWeight += Math.abs(question.weights.y)
+
+    const answer = responsesByQuestion.get(question.id) ?? null
+    if (answer == null) continue
+
+    const score = answerToScore(answer)
+    xTotal += score * question.weights.x
+    yTotal += score * question.weights.y
+    answered += 1
+  }
+
+  return {
+    x: xPossibleWeight ? (xTotal / xPossibleWeight) * COORDINATE_SCALE : 0,
+    y: yPossibleWeight ? (yTotal / yPossibleWeight) * COORDINATE_SCALE : 0,
+    answered,
+  }
 }
 
 export interface PartyMatch {

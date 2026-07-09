@@ -149,3 +149,25 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 > Vänta lite... Om varje svar bara get +-1 som mest, och det är drygt 70 frågor, hur kan man hamna långt ut mot 140? Skalas svaren i efterhand?
 >
 > Men min avsikt är ju att om man är extrem, t.ex. mer auktoritär än SD, som ligger nära 100 på TAN, så ska man hamna utanför SD på GAL-TAN-skalan. Se till att om man svarar mer extremt än något parti åt något håll, att det faktiskt syns på resultatet.
+
+## Prompt 28
+
+> Men om SD hamnar långt ut ändå så är det ju skit samma. Poängen var ju att låta användare och framtida småpartier ha utrymme att röra sig utanför riksdagens kluster.
+>
+> Okej, vi gör såhär. Behåll alla frågor och alla partiers svar på frågor, men ta bort partiernas resulterande plats på koordinatsystemet.
+>
+> Sen återskalar du axlarna till +-100 eftersom det är ett mer jämnt tal, och då är man 100% höger om man hamnar längst åt höger på tavlan så att säga.
+>
+> Därefter återskapar du partiernas positioner på tavlan genom att simulera att varje parti kör kompassen genom att poängsätta deras svar mot frågorna, och sist skala/vikta till korrekt slutvärde med hänsyn till vet ej och slutpoäng.
+>
+> Bygg och starta om servern när du är klar och meddela mig.
+
+## Prompt 29
+
+> Försök ersätta frågor där mer än 6 partier står på "Vet ej" med frågor som de har lite mer insikt på. Några av dessa frågor borde också vara frågor där samtliga partier hamnar på en sida, såpass att användaren kan svara på frågor utanför sveriges riksdag. Ett exempel på en sån fråga som du redan har med är avkriminaliseringen och legaliseringen av cannabis.
+>
+> Sen får du ju därefter göra om partisvaren och deras simulering till att hamna rätt på tavlan
+
+## Prompt 30
+
+> Kan du omordna frågorna i testet så att alla 51 sakfrågor kommer först och sen kommer värderingsfrågorna?

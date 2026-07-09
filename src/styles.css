@@ -465,7 +465,6 @@ main { flex: 1; }
 .party-row small { color: var(--muted); font-size: .64rem; margin-top: 3px; }
 .match-value { text-align: right; }
 .match-value strong { font-size: .85rem; }
-.party-coordinate { display: none; }
 .result-details { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; }
 .result-details h3 { font: 500 1.25rem Georgia, serif; margin: 6px 0 11px; }
 .priority-tags { display: flex; gap: 7px; flex-wrap: wrap; }

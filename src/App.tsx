@@ -634,6 +634,12 @@ function ResultPage({
             <div><span className="overline">Partijämförelse</span><h2>Svenska partier</h2></div>
             <span className={`status-badge ${allUnscored ? 'pending' : ''}`}>{allUnscored ? 'Inväntar data' : 'Källbelagd'}</span>
           </div>
+          {!allUnscored && (
+            <div className="data-notice">
+              <Info size={18} />
+              <p><strong>Partiernas markörer är simulerade kompassresultat.</strong> Vet ej-svar flyttar inte ett parti i någon riktning på kartan, så svagare källunderlag ger en mer försiktig position.</p>
+            </div>
+          )}
           {allUnscored && (
             <div className="data-notice">
               <Info size={18} />
@@ -641,8 +647,8 @@ function ResultPage({
             </div>
           )}
           <div className="party-list">
-            {partyResults.map(({ party, coordinate: partyCoordinate, match }) => (
-              <PartyRow key={party.id} party={party} coordinate={partyCoordinate} match={match} />
+            {partyResults.map(({ party, match }) => (
+              <PartyRow key={party.id} party={party} match={match} />
             ))}
           </div>
         </aside>
@@ -667,14 +673,13 @@ function ResultPage({
   )
 }
 
-function PartyRow({ party, coordinate, match }: { party: Party; coordinate: Coordinate; match: PartyMatch }) {
+function PartyRow({ party, match }: { party: Party; match: PartyMatch }) {
   const sourced = countKnownPartyResponses(party)
   return (
     <div className="party-row">
       <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
       <div><strong>{party.name}</strong><small>{sourced} källbelagda, {party.responses.length - sourced} Vet ej</small></div>
       <div className="match-value"><strong>{sourced ? `${match.percent}%` : '—'}</strong><small>{match.comparedQuestions ? `${match.exactMatches} exakta, ${match.nearMatches} nära` : 'inga svar'}</small></div>
-      <span className="party-coordinate">{Math.round(coordinate.x)}, {Math.round(coordinate.y)}</span>
     </div>
   )
 }
@@ -814,10 +819,10 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
         <div className="method-list">
           <div><strong>1</strong><p><b>Varje påstående har en fördefinierad riktning.</b> Ekonomiska frågor påverkar vänster–höger. Frågor om frihet, tradition och auktoritet påverkar GAL–TAN.</p></div>
           <div><strong>2</strong><p><b>Svarsskalan omvandlas symmetriskt.</b> 1–5 blir −1, −0,5, 0, +0,5 och +1. Omvända formuleringar minskar risken för ja-sägareffekt.</p></div>
-          <div><strong>3</strong><p><b>“Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
-          <div><strong>4</strong><p><b>Koordinaterna skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: dina och partiernas svar räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala. Om dina svar är mer konsekventa åt ett håll än partiernas källbelagda svar hamnar du därför utanför dem på kartan.</p></div>
-          <div><strong>5</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent.</p></div>
-          <div><strong>6</strong><p><b>Partisvar kräver belägg.</b> När källorna är oklara, indirekta eller motsägelsefulla visas partiet som Vet ej i den frågan i stället för att få en gissad position.</p></div>
+          <div><strong>3</strong><p><b>Dina “Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
+          <div><strong>4</strong><p><b>Dina koordinater skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: svaren räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala.</p></div>
+          <div><strong>5</strong><p><b>Partiernas kartposition simuleras från deras frågesvar.</b> Källbelagda partisvar poängsätts med samma axlar. Vet ej-svar flyttar inte partiet i någon riktning, men ingår i slutskalan så positionen blir mer försiktig när underlaget är glesare.</p></div>
+          <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent. Oklara partisvar visas som Vet ej i stället för att gissas.</p></div>
         </div>
         <div className="coding-rules">
           <h3>Regler för partiprogram</h3>

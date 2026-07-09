@@ -89,6 +89,25 @@ describe('party scoring', () => {
     ).toEqual({ x: 0, y: 0, answered: 0 })
   })
 
+  it('dampens party chart positions when sourced answers are missing', () => {
+    expect(
+      calculatePartyCoordinate(
+        {
+          id: 'test',
+          shortName: 'T',
+          name: 'Testpartiet',
+          color: '#000',
+          responses: [
+            { questionId: 'q1', value: 5, confidence: 'high', evidence: [] },
+            { questionId: 'q2', value: null, confidence: 'unknown', evidence: [] },
+            { questionId: 'q3', value: null, confidence: 'unknown', evidence: [] },
+          ],
+        },
+        sampleQuestions,
+      ),
+    ).toEqual({ x: COORDINATE_SCALE / 2, y: 0, answered: 1 })
+  })
+
   it('scores adjacent party answers as a strong but partial match', () => {
     expect(answerSimilarity(4, 5)).toBe(0.75)
     expect(answerSimilarity(1, 5)).toBe(0)

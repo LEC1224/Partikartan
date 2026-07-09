@@ -23,7 +23,10 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ### Vänsterpartiet
 
 - A-kassa: https://www.vansterpartiet.se/var-politik/politik-a-o/a-kassa/
+- Gårdsförsäljning: https://www.vansterpartiet.se/var-politik/politik-a-o/gardsforsaljning/
 - Motionssvar allmänpolitik 2026: https://www.vansterpartiet.se/wp-content/uploads/2026/02/K26-A-motionssvar.pdf
+- Nato: https://www.vansterpartiet.se/var-politik/politik-a-o/nato/
+- Religiösa friskolor: https://www.vansterpartiet.se/var-politik/politik-a-o/religiosa-friskolor/
 - Skattepolitik: https://www.vansterpartiet.se/var-politik/politik-a-o/skattepolitik/
 - Flyktingpolitik: https://www.vansterpartiet.se/var-politik/politik-a-o/flyktingpolitik/
 - Kärnkraft: https://www.vansterpartiet.se/var-politik/politik-a-o/karnkraft/
@@ -32,19 +35,25 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ### Socialdemokraterna
 
 - A-kassa: https://www.socialdemokraterna.se/var-politik/a-till-o/a-kassa
+- Alkoholmonopolet: https://www.socialdemokraterna.se/nyheter/nyheter/2023-04-11-s-minimikrav-for-att-skydda-det-svenska-alkoholmonopolet
 - Migration och flyktingpolitik: https://www.socialdemokraterna.se/var-politik/a-till-o/migration-och-flyktingpolitik
 - Fastighetsskatt: https://www.socialdemokraterna.se/var-politik/a-till-o/skatter/fakta-om-socialdemokraternas-politik-kring-fastighetsskatt
 - Kollektivavtal: https://www.socialdemokraterna.se/var-politik/a-till-o/kollektivavtal
+- Nato: https://www.socialdemokraterna.se/var-politik/a-till-o/nato
 - Politiska riktlinjer 2025: https://www.socialdemokraterna.se/download/18.66b0e5c8197581879cad79/1749654527283/A-E%20Politiska%20riktlinjer%202025_beslutat.pdf
+- Religiösa skolor: https://www.socialdemokraterna.se/var-politik/a-till-o/religiosa-skolor
 - Kärnkraft: https://www.socialdemokraterna.se/var-politik/a-till-o/karnkraft
 - Det gjorde Socialdemokraterna 2014-2022: https://www.socialdemokraterna.se/var-politik/det-gjorde-socialdemokraterna-2014-2022
 - Narkotika: https://www.socialdemokraterna.se/var-politik/a-till-o/narkotika
 
 ### Miljöpartiet
 
+- Gårdsförsäljning av alkohol: https://www.mp.se/skane/just-nu/svar-pa-motion-om-gardsforsaljning/
 - Valmanifest till EU-valet 2024: https://www.mp.se/valmanifest-till-eu-valet-2024/
 - Politiskt handlingsprogram 2026-2030: https://www.mp.se/wp-content/uploads/2026/04/politiskt-handlingsprogram-2026-2030.pdf
 - Demokrati och mänskliga rättigheter: https://www.mp.se/politik/demokrati-och-mr/
+- Motion om Sveriges medlemskap i Nato: https://www.mp.se/politik/motion-om-sveriges-medlemskap-i-nato/
+- Utbildningspolitiskt program: https://www.mp.se/wp-content/uploads/2024/05/utbildningspolitiskt-program.pdf
 - Kulturpolitik: https://www.mp.se/politik/kultur/
 - Migration och lika rätt: https://www.mp.se/politik/migration-och-lika-ratt/
 - Bostäder: https://www.mp.se/politik/bostader/
@@ -52,10 +61,14 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 
 ### Centerpartiet
 
+- Alkoholpolitik: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/vard-och-omsorg/alkoholpolitik
 - A-kassa och omställningsförsäkring: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/jobb/a-kassa-och-omstallningsforsakring
+- Anhöriginvandring: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/integration-och-migration/anhoriginvandring
 - Bostadsskatter: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/bostader/bostadsskatter
 - Friskolor: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/utbildning/friskolor
+- Internationella försvarssamarbeten: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/forsvar/internationella-forsvarssamarbeten
 - Kriget i Ukraina: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/utrikes--och-bistandsfragor/kriget-i-ukraina
+- Kommitté 5 utbildning: https://www.centerpartiet.se/download/18.3f55a43d19b2bd455d0ce085/1769611278324/05_Motionsbeslut%202017_Utbildning_Kommitte%205.pdf
 - Vårbudget 2025: https://www.centerpartiet.se/download/18.35b6d81319c986cebc41e926/1772704814456/Va%CC%8Arbudget%20Centerpartiet%202025.pdf
 - Media och public service: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/kultur-media-och-idrott/media-och-public-service
 - Demokrati: https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/demokrati
@@ -63,7 +76,11 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ### Liberalerna
 
 - A-kassa: https://www.liberalerna.se/politik/a-kassa
+- Alkohol: https://www.liberalerna.se/politik/alkohol
 - Bostad: https://www.liberalerna.se/politik/bostad
+- Försörjningskrav vid anhöriginvandring: https://www.liberalerna.se/nyheter/tydligare-arbetslinje-okar-integrationen
+- Nato: https://www.liberalerna.se/politik/nato
+- Religiösa friskolor: https://www.liberalerna.se/politik/religiosa-friskolor
 - Skolvalet: https://www.liberalerna.se/politik/skolvalet
 - RUT- och ROT-avdrag: https://www.liberalerna.se/politik/rut-och-rot-avdrag
 - Vinstintresset i skolan: https://www.liberalerna.se/politik/vinstintresset-i-skolan
@@ -75,11 +92,14 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 
 - A-kassa: https://moderaterna.se/var-politik/a-kassa-2/
 - Bostadspolitik: https://moderaterna.se/var-politik/bostadspolitik/
+- Integrationskommissionens slutrapport: https://moderaterna.se/app/uploads/2021/04/Integrationskommissionens-slutrapport.pdf
 - Räntor och boendekostnader: https://moderaterna.se/var-politik/rantor/
 - Arbetsstämma 2021: https://moderaterna.se/app/uploads/2021/09/Stammohandlingar-Arbetsstamman-2021.pdf
 - Jobb och arbetsmarknad: https://moderaterna.se/var-politik/jobb-och-arbetsmarknad/
 - Hälso- och sjukvård: https://moderaterna.se/var-politik/halso-och-sjukvard-2/
 - Klimat, miljö och energi: https://moderaterna.se/var-politik/klimat-miljo-och-energi/
+- Nato och försvar: https://moderaterna.se/var-politik/forsvar-och-krisberedskap/
+- Systembolaget: https://moderaterna.se/nyhet/vallofte-18-aringar-ska-fa-handla-pa-systembolaget/
 - Trafik och infrastruktur: https://moderaterna.se/var-politik/trafik-och-infrastruktur/
 - Skola och utbildning: https://moderaterna.se/var-politik/skola-och-utbildning/
 - Lag och ordning: https://moderaterna.se/var-politik/lag-och-ordning-2/
@@ -96,8 +116,11 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 
 ### Kristdemokraterna
 
+- ANDTS: https://kristdemokraterna.se/var-politik/politik-a-till-o/andts
 - Abort: https://kristdemokraterna.se/var-politik/politik-a-till-o/abort
 - Friskolor: https://kristdemokraterna.se/var-politik/politik-a-till-o/friskolor
+- Försvar: https://kristdemokraterna.se/var-politik/politikomraden/forsvar
+- Konfessionella friskolor: https://wp.kristdemokraterna.se/varnamo/2017/05/13/konfessionella-friskolor/
 - Public service: https://kristdemokraterna.se/var-politik/politik-a-till-o/public-service
 - Förmögenhetsskatt: https://kristdemokraterna.se/var-politik/politik-a-till-o/formogenhetsskatt
 - Inkomstskatter: https://kristdemokraterna.se/var-politik/politik-a-till-o/inkomstskatter
@@ -124,6 +147,8 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 - A-kassa: https://www.sd.se/a-till-o/a-kassa/
 - Friskolor: https://www.sd.se/a-till-o/friskolor/
 - Könstillhörighetslagen: https://www.sd.se/a-till-o/konstillhorighetslagen/
+- Nato: https://www.sd.se/a-till-o/nato/
+- Religiösa friskolor och alkoholpolitik i motionshandlingar 2025: https://event.sd.se/wp-content/uploads/2025/09/politiska-motioner-am-lo_final.pdf?251121090338=
 - Sjukvård: https://www.sd.se/a-till-o/sjukvard/
 - Ett paradigmskifte för Sverige: https://www.sd.se/astorp/ett-paradigmskifte-for-sverige/
 - Medborgarskap: https://www.sd.se/astorp/medborgarskap/
