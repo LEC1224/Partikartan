@@ -6,7 +6,7 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 
 ## Funktioner
 
-- 41 sakfrågor och 23 värderingsfrågor.
+- 51 sakfrågor och 23 värderingsfrågor.
 - Svarsskala 1-5 plus `Vet ej`.
 - Resultat på två axlar: ekonomisk vänster-höger och GAL-TAN.
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.

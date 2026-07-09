@@ -31,6 +31,11 @@ export interface Question {
   weights: AxisWeights
 }
 
+export interface QuestionArguments {
+  for: string
+  against: string
+}
+
 export type AnswerValue = 1 | 2 | 3 | 4 | 5 | null
 export type Answers = Record<string, AnswerValue>
 

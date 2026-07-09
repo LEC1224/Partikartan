@@ -23,12 +23,14 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ### Vänsterpartiet
 
 - Kärnkraft: https://www.vansterpartiet.se/var-politik/politik-a-o/karnkraft/
+- Dödshjälp: https://www.vansterpartiet.se/var-politik/politik-a-o/dodshjalp/
 
 ### Socialdemokraterna
 
 - Politiska riktlinjer 2025: https://www.socialdemokraterna.se/download/18.66b0e5c8197581879cad79/1749654527283/A-E%20Politiska%20riktlinjer%202025_beslutat.pdf
 - Kärnkraft: https://www.socialdemokraterna.se/var-politik/a-till-o/karnkraft
 - Det gjorde Socialdemokraterna 2014-2022: https://www.socialdemokraterna.se/var-politik/det-gjorde-socialdemokraterna-2014-2022
+- Narkotika: https://www.socialdemokraterna.se/var-politik/a-till-o/narkotika
 
 ### Miljöpartiet
 
@@ -47,6 +49,8 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 ### Liberalerna
 
 - Trygghet och studiero: https://www.liberalerna.se/politik/trygghet-och-studiero
+- Narkotika: https://www.liberalerna.se/politik/narkotika
+- Frivillig dödshjälp: https://www.liberalerna.se/politik/frivillig-dodshjalp
 
 ### Moderaterna
 
@@ -73,6 +77,8 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 - Samhällsbyggarkommittérapport: https://kristdemokraterna.se/download/18.226014ea19a154a9e25c81/1762937139823/Samha%CC%88llsbyggarkommitterapport%20251022.pdf
 - Sänkt skatt på bensin och diesel: https://kristdemokraterna.se/arkiv/nyheter/2023/2023-09-27-en-stottande-budget-i-en-tuff-tid
 - Statligt ansvar för sjukvården: https://wp.kristdemokraterna.se/vg/jamlik-sjukvard-omojligt-utan-statligt-ansvar/
+- Narkotika: https://kristdemokraterna.se/var-politik/politik-a-till-o/narkotika
+- Dödshjälp: https://kristdemokraterna.se/var-politik/politik-a-till-o/dodshjalp
 
 ### Sverigedemokraterna
 
@@ -86,6 +92,7 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 - Motionshandlingar 2025: https://event.sd.se/wp-content/uploads/2025/09/politiska-motioner-am-lo_final.pdf?251121090338=
 - Valplattform 2022: https://www.sd.se/wp-content/uploads/2022/07/sverigedemokraternas-valplattform-2022-april.pdf
 - Vårbudget 2022: https://www.sd.se/wp-content/uploads/2022/07/varbudget-2022-formgiven.pdf
+- Återkallelse av medborgarskap: https://www.sd.se/a-till-o/aterkallelse-av-medborgarskap/
 
 ## Åtkomstdatum
 

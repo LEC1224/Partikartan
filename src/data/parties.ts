@@ -29,6 +29,10 @@ const sources = {
     'https://www.vansterpartiet.se/var-politik/politik-a-o/karnkraft/',
     'Vänsterpartiet om kärnkraft',
   ),
+  vEuthanasia: source(
+    'https://www.vansterpartiet.se/var-politik/politik-a-o/dodshjalp/',
+    'Vänsterpartiet om dödshjälp',
+  ),
   sProgram: source(
     'https://www.socialdemokraterna.se/download/18.66b0e5c8197581879ca15ce/1749742402637/Socialdemokraternas%20partiprogram%202025.pdf',
     'Socialdemokraternas partiprogram 2025',
@@ -44,6 +48,10 @@ const sources = {
   sRecord: source(
     'https://www.socialdemokraterna.se/var-politik/det-gjorde-socialdemokraterna-2014-2022',
     'Det gjorde Socialdemokraterna 2014-2022',
+  ),
+  sNarcotics: source(
+    'https://www.socialdemokraterna.se/var-politik/a-till-o/narkotika',
+    'Socialdemokraterna om narkotika',
   ),
   mpProgram: source(
     'https://www.mp.se/wp-content/uploads/2025/12/miljopartiets-partiprogram-2025.pdf',
@@ -96,6 +104,14 @@ const sources = {
   lStudyPeace: source(
     'https://www.liberalerna.se/politik/trygghet-och-studiero',
     'Liberalerna om trygghet och studiero',
+  ),
+  lNarcotics: source(
+    'https://www.liberalerna.se/politik/narkotika',
+    'Liberalerna om narkotika',
+  ),
+  lEuthanasia: source(
+    'https://www.liberalerna.se/politik/frivillig-dodshjalp',
+    'Liberalerna om frivillig dödshjälp',
   ),
   mIdea: source(
     'https://moderaterna.se/app/uploads/2022/01/Ideprogram_digitalt_9dec.pdf',
@@ -185,6 +201,14 @@ const sources = {
     'https://wp.kristdemokraterna.se/vg/jamlik-sjukvard-omojligt-utan-statligt-ansvar/',
     'Kristdemokraterna om statligt ansvar för sjukvården',
   ),
+  kdNarcotics: source(
+    'https://kristdemokraterna.se/var-politik/politik-a-till-o/narkotika',
+    'Kristdemokraterna om narkotika',
+  ),
+  kdEuthanasia: source(
+    'https://kristdemokraterna.se/var-politik/politik-a-till-o/dodshjalp',
+    'Kristdemokraterna om dödshjälp',
+  ),
   sdProgram: source(
     'https://www.sd.se/wp-content/uploads/2024/01/sverigedemokraternas-principprogram-2023.pdf',
     'Sverigedemokraternas principprogram 2023',
@@ -229,6 +253,10 @@ const sources = {
     'https://www.sd.se/wp-content/uploads/2022/07/varbudget-2022-formgiven.pdf',
     'Sverigedemokraternas vårbudget 2022',
   ),
+  sdRevokedCitizenship: source(
+    'https://www.sd.se/a-till-o/aterkallelse-av-medborgarskap/',
+    'Sverigedemokraterna om återkallelse av medborgarskap',
+  ),
 }
 
 export const parties: Party[] = [
@@ -251,6 +279,7 @@ export const parties: Party[] = [
       response('s37', 5, 'high', sources.vProgram),
       response('s38', 5, 'high', sources.vProgram),
       response('s39', 1, 'high', sources.vProgram),
+      response('s48', 4, 'medium', sources.vEuthanasia),
       response('v01', 5, 'high', sources.vProgram),
       response('v03', 5, 'high', sources.vProgram),
       response('v04', 1, 'high', sources.vProgram),
@@ -282,6 +311,7 @@ export const parties: Party[] = [
       response('s38', 4, 'medium', sources.sProgram),
       response('s39', 1, 'high', sources.sProgram),
       response('s41', 4, 'medium', sources.sRecord),
+      response('s46', 1, 'high', sources.sNarcotics),
       response('v01', 5, 'high', sources.sProgram),
       response('v03', 5, 'high', sources.sProgram),
       response('v04', 1, 'high', sources.sProgram),
@@ -381,6 +411,8 @@ export const parties: Party[] = [
       response('s34', 5, 'high', sources.lManifest),
       response('s39', 1, 'high', sources.lManifest),
       response('s41', 5, 'high', sources.lStudyPeace),
+      response('s46', 1, 'high', sources.lNarcotics),
+      response('s48', 4, 'high', sources.lEuthanasia),
       response('v01', 2, 'medium', sources.lManifest),
       response('v02', 5, 'high', sources.lManifest),
       response('v04', 4, 'medium', sources.lManifest),
@@ -449,6 +481,8 @@ export const parties: Party[] = [
       response('s36', 4, 'medium', sources.kdFuelBudget),
       response('s39', 2, 'medium', sources.kdProgram),
       response('s40', 5, 'high', sources.kdStateHealthcare),
+      response('s46', 1, 'high', sources.kdNarcotics),
+      response('s48', 1, 'high', sources.kdEuthanasia),
       response('v02', 4, 'high', sources.kdRut),
       response('v03', 2, 'high', sources.kdProgram),
       response('v04', 4, 'medium', sources.kdProgram),
@@ -483,6 +517,7 @@ export const parties: Party[] = [
       response('s34', 5, 'high', sources.sdSwedenOnTrack),
       response('s36', 5, 'high', sources.sdSwedenOnTrack),
       response('s39', 5, 'high', sources.sdPublicService),
+      response('s49', 5, 'high', sources.sdRevokedCitizenship),
       response('v03', 2, 'medium', sources.sdProgram),
       response('v11', 2, 'medium', sources.sdProgram),
       response('v12', 5, 'high', sources.sdCameras),

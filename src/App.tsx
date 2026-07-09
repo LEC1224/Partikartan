@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { parties } from './data/parties'
 import { partyCodingRules } from './data/partyCoding'
+import { questionArguments } from './data/questionArguments'
 import { issueQuestions, questions, valueQuestions } from './data/questions'
 import { topics } from './data/topics'
 import { calculateCoordinate, calculatePartyCoordinate, matchPercentage } from './lib/scoring'
@@ -37,6 +38,7 @@ type FeedbackReason =
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
+const CHART_AXIS_LIMIT = 140
 
 const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
   { value: 1, short: '1', label: 'Håller inte alls med' },
@@ -468,6 +470,9 @@ function QuizPage({
   const sectionQuestions = question.kind === 'sakfraga' ? issueQuestions : valueQuestions
   const sectionLength = sectionQuestions.length
   const sectionIndex = sectionQuestions.findIndex((item) => item.id === question.id) + 1
+  const argument = questionArguments[question.id]
+  const [openArgumentId, setOpenArgumentId] = useState<string | null>(null)
+  const argumentsOpen = openArgumentId === question.id
 
   return (
     <section className="quiz-page">
@@ -479,12 +484,36 @@ function QuizPage({
         <div className="quiz-progress"><span style={{ width: `${((index + 1) / questions.length) * 100}%` }} /></div>
       </div>
       <div className="question-wrap">
-        <div className="question-meta">
-          <span>{question.kind === 'sakfraga' ? 'Sakfråga' : 'Värdering'} {sectionIndex}/{sectionLength}</span>
-          <span className="topic-pill">{topic.label}</span>
+        <div className="question-prompt">
+          <div className="question-meta">
+            <span>{question.kind === 'sakfraga' ? 'Sakfråga' : 'Värdering'} {sectionIndex}/{sectionLength}</span>
+            <span className="topic-pill">{topic.label}</span>
+          </div>
+          <h1>{question.statement}</h1>
+          <p className="question-context"><Info size={16} /> {question.context}</p>
+          <button
+            className={`argument-toggle ${argumentsOpen ? 'active' : ''}`}
+            onClick={() => setOpenArgumentId((id) => (id === question.id ? null : question.id))}
+            aria-expanded={argumentsOpen}
+            aria-controls={`question-arguments-${question.id}`}
+          >
+            <MessageSquare size={16} />
+            Argument för och emot
+            <ChevronRight className="argument-chevron" size={15} />
+          </button>
+          {argumentsOpen && (
+            <div className="argument-panel" id={`question-arguments-${question.id}`}>
+              <div>
+                <strong>För</strong>
+                <p>{argument.for}</p>
+              </div>
+              <div>
+                <strong>Emot</strong>
+                <p>{argument.against}</p>
+              </div>
+            </div>
+          )}
         </div>
-        <h1>{question.statement}</h1>
-        <p className="question-context"><Info size={16} /> {question.context}</p>
         <div className="answer-scale" role="group" aria-label="Välj hur väl påståendet stämmer">
           <div className="scale-end-labels"><span>Håller inte alls med</span><span>Håller helt med</span></div>
           <div className="answer-row">
@@ -638,8 +667,9 @@ function PoliticalChart({
   user: Coordinate
   partyResults: { party: Party; coordinate: Coordinate; match: number }[]
 }) {
-  const toX = (x: number) => 8 + ((x + 100) / 200) * 84
-  const toY = (y: number) => 8 + ((100 - y) / 200) * 84
+  const clampToChart = (value: number) => Math.max(-CHART_AXIS_LIMIT, Math.min(CHART_AXIS_LIMIT, value))
+  const toX = (x: number) => 8 + ((clampToChart(x) + CHART_AXIS_LIMIT) / (CHART_AXIS_LIMIT * 2)) * 84
+  const toY = (y: number) => 8 + ((CHART_AXIS_LIMIT - clampToChart(y)) / (CHART_AXIS_LIMIT * 2)) * 84
   const unscored = partyResults.filter(({ party }) => party.responses.length === 0)
   const scored = partyResults.filter(({ party }) => party.responses.length > 0)
 

@@ -93,3 +93,21 @@ Kontext: prompten kom tillsammans med lokala PDF-filer för Vänsterpartiet, Soc
 ## Prompt 16
 
 > Uppdatera prompt-md, commita och pusha detta
+
+## Prompt 17
+
+> Kan du lägga till en funktion för att visa "argument för och emot" vid varje fråga, samt göra frågetexten lite mindre så att den inte tar upp så många rader på t.ex. mobilskärnar?
+
+## Prompt 18
+
+> Ytterligare justeringar: Kan du göra så att 1-5-knapparna alltid är på samma höjd, även om infotexten eller frågetexten tillfälligt är flera eller färre rader, så man kan hålla kvar musen/fingret på samma ställe mellan frågorna?
+
+## Prompt 19
+
+Kontext: prompten innehöll en bifogad screenshot av resultatkartan där flera partier låg nära ytterkanterna.
+
+> Just nu är koordinatsystemet bara så expansivt att V, MP och SD hamnar i ytterkanterna. Vissa användare kanske kommer vara mer vänster än V eller mer TAN än SD, t.ex. Jag tycker att du ska lägga till 10 frågor som är mer radikala, för att tillåta användare att hamna utanför det svenska riksdagsspekturmet, och dessutom då "zooma ut" resultatkartan. Det lämnar också utrymme för att lägga till extrema småpartier i framtiden.
+
+## Prompt 20
+
+> Uppdatera Prompts, pusha och starta servern
