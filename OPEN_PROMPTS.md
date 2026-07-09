@@ -111,3 +111,15 @@ Kontext: prompten innehöll en bifogad screenshot av resultatkartan där flera p
 ## Prompt 20
 
 > Uppdatera Prompts, pusha och starta servern
+
+## Prompt 21
+
+Kontext: prompten innehöll en bifogad screenshot där argumentpanelen visade "För" till vänster nära "Håller inte alls med" och "Emot" till höger nära "Håller helt med".
+
+> Nu står argument för precis intill "Håller inte alls med" och argument emot precis intill "Håller helt med". Vore det inte rimligare att de var i linje med knapparna de representerar, så att säga?
+
+## Prompt 22
+
+Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen där rubriken "Drift och ansvar" låg under ikonen i stället för bredvid den.
+
+> Borde inte drift och ansvar hamna bredvid ikonen så som  nedre gör?

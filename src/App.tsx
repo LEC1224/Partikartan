@@ -504,12 +504,12 @@ function QuizPage({
           {argumentsOpen && (
             <div className="argument-panel" id={`question-arguments-${question.id}`}>
               <div>
-                <strong>För</strong>
-                <p>{argument.for}</p>
+                <strong>Emot påståendet</strong>
+                <p>{argument.against}</p>
               </div>
               <div>
-                <strong>Emot</strong>
-                <p>{argument.against}</p>
+                <strong>För påståendet</strong>
+                <p>{argument.for}</p>
               </div>
             </div>
           )}
