@@ -183,3 +183,17 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 32
 
 > Uppdatera open prompts, commita och starta appen i developer läge!
+
+## Prompt 33
+
+> Den nuvarande kompassen innehåller 74 frågor, vilket ger en god helhetsbild av ens politiska läggning, men det kan vara jobbigt att svara på för stressade väljare.
+>
+> Implementera möjligheten att välja en snabbvariant av testet när man påbörjar det. Denna snabbvarianten ska inkludera enbart en bestämd delmängd av frågorna. Förslagsvis 25 stycken. När du sållar frågor, ska du prioritera att ta med frågorna som alla eller nästan alla partier har svarat på i sitt svarsunderlag, eftersom dessa frågor får anses vara extra viktiga för svensk politik och säkert även pivotala vattenbrytare i svensk politik som kan ge en effektivare bild av användarens partisympatier.
+>
+> Det är viktigt att vi även i det korta testet hamnar nära origo om vi väljer bara ettor eller bara femmor för att bevara frågornas samlade neutralitet. Du ska inte omformulera några frågor, utan revidera ditt urval eller lägga till extra frågor (det behöver inte vara exakt 25 frågor) för att väga upp till hyfsad balans.
+>
+> Avsluta med att starta om dev-servern och commita
+
+## Prompt 34
+
+> Grymt! Uppdatera open prompts, commita och pusha!
