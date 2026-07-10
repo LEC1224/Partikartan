@@ -371,7 +371,7 @@ function AboutDialog({
           <p className="eyebrow"><span /> Om Partikartan</p>
           <h2 id="about-title">Vem driver sidan?</h2>
           <p>
-            Sidan är helt oberoende, reklamfri och icke-vinstdrivande. Den är inte knuten till något parti, företag eller kampanj, och den har inget ekonomiskt incitament att styra användare mot ett visst resultat.
+            Sidan är helt oberoende och icke-vinstdrivande. Den är inte knuten till något parti, företag eller kampanj, och den har inget ekonomiskt incitament att styra användare mot ett visst resultat.
           </p>
           <p>
             Jag som driver Partikartan heter Carl Månsson och är mjukvaruutvecklare från Göteborg. Jag byggde sidan för att jag saknade en valkompass som ger partirelativa svar för både vänster-höger och GAL-TAN, känns saklig, responsiv och möjlig att granska.
@@ -391,6 +391,16 @@ function AboutDialog({
           </p>
           <p>
             Dina svar, prioriterade ämnen och ditt resultat skickas inte till servern. Pågående svar sparas bara i webbläsarens lokala lagring så att du kan fortsätta testet senare; det enda som sparas av Partikartan är feedbackmeddelanden du själv skickar in.
+          </p>
+        </div>
+        <div className="about-card">
+          <span className="about-card-icon"><ShieldCheck size={20} /></span>
+          <h2>Ren upplevelse</h2>
+          <p>
+            Jag värdesätter en snabb och responsiv hemsida som fungerar lika bra i mobilen som på datorn och låter dig fokusera på frågorna.
+          </p>
+          <p>
+            Partikartan är helt cookie- och reklamfri, utan annonsnätverk eller reklamspårning.
           </p>
         </div>
         <div className="about-steps">
