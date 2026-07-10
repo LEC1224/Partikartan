@@ -201,3 +201,35 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 35
 
 > Snabbtest borde inte vara rekommenderat. Håll alla val användaren ska göra så neutrala som möjligt. När du är klar, uppdatera open prompts och gör en commit
+
+## Prompt 36
+
+> Commita de också. Workloggen eller vad det nu heter ska vara tom
+
+## Prompt 37
+
+> "Frågor, vikter, scoring och framtida partibelägg ska kunna granskas i repo:t." Det här är ju lite utdaterat eftersom vi nu har partibelägg. Uppdatera sådana peketesser!
+
+## Prompt 38
+
+> Har vi inkluderat information om att ingen personlig data lagras på servern förutom inskickade feedback svar? om inte, inkludera ett stycke om det på Om-sidan
+
+## Prompt 39
+
+> I avsnittet om vem som driver sidan borde vi nämna att jag är partimedlem i Liberalerna, som en side note för transparensens skull
+
+## Prompt 40
+
+> I listan över anledningar i Feedback, lägg till "Jag tror att ett partis svar på en fråga är inkorrekt.
+>
+> Modifiera även fälten beroende på vad man väljer. Väljer man till exempel det jag bad dig lägga till ska det finnas ett fält för "Vilken fråga gäller det" som är en dropdown av alla frågor, "Vilket parti gäller det" också en dropdown, sen ett textfält för förklaring av felet, ett textfält för källa och ett textfält för övriga anmärkningar.
+>
+> Du kommer säkert själv på lämpliga fält för andra feedback-ämnen!
+>
+> Om du kommer på fler lämpliga anledningar att lägga till så gör det!
+>
+> Sortera även Anledningarna i en rimlig ordning. Jag tycket till exempel att "Jag hittade bias i koden" känns som fel att ha först, eftersom det är så sällan folk kommer rapportera det jämfört med andra.
+
+## Prompt 41
+
+> Commita detta, och granska även andra commits, fixa till Open Prompts och pusha när heal arbetsträdet är fritt
