@@ -15,6 +15,7 @@ import {
   RefreshCw,
   ShieldCheck,
   Send,
+  User,
   UserRound,
   X,
 } from 'lucide-react'
@@ -250,13 +251,22 @@ function Header({
     <header className="site-header">
       <button className="brand" onClick={onLogo} aria-label="Till startsidan">
         <span className="brand-mark"><Compass size={20} strokeWidth={2.2} /></span>
-        <span>Partikartan</span>
+        <span className="brand-title">Partikartan</span>
       </button>
       <nav aria-label="Huvudmeny">
         <a className="nav-link" href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
         <button className="nav-link" onClick={onAbout}>Om sidan</button>
         <button className="nav-link" onClick={onMethod}>Så fungerar det</button>
         <button className="nav-link" onClick={onFeedback}>Feedback</button>
+        <button className="nav-icon-link" onClick={onAbout} aria-label="Öppna Om sidan" title="Om sidan">
+          <User size={17} />
+        </button>
+        <button className="nav-icon-link" onClick={onMethod} aria-label="Öppna Så fungerar det" title="Så fungerar det">
+          <CircleHelp size={17} />
+        </button>
+        <button className="nav-icon-link" onClick={onFeedback} aria-label="Öppna Feedback" title="Feedback">
+          <MessageSquare size={17} />
+        </button>
         {answeredCount > 0 && answeredCount < questionCount && (
           <button className="resume-link" onClick={onResume}>
             Fortsätt <span>{answeredCount}/{questionCount}</span>
@@ -719,7 +729,7 @@ function ResultPage({
           {!allUnscored && (
             <div className="data-notice">
               <Info size={18} />
-              <p><strong>Partiernas markörer är simulerade kompassresultat.</strong> Vet ej-svar flyttar inte ett parti i någon riktning på kartan, så svagare källunderlag ger en mer försiktig position.</p>
+              <p><strong>Partiernas markörer är simulerade kompassresultat.</strong> Vet ej-svar flyttar inte ett parti i någon riktning på kartan, så svagare källunderlag ger en mer försiktig position. Matchningsprocenten jämför bara frågor där både du och partiet har ett svar.</p>
             </div>
           )}
           {allUnscored && (

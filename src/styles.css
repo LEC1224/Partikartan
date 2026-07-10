@@ -82,6 +82,20 @@ main { flex: 1; }
   text-decoration: none;
 }
 .nav-link:hover { color: var(--green); }
+.nav-icon-link {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.55);
+  color: var(--green);
+  cursor: pointer;
+  padding: 0;
+}
+.nav-icon-link:hover { color: var(--coral); border-color: rgba(31, 87, 66, 0.25); }
 .resume-link { border: 1px solid var(--line); border-radius: 99px; background: rgba(255,255,255,0.45); }
 .resume-link span { color: var(--muted); margin-left: 5px; }
 
@@ -619,7 +633,9 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .site-header { height: 64px; padding-inline: 14px; }
   .brand { font-size: .87rem; }
   .brand-mark { width: 32px; height: 32px; }
+  .site-header nav { gap: 7px; }
   .nav-link { display: none; }
+  .nav-icon-link { display: inline-flex; flex: 0 0 auto; }
   .resume-link { font-size: .73rem; padding: 7px 9px; }
   .hero { padding-top: 58px; min-height: auto; }
   .hero h1 { font-size: 3.65rem; }
@@ -683,6 +699,11 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .footer-links { justify-content: center; }
 }
 
+@media (max-width: 420px) {
+  .brand-title { max-width: 102px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .resume-link { font-size: .69rem; padding: 7px 8px; }
+  .resume-link span { margin-left: 4px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
