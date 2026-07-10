@@ -9,13 +9,28 @@ const ROOT = resolve('.')
 const DIST_DIR = resolve(ROOT, 'dist')
 const FEEDBACK_DIR = resolve(ROOT, 'feedback-data')
 const MAX_BODY_BYTES = 16 * 1024
-const VALID_REASONS = new Set([
-  'Jag hittade bias i koden',
-  'Jag tror att mitt resultat är fel',
-  'Jag tror att ett partis position i koordinatsystemet är felaktigt',
-  'Jag saknar ett parti i sammanfattningen',
-  'Jag tycker att en fråga är vinklat formulerad',
-  'Annat',
+const feedbackConfig = JSON.parse(
+  await readFile(new URL('./src/data/feedbackConfig.json', import.meta.url), 'utf8'),
+)
+const feedbackReasonsById = new Map(feedbackConfig.reasons.map((reason) => [reason.id, reason]))
+const feedbackReasonsByLabel = new Map(feedbackConfig.reasons.map((reason) => [reason.label, reason]))
+const legacyReasonIds = new Map([
+  ['Jag tror att ett partis position i koordinatsystemet är felaktigt', 'party-position-incorrect'],
+])
+const partyIds = new Set(['v', 's', 'mp', 'c', 'l', 'm', 'kd', 'sd'])
+const topicIds = new Set([
+  'ekonomi',
+  'valfard',
+  'arbete',
+  'bostad',
+  'forsvar',
+  'energi',
+  'klimat',
+  'lagordning',
+  'migration',
+  'frihet',
+  'demokrati',
+  'euvarld',
 ])
 
 const mimeTypes = {
@@ -63,6 +78,52 @@ function sanitizeForFilename(value) {
     .slice(0, 46)
 }
 
+function isKnownQuestionId(value) {
+  const match = /^([sv])(\d{2})$/.exec(value)
+  if (!match) return false
+
+  const number = Number(match[2])
+  return match[1] === 's' ? number >= 1 && number <= 51 : number >= 1 && number <= 23
+}
+
+function validateFieldValue(field, value) {
+  if (field.kind === 'party' && !partyIds.has(value)) return false
+  if (field.kind === 'topic' && !topicIds.has(value)) return false
+  if (field.kind === 'question' && !isKnownQuestionId(value)) return false
+  if (field.kind === 'select' && !field.options?.some((option) => option.value === value)) return false
+  return true
+}
+
+function validateDetails(reason, rawDetails) {
+  if (!rawDetails || typeof rawDetails !== 'object' || Array.isArray(rawDetails)) {
+    throw new Error('Feedbackens fält saknas eller har fel format.')
+  }
+
+  return reason.fields.map((field) => {
+    const value = String(rawDetails[field.id] ?? '').trim()
+    const minLength = Number(field.minLength ?? 1)
+    const maxLength = Number(field.maxLength ?? 500)
+
+    if (field.required && value.length === 0) {
+      throw new Error(`Fyll i ”${field.label}”.`)
+    }
+
+    if (value && value.length < minLength) {
+      throw new Error(`Skriv minst ${minLength} tecken i ”${field.label}”.`)
+    }
+
+    if (value.length > maxLength) {
+      throw new Error(`”${field.label}” är för långt.`)
+    }
+
+    if (value && !validateFieldValue(field, value)) {
+      throw new Error(`Välj ett giltigt alternativ i ”${field.label}”.`)
+    }
+
+    return { label: field.label, value: value || 'Ej angivet' }
+  })
+}
+
 async function handleFeedback(request, response) {
   if (request.method !== 'POST') {
     sendJson(response, 405, { ok: false, error: 'Metoden stöds inte.' })
@@ -72,33 +133,48 @@ async function handleFeedback(request, response) {
   try {
     const body = await readBody(request)
     const parsed = JSON.parse(body)
-    const reason = String(parsed.reason ?? '')
-    const message = String(parsed.message ?? '').trim()
+    const reasonInput = String(parsed.reason ?? '')
     const page = String(parsed.page ?? '').slice(0, 500)
+    const legacyReasonId = legacyReasonIds.get(reasonInput)
+    const reason = feedbackReasonsById.get(reasonInput)
+      ?? feedbackReasonsByLabel.get(reasonInput)
+      ?? (legacyReasonId ? feedbackReasonsById.get(legacyReasonId) : undefined)
 
-    if (!VALID_REASONS.has(reason)) {
+    if (!reason) {
       sendJson(response, 400, { ok: false, error: 'Välj en giltig anledning.' })
       return
     }
 
-    if (message.length < 12) {
-      sendJson(response, 400, { ok: false, error: 'Skriv gärna minst 12 tecken så att feedbacken går att förstå.' })
-      return
+    let detailEntries
+    if (parsed.details) {
+      detailEntries = validateDetails(reason, parsed.details)
+    } else {
+      const legacyMessage = String(parsed.message ?? '').trim()
+      if (legacyMessage.length < 12) {
+        sendJson(response, 400, { ok: false, error: 'Skriv gärna minst 12 tecken så att feedbacken går att förstå.' })
+        return
+      }
+      detailEntries = [{ label: 'Meddelande', value: legacyMessage }]
     }
 
     await mkdir(FEEDBACK_DIR, { recursive: true })
     const receivedAt = new Date().toISOString()
-    const fileStem = `${receivedAt.replace(/[:.]/g, '-')}-${sanitizeForFilename(reason)}-${randomUUID().slice(0, 8)}`
+    const fileStem = `${receivedAt.replace(/[:.]/g, '-')}-${sanitizeForFilename(reason.label)}-${randomUUID().slice(0, 8)}`
     const filePath = join(FEEDBACK_DIR, `${fileStem}.txt`)
+    const detailLines = detailEntries.flatMap((entry) => [
+      `${entry.label}:`,
+      entry.value,
+      '',
+    ])
     const content = [
       'Partikartan feedback',
       `Received: ${receivedAt}`,
-      `Reason: ${reason}`,
+      `Reason: ${reason.label}`,
+      `Reason ID: ${reason.id}`,
       `Page: ${page || 'Ej angiven'}`,
       '',
-      'Message:',
-      message,
-      '',
+      'Details:',
+      ...detailLines,
     ].join('\n')
 
     await writeFile(filePath, content, 'utf8')

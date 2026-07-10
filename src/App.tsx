@@ -14,11 +14,11 @@ import {
   MessageSquare,
   RefreshCw,
   ShieldCheck,
-  Send,
   User,
   UserRound,
   X,
 } from 'lucide-react'
+import { FeedbackDialog } from './components/FeedbackDialog'
 import { parties } from './data/parties'
 import { partyCodingRules } from './data/partyCoding'
 import { questionArguments } from './data/questionArguments'
@@ -38,13 +38,6 @@ import type { PartyMatch } from './lib/scoring'
 type View = 'start' | 'quiz-mode' | 'priorities' | 'quiz' | 'result'
 type QuizMode = 'quick' | 'full'
 type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode }
-type FeedbackReason =
-  | 'Jag hittade bias i koden'
-  | 'Jag tror att mitt resultat är fel'
-  | 'Jag tror att ett partis position i koordinatsystemet är felaktigt'
-  | 'Jag saknar ett parti i sammanfattningen'
-  | 'Jag tycker att en fråga är vinklat formulerad'
-  | 'Annat'
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
@@ -58,15 +51,6 @@ const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
   { value: 4, short: '4', label: 'Håller mestadels med' },
   { value: 5, short: '5', label: 'Håller helt med' },
   { value: null, short: '?', label: 'Vet ej' },
-]
-
-const feedbackReasons: FeedbackReason[] = [
-  'Jag hittade bias i koden',
-  'Jag tror att mitt resultat är fel',
-  'Jag tror att ett partis position i koordinatsystemet är felaktigt',
-  'Jag saknar ett parti i sammanfattningen',
-  'Jag tycker att en fråga är vinklat formulerad',
-  'Annat',
 ]
 
 function markerTextColor(party: Party): string {
@@ -254,7 +238,6 @@ function Header({
         <span className="brand-title">Partikartan</span>
       </button>
       <nav aria-label="Huvudmeny">
-        <a className="nav-link" href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
         <button className="nav-link" onClick={onAbout}>Om sidan</button>
         <button className="nav-link" onClick={onMethod}>Så fungerar det</button>
         <button className="nav-link" onClick={onFeedback}>Feedback</button>
@@ -955,82 +938,6 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
         </div>
         <div className="method-caveat"><Info size={19} /><p>Ingen modell är helt värderingsfri: val av frågor och axlar påverkar resultatet. Därför ligger frågetexter, vikter och partibelägg öppet i projektets datafiler.</p></div>
         <button className="primary-button" onClick={onClose}>Jag förstår</button>
-      </section>
-    </div>
-  )
-}
-
-function FeedbackDialog({ onClose }: { onClose: () => void }) {
-  const [reason, setReason] = useState<FeedbackReason>(feedbackReasons[0])
-  const [message, setMessage] = useState('')
-  const [status, setStatus] = useState<{ kind: 'idle' | 'success' | 'error' | 'submitting'; text: string }>({
-    kind: 'idle',
-    text: '',
-  })
-
-  async function submitFeedback(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setStatus({ kind: 'submitting', text: 'Skickar feedback...' })
-
-    try {
-      const response = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          reason,
-          message,
-          page: window.location.href,
-        }),
-      })
-      const data = (await response.json()) as { ok?: boolean; error?: string }
-      if (!response.ok || !data.ok) throw new Error(data.error ?? 'Feedbacken kunde inte sparas.')
-
-      setMessage('')
-      setStatus({ kind: 'success', text: 'Tack. Feedbacken sparades som textfil.' })
-    } catch (error) {
-      setStatus({
-        kind: 'error',
-        text: error instanceof Error ? error.message : 'Feedbacken kunde inte skickas.',
-      })
-    }
-  }
-
-  return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <section className="modal feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedback-title">
-        <button className="modal-close" onClick={onClose} aria-label="Stäng"><X size={20} /></button>
-        <p className="eyebrow"><span /> Hjälp mig utforma tjänsten</p>
-        <h2 id="feedback-title">Skicka feedback</h2>
-        <form className="feedback-form" onSubmit={submitFeedback}>
-          <label htmlFor="feedback-reason">
-            Anledning
-            <select id="feedback-reason" value={reason} onChange={(event) => setReason(event.target.value as FeedbackReason)}>
-              {feedbackReasons.map((item) => <option key={item} value={item}>{item}</option>)}
-            </select>
-          </label>
-          <label htmlFor="feedback-message">
-            Utveckla
-            <textarea
-              id="feedback-message"
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              minLength={12}
-              maxLength={4000}
-              rows={7}
-              required
-              placeholder="Skriv din feedback här."
-            />
-          </label>
-          {status.kind !== 'idle' && (
-            <p className={`feedback-status ${status.kind}`} aria-live="polite">{status.text}</p>
-          )}
-          <div className="modal-actions">
-            <button className="secondary-button" type="button" onClick={onClose}>Stäng</button>
-            <button className="primary-button" type="submit" disabled={status.kind === 'submitting'}>
-              Skicka <Send size={16} />
-            </button>
-          </div>
-        </form>
       </section>
     </div>
   )

@@ -565,9 +565,12 @@ main { flex: 1; }
 .method-links a { display: inline-flex; align-items: center; gap: 7px; color: var(--green); font-size: .82rem; font-weight: 750; text-decoration: none; }
 .method-links a:hover { color: var(--coral); }
 
-.feedback-modal { width: min(640px, 100%); }
-.feedback-form { display: grid; gap: 18px; }
+.feedback-modal { width: min(760px, 100%); }
+.feedback-form { display: grid; gap: 16px; }
 .feedback-form label { display: grid; gap: 8px; color: var(--ink); font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.feedback-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-top: 2px; }
+.feedback-field.wide { grid-column: 1 / -1; }
+.feedback-form input,
 .feedback-form select,
 .feedback-form textarea {
   width: 100%;
@@ -577,11 +580,16 @@ main { flex: 1; }
   color: var(--ink);
   font: 500 .95rem/1.45 Inter, ui-sans-serif, system-ui, sans-serif;
   letter-spacing: 0;
+  text-transform: none;
 }
+.feedback-form input,
 .feedback-form select { min-height: 46px; padding: 0 12px; }
-.feedback-form textarea { resize: vertical; min-height: 150px; padding: 12px; }
+.feedback-form textarea { resize: vertical; min-height: 116px; padding: 12px; }
+.feedback-form input:focus,
 .feedback-form select:focus,
 .feedback-form textarea:focus { outline: 3px solid rgba(237, 113, 79, 0.28); border-color: var(--coral); }
+.feedback-required { color: var(--coral); }
+.feedback-privacy { margin: -2px 0 0; color: var(--muted); font-size: .73rem; line-height: 1.45; }
 .feedback-status { margin: 0; padding: 11px 12px; border-radius: 4px; font-size: .8rem; line-height: 1.45; }
 .feedback-status.submitting { background: #edf2e9; color: var(--green); }
 .feedback-status.success { background: #e4efe7; color: #1d5b3b; }
@@ -678,6 +686,8 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .answer-token { font-size: .49rem; }
   .modal { padding: 38px 22px 26px; }
   .modal h2 { font-size: 2.2rem; }
+  .feedback-fields { grid-template-columns: 1fr; }
+  .feedback-field.wide { grid-column: auto; }
   .modal-actions { align-items: stretch; flex-direction: column-reverse; }
   .modal-actions .primary-button,
   .modal-actions .secondary-button { width: 100%; }

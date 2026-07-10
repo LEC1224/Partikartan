@@ -1,0 +1,138 @@
+{
+  "reasons": [
+    {
+      "id": "party-answer-incorrect",
+      "label": "Jag tror att ett partis svar på en fråga är inkorrekt",
+      "fields": [
+        { "id": "questionId", "label": "Vilken fråga gäller det?", "kind": "question", "required": true },
+        { "id": "partyId", "label": "Vilket parti gäller det?", "kind": "party", "required": true },
+        { "id": "explanation", "label": "Förklaring av felet", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Beskriv vilket svar som verkar fel och varför." },
+        { "id": "source", "label": "Källa", "kind": "text", "required": false, "maxLength": 1200, "placeholder": "Länk eller hänvisning till en källa." },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000, "placeholder": "Annat som kan hjälpa vid granskningen." }
+      ]
+    },
+    {
+      "id": "question-biased",
+      "label": "Jag tycker att en fråga är vinklat formulerad",
+      "fields": [
+        { "id": "questionId", "label": "Vilken fråga gäller det?", "kind": "question", "required": true },
+        { "id": "explanation", "label": "Vad är vinklat?", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Förklara vilken vinkling du ser." },
+        { "id": "suggestion", "label": "Förslag på neutralare formulering", "kind": "textarea", "required": false, "maxLength": 2000, "placeholder": "Valfritt förslag på hur frågan kan skrivas." },
+        { "id": "source", "label": "Källa eller underlag", "kind": "text", "required": false, "maxLength": 1200, "placeholder": "Länk eller annan hänvisning." },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "result-incorrect",
+      "label": "Jag tror att mitt resultat är fel",
+      "fields": [
+        {
+          "id": "resultArea",
+          "label": "Vilken del av resultatet gäller det?",
+          "kind": "select",
+          "required": true,
+          "options": [
+            { "value": "party-match", "label": "Partimatchningen" },
+            { "value": "economy", "label": "Vänster–höger-positionen" },
+            { "value": "gal-tan", "label": "GAL–TAN-positionen" },
+            { "value": "other", "label": "Något annat" }
+          ]
+        },
+        { "id": "explanation", "label": "Vad verkar fel?", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Beskriv resultatet och varför det verkar fel." },
+        { "id": "expected", "label": "Vad hade du förväntat dig?", "kind": "textarea", "required": false, "maxLength": 2000 },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "party-position-incorrect",
+      "label": "Jag tror att ett partis position i koordinatsystemet är felaktig",
+      "fields": [
+        { "id": "partyId", "label": "Vilket parti gäller det?", "kind": "party", "required": true },
+        {
+          "id": "axis",
+          "label": "Vilken del av positionen gäller det?",
+          "kind": "select",
+          "required": true,
+          "options": [
+            { "value": "economy", "label": "Vänster–höger" },
+            { "value": "gal-tan", "label": "GAL–TAN" },
+            { "value": "both", "label": "Båda axlarna" }
+          ]
+        },
+        { "id": "explanation", "label": "Förklaring", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Beskriv var partiet borde ligga och varför." },
+        { "id": "source", "label": "Källa", "kind": "text", "required": false, "maxLength": 1200, "placeholder": "Länk eller hänvisning till en källa." },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "technical-issue",
+      "label": "Jag har hittat ett tekniskt fel",
+      "fields": [
+        { "id": "action", "label": "Vad försökte du göra?", "kind": "text", "required": true, "minLength": 5, "maxLength": 1000 },
+        { "id": "explanation", "label": "Vad hände?", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000 },
+        { "id": "expected", "label": "Vad förväntade du dig?", "kind": "textarea", "required": false, "maxLength": 2000 },
+        { "id": "environment", "label": "Enhet och webbläsare", "kind": "text", "required": false, "maxLength": 500, "placeholder": "Till exempel iPhone och Safari." },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "improvement-suggestion",
+      "label": "Jag har ett förslag på hur tjänsten kan förbättras",
+      "fields": [
+        {
+          "id": "area",
+          "label": "Vilken del gäller förslaget?",
+          "kind": "select",
+          "required": true,
+          "options": [
+            { "value": "questions", "label": "Testets frågor" },
+            { "value": "results", "label": "Resultatsidan" },
+            { "value": "usability", "label": "Utseende och användbarhet" },
+            { "value": "method", "label": "Metod och transparens" },
+            { "value": "other", "label": "Annat" }
+          ]
+        },
+        { "id": "suggestion", "label": "Förslag", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Beskriv vad du vill ändra och varför." },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "new-question-suggestion",
+      "label": "Jag vill föreslå en ny fråga",
+      "fields": [
+        { "id": "proposal", "label": "Föreslagen fråga", "kind": "textarea", "required": true, "minLength": 10, "maxLength": 2000 },
+        { "id": "topicId", "label": "Vilket ämne gäller den?", "kind": "topic", "required": true },
+        { "id": "rationale", "label": "Varför behövs frågan?", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 3000 },
+        { "id": "source", "label": "Källa eller underlag", "kind": "text", "required": false, "maxLength": 1200 },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "party-missing",
+      "label": "Jag saknar ett parti i sammanfattningen",
+      "fields": [
+        { "id": "partyName", "label": "Vilket parti saknas?", "kind": "text", "required": true, "minLength": 2, "maxLength": 200 },
+        { "id": "rationale", "label": "Varför bör partiet finnas med?", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 3000 },
+        { "id": "source", "label": "Partiets webbplats eller annat underlag", "kind": "text", "required": false, "maxLength": 1200 },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "code-bias",
+      "label": "Jag hittade bias i koden",
+      "fields": [
+        { "id": "location", "label": "Var i koden?", "kind": "text", "required": false, "maxLength": 1000, "placeholder": "Fil, funktion eller länk till kodrad." },
+        { "id": "explanation", "label": "Förklaring", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000 },
+        { "id": "source", "label": "Länk till kod eller underlag", "kind": "text", "required": false, "maxLength": 1200 },
+        { "id": "notes", "label": "Övriga anmärkningar", "kind": "textarea", "required": false, "maxLength": 2000 }
+      ]
+    },
+    {
+      "id": "other",
+      "label": "Annat",
+      "fields": [
+        { "id": "explanation", "label": "Beskriv din feedback", "kind": "textarea", "required": true, "minLength": 12, "maxLength": 4000, "placeholder": "Skriv din feedback här." }
+      ]
+    }
+  ]
+}

@@ -34,17 +34,21 @@ npm run app
 
 ## Feedback
 
-Feedback skickas till `POST /api/feedback` när appen körs via `npm run app` eller `npm run serve` efter build. Varje inskick sparas som en separat `.txt`-fil i `feedback-data/`.
+Feedback skickas till `POST /api/feedback` när appen körs via `npm run app` eller `npm run serve` efter build. Formuläret visar relevanta följdfrågor för den valda ärendetypen och varje inskick sparas som en separat, strukturerad `.txt`-fil i `feedback-data/`.
 
 Git ignorerar genererade feedbackfiler så att privata eller personliga uppgifter inte råkar publiceras. Katalogen finns ändå med i repo:t via `feedback-data/.gitkeep`.
 
 Tillåtna feedbackanledningar:
 
-- `Jag hittade bias i koden`
-- `Jag tror att mitt resultat är fel`
-- `Jag tror att ett partis position i koordinatsystemet är felaktigt`
-- `Jag saknar ett parti i sammanfattningen`
+- `Jag tror att ett partis svar på en fråga är inkorrekt`
 - `Jag tycker att en fråga är vinklat formulerad`
+- `Jag tror att mitt resultat är fel`
+- `Jag tror att ett partis position i koordinatsystemet är felaktig`
+- `Jag har hittat ett tekniskt fel`
+- `Jag har ett förslag på hur tjänsten kan förbättras`
+- `Jag vill föreslå en ny fråga`
+- `Jag saknar ett parti i sammanfattningen`
+- `Jag hittade bias i koden`
 - `Annat`
 
 ## Open prompts
