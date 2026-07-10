@@ -171,3 +171,15 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 30
 
 > Kan du omordna frågorna i testet så att alla 51 sakfrågor kommer först och sen kommer värderingsfrågorna?
+
+## Prompt 31
+
+> I resultatfliken hamnar man ofta ganska lågt i procentuell matchning med partier man borde ha ganska mycket gemensamt med. Jag tror detta beror på att om man väljer t.ex. 5 i en fråga där ett parti valt 4 så räknas inte det som en matchning, eller så räknas det för lite.
+>
+> Jag tror man skulle kunna lösa detta genom att ha en färgad stapel intill/under varje partiresultat, 0-100%, som matchar partiets färg, och som visar en ytterligare, lite avsaturerad stapel för "nästan match" i frågor där man svarat åt rätt håll men inte till samma grad som partiet, och att det övergripande procent-värdet utgår ifrån "exakt rätt+nästan rätt" och att man i stapeln istället kan se procentsatsen för exakt rätt om man hovrar/tappar stapeln.
+>
+> Medans vi ändå jobbar på UIt, kan du göra det tydligare att "Vet ej" är en knapp genom att ge den en liknande border som 1-5 har. Under användartester framgick det att en testare inte förstod att man kunde klicka på Vet Ej
+
+## Prompt 32
+
+> Uppdatera open prompts, commita och starta appen i developer läge!

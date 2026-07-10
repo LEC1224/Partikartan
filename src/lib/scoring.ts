@@ -68,6 +68,8 @@ export function calculatePartyCoordinate(party: Party, questions: Question[]): C
 
 export interface PartyMatch {
   percent: number
+  exactPercent: number
+  nearPercent: number
   exactMatches: number
   nearMatches: number
   comparedQuestions: number
@@ -79,7 +81,11 @@ export function answerSimilarity(
   userAnswer: Exclude<AnswerValue, null>,
   partyAnswer: Exclude<AnswerValue, null>,
 ): number {
-  return Math.max(0, 1 - Math.abs(userAnswer - partyAnswer) / 4)
+  if (userAnswer === partyAnswer) return 1
+
+  const userDirection = Math.sign(userAnswer - 3)
+  const partyDirection = Math.sign(partyAnswer - 3)
+  return userDirection !== 0 && userDirection === partyDirection ? 1 : 0
 }
 
 export function countKnownPartyResponses(party: Party): number {
@@ -93,8 +99,9 @@ export function calculatePartyMatch(
   priorities: TopicId[] = [],
 ): PartyMatch {
   const responsesByQuestion = new Map(party.responses.map((response) => [response.questionId, response]))
-  let weightedScore = 0
   let weightedPossible = 0
+  let weightedExact = 0
+  let weightedNear = 0
   let exactMatches = 0
   let nearMatches = 0
   let comparedQuestions = 0
@@ -107,7 +114,6 @@ export function calculatePartyMatch(
 
     const weight = priorities.includes(question.topic) ? PRIORITY_MULTIPLIER : 1
     const partyAnswer = responsesByQuestion.get(question.id)?.value ?? null
-    weightedPossible += weight
     comparedQuestions += 1
 
     if (partyAnswer == null) {
@@ -116,15 +122,27 @@ export function calculatePartyMatch(
     }
 
     knownPartyAnswers += 1
-    weightedScore += answerSimilarity(userAnswer, partyAnswer) * weight
+    weightedPossible += weight
 
     const distance = Math.abs(userAnswer - partyAnswer)
-    if (distance === 0) exactMatches += 1
-    if (distance === 1) nearMatches += 1
+    if (distance === 0) {
+      exactMatches += 1
+      weightedExact += weight
+    } else if (answerSimilarity(userAnswer, partyAnswer) === 1) {
+      nearMatches += 1
+      weightedNear += weight
+    }
   }
 
+  const percent = weightedPossible
+    ? Math.round(((weightedExact + weightedNear) / weightedPossible) * 100)
+    : 0
+  const exactPercent = weightedPossible ? Math.round((weightedExact / weightedPossible) * 100) : 0
+
   return {
-    percent: weightedPossible ? Math.round((weightedScore / weightedPossible) * 100) : 0,
+    percent,
+    exactPercent,
+    nearPercent: Math.max(0, percent - exactPercent),
     exactMatches,
     nearMatches,
     comparedQuestions,

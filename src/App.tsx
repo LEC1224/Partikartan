@@ -646,6 +646,13 @@ function ResultPage({
               <p><strong>Partierna ligger i origo tills vidare.</strong> De flyttas först när källbelagda svar från partiprogram och andra primärkällor har matats in.</p>
             </div>
           )}
+          {!allUnscored && (
+            <div className="match-legend" aria-label="Teckenförklaring för matchningsstaplar">
+              <span className="legend-segment exact" /> Exakt
+              <span className="legend-segment near" /> Nästan
+              <small>Hovra eller tryck på en stapel</small>
+            </div>
+          )}
           <div className="party-list">
             {partyResults.map(({ party, match }) => (
               <PartyRow key={party.id} party={party} match={match} />
@@ -675,11 +682,28 @@ function ResultPage({
 
 function PartyRow({ party, match }: { party: Party; match: PartyMatch }) {
   const sourced = countKnownPartyResponses(party)
+  const hasComparison = match.knownPartyAnswers > 0
   return (
     <div className="party-row">
       <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
-      <div><strong>{party.name}</strong><small>{sourced} källbelagda, {party.responses.length - sourced} Vet ej</small></div>
-      <div className="match-value"><strong>{sourced ? `${match.percent}%` : '—'}</strong><small>{match.comparedQuestions ? `${match.exactMatches} exakta, ${match.nearMatches} nära` : 'inga svar'}</small></div>
+      <div className="party-details"><strong>{party.name}</strong><small>{sourced} källbelagda, {party.responses.length - sourced} Vet ej</small></div>
+      <div className="match-value"><strong>{hasComparison ? `${match.percent}%` : '—'}</strong><small>{hasComparison ? 'exakt + nästan' : 'ingen jämförelse'}</small></div>
+      <div className="match-bar-wrap">
+        <button
+          type="button"
+          className="match-bar"
+          aria-label={hasComparison
+            ? `${party.name}: ${match.percent} procent matchning, varav ${match.exactPercent} procent exakt och ${match.nearPercent} procent nästan.`
+            : `${party.name}: inga jämförbara svar.`}
+        >
+          <span className="match-fill exact" style={{ width: `${match.exactPercent}%`, backgroundColor: party.color }} />
+          <span className="match-fill near" style={{ width: `${match.nearPercent}%`, backgroundColor: party.color }} />
+          <span className="match-tooltip" role="tooltip">
+            <strong>Exakt: {match.exactPercent}%</strong>
+            <span>Nästan: +{match.nearPercent}%</span>
+          </span>
+        </button>
+      </div>
     </div>
   )
 }
@@ -745,7 +769,7 @@ function AnswerComparison({ answers }: { answers: Answers }) {
           <span className="overline">Svar fråga för fråga</span>
           <h2>Din matchning mot partierna</h2>
         </div>
-        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på dina besvarade frågor, där ett steg ifrån ger delträff.</p>
+        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Samma riktning men olika styrka räknas som nästan match.</p>
       </div>
       <div className="answer-table" role="table" aria-label="Svar per fråga och parti">
         {questions.map((question, index) => {
@@ -822,7 +846,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>3</strong><p><b>Dina “Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
           <div><strong>4</strong><p><b>Dina koordinater skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: svaren räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala.</p></div>
           <div><strong>5</strong><p><b>Partiernas kartposition simuleras från deras frågesvar.</b> Källbelagda partisvar poängsätts med samma axlar. Vet ej-svar flyttar inte partiet i någon riktning, men ingår i slutskalan så positionen blir mer försiktig när underlaget är glesare.</p></div>
-          <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger full träff. Ett steg ifrån, till exempel 4 mot 5, ger 75 procent av frågans poäng; två steg ger 50 procent. Oklara partisvar visas som Vet ej i stället för att gissas.</p></div>
+          <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger exakt träff. Svar i samma riktning men med olika styrka, till exempel 4 mot 5 eller 1 mot 2, ger nästan träff. Totalprocenten är exakt plus nästan, med extra vikt för dina prioriterade ämnen. Frågor där partiet saknar ett källbelagt svar lämnas utanför procenten.</p></div>
         </div>
         <div className="coding-rules">
           <h3>Regler för partiprogram</h3>

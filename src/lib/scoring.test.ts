@@ -108,8 +108,10 @@ describe('party scoring', () => {
     ).toEqual({ x: COORDINATE_SCALE / 2, y: 0, answered: 1 })
   })
 
-  it('scores adjacent party answers as a strong but partial match', () => {
-    expect(answerSimilarity(4, 5)).toBe(0.75)
+  it('counts different strengths in the same direction as a near match', () => {
+    expect(answerSimilarity(4, 5)).toBe(1)
+    expect(answerSimilarity(1, 2)).toBe(1)
+    expect(answerSimilarity(3, 4)).toBe(0)
     expect(answerSimilarity(1, 5)).toBe(0)
   })
 
@@ -132,7 +134,9 @@ describe('party scoring', () => {
     )
 
     expect(match).toEqual({
-      percent: 88,
+      percent: 100,
+      exactPercent: 50,
+      nearPercent: 50,
       exactMatches: 1,
       nearMatches: 1,
       comparedQuestions: 2,
@@ -141,7 +145,7 @@ describe('party scoring', () => {
     })
   })
 
-  it('counts party Vet ej as missing agreement for answered user questions', () => {
+  it('leaves party Vet ej out when no comparable answer exists', () => {
     const match = calculatePartyMatch(
       { q1: 5 },
       {
@@ -155,6 +159,30 @@ describe('party scoring', () => {
     )
 
     expect(match.percent).toBe(0)
+    expect(match.exactPercent).toBe(0)
+    expect(match.nearPercent).toBe(0)
+    expect(match.unknownPartyAnswers).toBe(1)
+  })
+
+  it('does not dilute a sourced match with unknown party answers', () => {
+    const match = calculatePartyMatch(
+      { q1: 5, q2: 4 },
+      {
+        id: 'test',
+        shortName: 'T',
+        name: 'Testpartiet',
+        color: '#000',
+        responses: [
+          { questionId: 'q1', value: 5, confidence: 'high', evidence: [] },
+          { questionId: 'q2', value: null, confidence: 'unknown', evidence: [] },
+        ],
+      },
+      sampleQuestions,
+    )
+
+    expect(match.percent).toBe(100)
+    expect(match.exactPercent).toBe(100)
+    expect(match.knownPartyAnswers).toBe(1)
     expect(match.unknownPartyAnswers).toBe(1)
   })
 })
