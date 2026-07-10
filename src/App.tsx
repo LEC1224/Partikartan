@@ -395,6 +395,9 @@ function AboutDialog({
             Jag som driver Partikartan heter Carl Månsson och är mjukvaruutvecklare från Göteborg. Jag byggde sidan för att jag saknade en valkompass som ger partirelativa svar för både vänster-höger och GAL-TAN, känns saklig, responsiv och möjlig att granska.
           </p>
           <p>
+            För transparensens skull vill jag också upplysa om att jag är medlem i Liberalerna.
+          </p>
+          <p>
             Målet är inte att påstå att kompassen är perfekt neutral. Målet är att göra antaganden, källor och möjliga fel synliga nog för att kunna granskas, kritiseras och förbättras.
           </p>
         </div>
