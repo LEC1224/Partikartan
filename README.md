@@ -2,7 +2,7 @@
 
 En Sverige-centrerad valkompass byggd som en Vite/React-app.
 
-Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder inte att modellen automatiskt är perfekt eller fri från alla antaganden, men att frågor, viktning, scoring, partibelägg och prompts ska kunna granskas öppet.
+Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder inte att modellen automatiskt är perfekt eller fri från alla antaganden, men frågor, viktning, poängsättning, partibelägg och promptar är öppna för granskning.
 
 ## Funktioner
 

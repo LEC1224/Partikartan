@@ -450,7 +450,7 @@ function TransparencySection({ onFeedback }: { onFeedback: () => void }) {
       <article className="transparency-item">
         <div className="feature-icon"><GitBranch /></div>
         <h3>Koden finns på GitHub</h3>
-        <p>Frågor, vikter, scoring och framtida partibelägg ska kunna granskas i repo:t.</p>
+        <p>Frågor, vikter, poängsättning och källbelagda partisvar går att granska direkt i repo:t.</p>
         <a className="inline-link" href={GITHUB_URL} target="_blank" rel="noreferrer">Öppna GitHub <ExternalLink size={15} /></a>
       </article>
       <article className="transparency-item">
@@ -462,7 +462,7 @@ function TransparencySection({ onFeedback }: { onFeedback: () => void }) {
       <article className="transparency-item">
         <div className="feature-icon"><MessageSquare /></div>
         <h3>Feedback till mig</h3>
-        <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar ska kunna rapporteras.</p>
+        <p>Misstänkt bias, felaktiga resultat och vinklade formuleringar kan rapporteras direkt.</p>
         <button className="inline-link button-link" onClick={onFeedback}>Skicka feedback <ChevronRight size={15} /></button>
       </article>
     </div>
@@ -724,7 +724,7 @@ function ResultPage({
         <aside className="party-panel">
           <div className="panel-title">
             <div><span className="overline">Partijämförelse</span><h2>Svenska partier</h2></div>
-            <span className={`status-badge ${allUnscored ? 'pending' : ''}`}>{allUnscored ? 'Inväntar data' : 'Källbelagd'}</span>
+            <span className={`status-badge ${allUnscored ? 'pending' : ''}`}>{allUnscored ? 'Saknar underlag' : 'Källbelagd'}</span>
           </div>
           {!allUnscored && (
             <div className="data-notice">
@@ -735,7 +735,7 @@ function ResultPage({
           {allUnscored && (
             <div className="data-notice">
               <Info size={18} />
-              <p><strong>Partierna ligger i origo tills vidare.</strong> De flyttas först när källbelagda svar från partiprogram och andra primärkällor har matats in.</p>
+              <p><strong>Inga källbelagda partisvar finns i den inlästa datan.</strong> När underlag saknas visas partierna i origo.</p>
             </div>
           )}
           {!allUnscored && (
@@ -848,7 +848,7 @@ function PoliticalChart({
           <text y="1.05" textAnchor="middle" fontSize="2.8" fontWeight="800" fill="#fff">DU</text>
         </g>
       </svg>
-      <div className="chart-legend"><span className="legend-you" /> Din position <span className="legend-parties" /> Partier utan analyserade svar</div>
+      <div className="chart-legend"><span className="legend-you" /> Din position <span className="legend-parties" /> Partiernas simulerade positioner</div>
     </div>
   )
 }
