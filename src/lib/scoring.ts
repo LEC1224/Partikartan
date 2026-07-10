@@ -88,8 +88,12 @@ export function answerSimilarity(
   return userDirection !== 0 && userDirection === partyDirection ? 1 : 0
 }
 
-export function countKnownPartyResponses(party: Party): number {
-  return party.responses.filter((response) => response.value != null).length
+export function countKnownPartyResponses(party: Party, questions?: Question[]): number {
+  const questionIds = questions && new Set(questions.map((question) => question.id))
+
+  return party.responses.filter(
+    (response) => response.value != null && (!questionIds || questionIds.has(response.questionId)),
+  ).length
 }
 
 export function calculatePartyMatch(

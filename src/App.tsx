@@ -21,7 +21,8 @@ import {
 import { parties } from './data/parties'
 import { partyCodingRules } from './data/partyCoding'
 import { questionArguments } from './data/questionArguments'
-import { issueQuestions, questions, valueQuestions } from './data/questions'
+import { questions } from './data/questions'
+import { quickQuestions } from './data/quickQuestions'
 import { topics } from './data/topics'
 import {
   calculateCoordinate,
@@ -30,11 +31,12 @@ import {
   COORDINATE_SCALE,
   countKnownPartyResponses,
 } from './lib/scoring'
-import type { Answers, AnswerValue, Coordinate, Party, TopicId } from './types'
+import type { Answers, AnswerValue, Coordinate, Party, Question, TopicId } from './types'
 import type { PartyMatch } from './lib/scoring'
 
-type View = 'start' | 'priorities' | 'quiz' | 'result'
-type SavedProgress = { answers: Answers; priorities: TopicId[] }
+type View = 'start' | 'quiz-mode' | 'priorities' | 'quiz' | 'result'
+type QuizMode = 'quick' | 'full'
+type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode }
 type FeedbackReason =
   | 'Jag hittade bias i koden'
   | 'Jag tror att mitt resultat är fel'
@@ -71,20 +73,21 @@ function markerTextColor(party: Party): string {
 }
 
 function readSavedProgress(): SavedProgress {
-  if (typeof window === 'undefined') return { answers: {}, priorities: [] }
+  if (typeof window === 'undefined') return { answers: {}, priorities: [], quizMode: 'full' }
 
   const saved = localStorage.getItem(STORAGE_KEY)
-  if (!saved) return { answers: {}, priorities: [] }
+  if (!saved) return { answers: {}, priorities: [], quizMode: 'full' }
 
   try {
     const parsed = JSON.parse(saved) as Partial<SavedProgress>
     return {
       answers: parsed.answers ?? {},
       priorities: parsed.priorities ?? [],
+      quizMode: parsed.quizMode === 'quick' ? 'quick' : 'full',
     }
   } catch {
     localStorage.removeItem(STORAGE_KEY)
-    return { answers: {}, priorities: [] }
+    return { answers: {}, priorities: [], quizMode: 'full' }
   }
 }
 
@@ -93,38 +96,51 @@ function App() {
   const [view, setView] = useState<View>('start')
   const [priorities, setPriorities] = useState<TopicId[]>(initialProgress.priorities)
   const [answers, setAnswers] = useState<Answers>(initialProgress.answers)
+  const [quizMode, setQuizMode] = useState<QuizMode>(initialProgress.quizMode)
   const [questionIndex, setQuestionIndex] = useState(0)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [methodOpen, setMethodOpen] = useState(false)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, priorities }))
-  }, [answers, priorities])
+    window.scrollTo(0, 0)
+  }, [view])
 
-  const answeredCount = Object.keys(answers).length
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, priorities, quizMode }))
+  }, [answers, priorities, quizMode])
+
+  const activeQuestions = quizMode === 'quick' ? quickQuestions : questions
+  const answeredCount = activeQuestions.filter((question) => question.id in answers).length
   const coordinate = useMemo(
-    () => calculateCoordinate(answers, questions, priorities),
-    [answers, priorities],
+    () => calculateCoordinate(answers, activeQuestions, priorities),
+    [activeQuestions, answers, priorities],
   )
 
   function beginQuiz() {
-    const firstUnanswered = questions.findIndex((question) => !(question.id in answers))
+    const firstUnanswered = activeQuestions.findIndex((question) => !(question.id in answers))
     setQuestionIndex(firstUnanswered < 0 ? 0 : firstUnanswered)
     setView('quiz')
   }
 
   function answerQuestion(value: AnswerValue) {
-    const question = questions[questionIndex]
+    const question = activeQuestions[questionIndex]
     setAnswers((current) => ({ ...current, [question.id]: value }))
-    if (questionIndex < questions.length - 1) {
+    if (questionIndex < activeQuestions.length - 1) {
       window.setTimeout(() => setQuestionIndex((index) => index + 1), 140)
     }
+  }
+
+  function chooseQuizMode(mode: QuizMode) {
+    setQuizMode(mode)
+    setQuestionIndex(0)
+    setView('priorities')
   }
 
   function reset() {
     setAnswers({})
     setPriorities([])
+    setQuizMode('full')
     setQuestionIndex(0)
     setView('start')
     localStorage.removeItem(STORAGE_KEY)
@@ -138,13 +154,15 @@ function App() {
         onMethod={() => setMethodOpen(true)}
         onFeedback={() => setFeedbackOpen(true)}
         answeredCount={answeredCount}
+        questionCount={activeQuestions.length}
         onResume={beginQuiz}
       />
       <main>
         {view === 'start' && (
           <StartPage
             answeredCount={answeredCount}
-            onStart={() => setView('priorities')}
+            questionCount={activeQuestions.length}
+            onStart={() => setView('quiz-mode')}
             onResume={beginQuiz}
             onResult={() => setView('result')}
             onMethod={() => setMethodOpen(true)}
@@ -152,11 +170,17 @@ function App() {
             onReset={reset}
           />
         )}
+        {view === 'quiz-mode' && (
+          <QuizModePage
+            onBack={() => setView('start')}
+            onSelect={chooseQuizMode}
+          />
+        )}
         {view === 'priorities' && (
           <PriorityPage
             priorities={priorities}
             onChange={setPriorities}
-            onBack={() => setView('start')}
+            onBack={() => setView(answeredCount > 0 ? 'start' : 'quiz-mode')}
             onContinue={beginQuiz}
           />
         )}
@@ -164,6 +188,7 @@ function App() {
           <QuizPage
             index={questionIndex}
             answers={answers}
+            questions={activeQuestions}
             onIndex={setQuestionIndex}
             onAnswer={answerQuestion}
             onBack={() => setView('priorities')}
@@ -175,6 +200,8 @@ function App() {
             coordinate={coordinate}
             answers={answers}
             priorities={priorities}
+            questions={activeQuestions}
+            quizMode={quizMode}
             onEdit={beginQuiz}
             onMethod={() => setMethodOpen(true)}
             onFeedback={() => setFeedbackOpen(true)}
@@ -208,6 +235,7 @@ function Header({
   onMethod,
   onFeedback,
   answeredCount,
+  questionCount,
   onResume,
 }: {
   onLogo: () => void
@@ -215,6 +243,7 @@ function Header({
   onMethod: () => void
   onFeedback: () => void
   answeredCount: number
+  questionCount: number
   onResume: () => void
 }) {
   return (
@@ -228,9 +257,9 @@ function Header({
         <button className="nav-link" onClick={onAbout}>Om sidan</button>
         <button className="nav-link" onClick={onMethod}>Så fungerar det</button>
         <button className="nav-link" onClick={onFeedback}>Feedback</button>
-        {answeredCount > 0 && answeredCount < questions.length && (
+        {answeredCount > 0 && answeredCount < questionCount && (
           <button className="resume-link" onClick={onResume}>
-            Fortsätt <span>{answeredCount}/{questions.length}</span>
+            Fortsätt <span>{answeredCount}/{questionCount}</span>
           </button>
         )}
       </nav>
@@ -240,6 +269,7 @@ function Header({
 
 function StartPage({
   answeredCount,
+  questionCount,
   onStart,
   onResume,
   onResult,
@@ -248,6 +278,7 @@ function StartPage({
   onReset,
 }: {
   answeredCount: number
+  questionCount: number
   onStart: () => void
   onResume: () => void
   onResult: () => void
@@ -255,7 +286,7 @@ function StartPage({
   onFeedback: () => void
   onReset: () => void
 }) {
-  const complete = answeredCount === questions.length
+  const complete = answeredCount === questionCount
   const hasProgress = answeredCount > 0
 
   return (
@@ -278,7 +309,7 @@ function StartPage({
             <button className="text-button" onClick={onMethod}>Se hur det räknas <ChevronRight size={16} /></button>
           </div>
           <div className="hero-meta">
-            <span><Check size={15} /> {questions.length} frågor</span>
+            <span><Check size={15} /> {quickQuestions.length} eller {questions.length} frågor</span>
             <span><Check size={15} /> öppen källkod</span>
             <span><Check size={15} /> open prompts</span>
           </div>
@@ -293,6 +324,41 @@ function StartPage({
         <TransparencySection onFeedback={onFeedback} />
       </section>
     </>
+  )
+}
+
+function QuizModePage({
+  onBack,
+  onSelect,
+}: {
+  onBack: () => void
+  onSelect: (mode: QuizMode) => void
+}) {
+  return (
+    <section className="wizard-page page-width narrow-page mode-page">
+      <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Tillbaka</button>
+      <p className="eyebrow"><span /> Välj testlängd</p>
+      <h1>Hur mycket tid har du?</h1>
+      <p className="page-lead">
+        Snabbtestet använder de frågor där nästan alla partier har källbelagda svar. Det fullständiga testet ger en bredare bild av dina politiska värderingar.
+      </p>
+      <div className="mode-grid">
+        <button className="mode-card recommended" onClick={() => onSelect('quick')}>
+          <span className="mode-badge">Rekommenderad</span>
+          <span className="mode-time">Cirka 5 minuter</span>
+          <strong>Snabbtest</strong>
+          <p>{quickQuestions.length} särskilt utslagsgivande frågor med hög svarstäckning hos partierna.</p>
+          <span className="mode-action">Starta snabbtestet <ArrowRight size={17} /></span>
+        </button>
+        <button className="mode-card" onClick={() => onSelect('full')}>
+          <span className="mode-time">Cirka 15 minuter</span>
+          <strong>Fullständigt test</strong>
+          <p>Alla {questions.length} frågor för en mer heltäckande politisk profil.</p>
+          <span className="mode-action">Starta hela testet <ArrowRight size={17} /></span>
+        </button>
+      </div>
+      <p className="mode-note"><ShieldCheck size={17} /> Båda varianterna är balanserade så att raka ettor eller femmor hamnar nära origo.</p>
+    </section>
   )
 }
 
@@ -467,6 +533,7 @@ function PriorityPage({
 function QuizPage({
   index,
   answers,
+  questions: quizQuestions,
   onIndex,
   onAnswer,
   onBack,
@@ -474,16 +541,17 @@ function QuizPage({
 }: {
   index: number
   answers: Answers
+  questions: Question[]
   onIndex: (index: number) => void
   onAnswer: (answer: AnswerValue) => void
   onBack: () => void
   onResult: () => void
 }) {
-  const question = questions[index]
+  const question = quizQuestions[index]
   const currentAnswer = answers[question.id]
-  const complete = Object.keys(answers).length === questions.length
+  const complete = quizQuestions.every((item) => item.id in answers)
   const topic = topics.find((item) => item.id === question.topic)!
-  const sectionQuestions = question.kind === 'sakfraga' ? issueQuestions : valueQuestions
+  const sectionQuestions = quizQuestions.filter((item) => item.kind === question.kind)
   const sectionLength = sectionQuestions.length
   const sectionIndex = sectionQuestions.findIndex((item) => item.id === question.id) + 1
   const argument = questionArguments[question.id]
@@ -495,9 +563,9 @@ function QuizPage({
       <div className="quiz-progress-wrap">
         <div className="page-width quiz-progress-meta">
           <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Prioriteringar</button>
-          <span>{index + 1} av {questions.length}</span>
+          <span>{index + 1} av {quizQuestions.length}</span>
         </div>
-        <div className="quiz-progress"><span style={{ width: `${((index + 1) / questions.length) * 100}%` }} /></div>
+        <div className="quiz-progress"><span style={{ width: `${((index + 1) / quizQuestions.length) * 100}%` }} /></div>
       </div>
       <div className="question-wrap">
         <div className="question-prompt">
@@ -552,25 +620,35 @@ function QuizPage({
         </div>
         <div className="question-navigation">
           <button className="secondary-button" disabled={index === 0} onClick={() => onIndex(index - 1)}><ArrowLeft size={17} /> Föregående</button>
-          {index < questions.length - 1 ? (
+          {index < quizQuestions.length - 1 ? (
             <button className="secondary-button" onClick={() => onIndex(index + 1)}>Nästa <ArrowRight size={17} /></button>
           ) : (
             <button className="primary-button" disabled={!complete} onClick={onResult}>Visa resultat <ArrowRight size={17} /></button>
           )}
         </div>
-        {!complete && index === questions.length - 1 && (
-          <p className="completion-note">Du har {questions.length - Object.keys(answers).length} obesvarade frågor. Använd föregående eller välj dem i översikten.</p>
+        {!complete && index === quizQuestions.length - 1 && (
+          <p className="completion-note">Du har {quizQuestions.filter((item) => !(item.id in answers)).length} obesvarade frågor. Använd föregående eller välj dem i översikten.</p>
         )}
-        <QuestionDots index={index} answers={answers} onIndex={onIndex} />
+        <QuestionDots index={index} answers={answers} questions={quizQuestions} onIndex={onIndex} />
       </div>
     </section>
   )
 }
 
-function QuestionDots({ index, answers, onIndex }: { index: number; answers: Answers; onIndex: (index: number) => void }) {
+function QuestionDots({
+  index,
+  answers,
+  questions: quizQuestions,
+  onIndex,
+}: {
+  index: number
+  answers: Answers
+  questions: Question[]
+  onIndex: (index: number) => void
+}) {
   return (
     <div className="question-overview" aria-label="Frågeöversikt">
-      {questions.map((question, questionIndex) => (
+      {quizQuestions.map((question, questionIndex) => (
         <button
           key={question.id}
           className={`${questionIndex === index ? 'current' : ''} ${question.id in answers ? 'answered' : ''}`}
@@ -586,6 +664,8 @@ function ResultPage({
   coordinate,
   answers,
   priorities,
+  questions: quizQuestions,
+  quizMode,
   onEdit,
   onMethod,
   onFeedback,
@@ -594,6 +674,8 @@ function ResultPage({
   coordinate: Coordinate
   answers: Answers
   priorities: TopicId[]
+  questions: Question[]
+  quizMode: QuizMode
   onEdit: () => void
   onMethod: () => void
   onFeedback: () => void
@@ -601,30 +683,30 @@ function ResultPage({
 }) {
   const partyResults = parties
     .map((party) => {
-      const partyCoordinate = calculatePartyCoordinate(party, questions)
-      return { party, coordinate: partyCoordinate, match: calculatePartyMatch(answers, party, questions, priorities) }
+      const partyCoordinate = calculatePartyCoordinate(party, quizQuestions)
+      return { party, coordinate: partyCoordinate, match: calculatePartyMatch(answers, party, quizQuestions, priorities) }
     })
     .sort((left, right) => {
-      const leftSourced = countKnownPartyResponses(left.party) > 0
-      const rightSourced = countKnownPartyResponses(right.party) > 0
+      const leftSourced = countKnownPartyResponses(left.party, quizQuestions) > 0
+      const rightSourced = countKnownPartyResponses(right.party, quizQuestions) > 0
       if (leftSourced !== rightSourced) return Number(rightSourced) - Number(leftSourced)
       if (leftSourced && rightSourced) return right.match.percent - left.match.percent
       return 0
     })
-  const allUnscored = partyResults.every(({ party }) => countKnownPartyResponses(party) === 0)
+  const allUnscored = partyResults.every(({ party }) => countKnownPartyResponses(party, quizQuestions) === 0)
 
   return (
     <section className="result-page page-width">
       <div className="result-heading">
         <div>
-          <p className="eyebrow"><span /> Ditt resultat</p>
+          <p className="eyebrow"><span /> Ditt resultat · {quizMode === 'quick' ? 'Snabbtest' : 'Fullständigt test'}</p>
           <h1>Din politiska position</h1>
           <p>Det här är en riktning, inte en etikett. Närliggande positioner kan bygga på ganska olika svar.</p>
         </div>
         <div className="coordinate-readout">
           <div><span>Ekonomi</span><strong>{formatAxis(coordinate.x, 'Vänster', 'Höger')}</strong><small>{Math.abs(Math.round(coordinate.x))} / {CHART_AXIS_LIMIT}</small></div>
           <div><span>Värderingar</span><strong>{formatAxis(coordinate.y, 'TAN', 'GAL')}</strong><small>{Math.abs(Math.round(coordinate.y))} / {CHART_AXIS_LIMIT}</small></div>
-          <div><span>Inräknade svar</span><strong>{coordinate.answered}</strong><small>av {questions.length}</small></div>
+          <div><span>Inräknade svar</span><strong>{coordinate.answered}</strong><small>av {quizQuestions.length}</small></div>
         </div>
       </div>
       <div className="result-layout">
@@ -655,7 +737,7 @@ function ResultPage({
           )}
           <div className="party-list">
             {partyResults.map(({ party, match }) => (
-              <PartyRow key={party.id} party={party} match={match} />
+              <PartyRow key={party.id} party={party} match={match} questions={quizQuestions} />
             ))}
           </div>
         </aside>
@@ -675,18 +757,18 @@ function ResultPage({
           <button className="danger-link" onClick={onReset}><RefreshCw size={15} /> Börja om</button>
         </div>
       </div>
-      <AnswerComparison answers={answers} />
+      <AnswerComparison answers={answers} questions={quizQuestions} />
     </section>
   )
 }
 
-function PartyRow({ party, match }: { party: Party; match: PartyMatch }) {
-  const sourced = countKnownPartyResponses(party)
+function PartyRow({ party, match, questions: quizQuestions }: { party: Party; match: PartyMatch; questions: Question[] }) {
+  const sourced = countKnownPartyResponses(party, quizQuestions)
   const hasComparison = match.knownPartyAnswers > 0
   return (
     <div className="party-row">
       <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
-      <div className="party-details"><strong>{party.name}</strong><small>{sourced} källbelagda, {party.responses.length - sourced} Vet ej</small></div>
+      <div className="party-details"><strong>{party.name}</strong><small>{sourced} källbelagda, {quizQuestions.length - sourced} Vet ej</small></div>
       <div className="match-value"><strong>{hasComparison ? `${match.percent}%` : '—'}</strong><small>{hasComparison ? 'exakt + nästan' : 'ingen jämförelse'}</small></div>
       <div className="match-bar-wrap">
         <button
@@ -761,7 +843,7 @@ function PoliticalChart({
   )
 }
 
-function AnswerComparison({ answers }: { answers: Answers }) {
+function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answers; questions: Question[] }) {
   return (
     <section className="answer-comparison">
       <div className="answer-comparison-heading">
@@ -772,7 +854,7 @@ function AnswerComparison({ answers }: { answers: Answers }) {
         <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Samma riktning men olika styrka räknas som nästan match.</p>
       </div>
       <div className="answer-table" role="table" aria-label="Svar per fråga och parti">
-        {questions.map((question, index) => {
+        {quizQuestions.map((question, index) => {
           const userAnswered = question.id in answers
           const userAnswer = answers[question.id]
           const topic = topics.find((item) => item.id === question.topic)
@@ -847,6 +929,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>4</strong><p><b>Dina koordinater skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: svaren räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala.</p></div>
           <div><strong>5</strong><p><b>Partiernas kartposition simuleras från deras frågesvar.</b> Källbelagda partisvar poängsätts med samma axlar. Vet ej-svar flyttar inte partiet i någon riktning, men ingår i slutskalan så positionen blir mer försiktig när underlaget är glesare.</p></div>
           <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger exakt träff. Svar i samma riktning men med olika styrka, till exempel 4 mot 5 eller 1 mot 2, ger nästan träff. Totalprocenten är exakt plus nästan, med extra vikt för dina prioriterade ämnen. Frågor där partiet saknar ett källbelagt svar lämnas utanför procenten.</p></div>
+          <div><strong>7</strong><p><b>Snabbtestet använder en fast delmängd på {quickQuestions.length} frågor.</b> Varje utvald fråga har källbelagda svar från minst sju av åtta partier. Urvalet täcker alla ämnen och har kontrollerats så att raka ettor eller femmor hamnar nära origo.</p></div>
         </div>
         <div className="coding-rules">
           <h3>Regler för partiprogram</h3>

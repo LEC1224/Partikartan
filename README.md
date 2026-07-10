@@ -7,11 +7,13 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 ## Funktioner
 
 - 51 sakfrågor och 23 värderingsfrågor.
+- Val mellan ett snabbtest med 25 fasta frågor och det fullständiga testet med 74 frågor.
 - Svarsskala 1-5 plus `Vet ej`.
 - Resultat på två axlar: ekonomisk vänster-höger och GAL-TAN.
 - Partijämförelse som räknas fråga för fråga, där nära svar ger delpoäng.
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.
 - Svenska riksdagspartier visas både på kartan och i en skrollbar svarsmatris.
+- Snabbtestets frågor har källbelagda svar från minst sju av åtta partier och är balanserade mellan kompassens riktningar.
 - Partisvar lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`; saknade eller oklara belägg visas som `Vet ej`.
 - Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
 - Öppen källkod på GitHub.
