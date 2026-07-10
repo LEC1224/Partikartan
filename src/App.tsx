@@ -348,23 +348,22 @@ function QuizModePage({
     <section className="wizard-page page-width narrow-page mode-page">
       <button className="back-button" onClick={onBack}><ArrowLeft size={17} /> Tillbaka</button>
       <p className="eyebrow"><span /> Välj testlängd</p>
-      <h1>Hur mycket tid har du?</h1>
+      <h1>Vilken testlängd vill du använda?</h1>
       <p className="page-lead">
-        Snabbtestet använder de frågor där nästan alla partier har källbelagda svar. Det fullständiga testet ger en bredare bild av dina politiska värderingar.
+        Välj mellan {quickQuestions.length} frågor på cirka 5 minuter och samtliga {questions.length} frågor på cirka 15 minuter.
       </p>
       <div className="mode-grid">
-        <button className="mode-card recommended" onClick={() => onSelect('quick')}>
-          <span className="mode-badge">Rekommenderad</span>
+        <button className="mode-card" onClick={() => onSelect('quick')}>
           <span className="mode-time">Cirka 5 minuter</span>
           <strong>Snabbtest</strong>
-          <p>{quickQuestions.length} särskilt utslagsgivande frågor med hög svarstäckning hos partierna.</p>
+          <p>{quickQuestions.length} frågor inom samtliga ämnen. Varje fråga har källbelagda svar från minst sju partier.</p>
           <span className="mode-action">Starta snabbtestet <ArrowRight size={17} /></span>
         </button>
         <button className="mode-card" onClick={() => onSelect('full')}>
           <span className="mode-time">Cirka 15 minuter</span>
           <strong>Fullständigt test</strong>
-          <p>Alla {questions.length} frågor för en mer heltäckande politisk profil.</p>
-          <span className="mode-action">Starta hela testet <ArrowRight size={17} /></span>
+          <p>Samtliga {questions.length} sak- och värderingsfrågor inom kompassens alla ämnen.</p>
+          <span className="mode-action">Starta fullständiga testet <ArrowRight size={17} /></span>
         </button>
       </div>
       <p className="mode-note"><ShieldCheck size={17} /> Båda varianterna är balanserade så att raka ettor eller femmor hamnar nära origo.</p>

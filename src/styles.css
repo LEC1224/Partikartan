@@ -352,20 +352,6 @@ main { flex: 1; }
   transition: border 150ms, background 150ms, transform 150ms, box-shadow 150ms;
 }
 .mode-card:hover { border-color: #87988d; background: var(--white); transform: translateY(-2px); }
-.mode-card.recommended { border-color: rgba(31, 87, 66, .68); background: #e7eee8; box-shadow: 0 13px 32px rgba(31, 87, 66, .08); }
-.mode-badge {
-  position: absolute;
-  top: 17px;
-  right: 17px;
-  padding: 6px 9px;
-  border-radius: 99px;
-  background: var(--green);
-  color: white;
-  font-size: .64rem;
-  font-weight: 800;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-}
 .mode-time { color: var(--green); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .mode-card strong { margin-top: 27px; font: 500 2rem/1.05 Georgia, serif; }
 .mode-card p { max-width: 360px; margin: 15px 0 27px; color: var(--muted); font-size: .9rem; line-height: 1.55; }

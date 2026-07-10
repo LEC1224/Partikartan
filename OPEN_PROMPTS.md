@@ -197,3 +197,7 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 34
 
 > Grymt! Uppdatera open prompts, commita och pusha!
+
+## Prompt 35
+
+> Snabbtest borde inte vara rekommenderat. Håll alla val användaren ska göra så neutrala som möjligt. När du är klar, uppdatera open prompts och gör en commit
