@@ -34,7 +34,7 @@ npm run app
 
 Produktionsbygget förhandsrenderar startsidan till HTML så att sökmotorer och andra klienter kan läsa sidans huvudinnehåll utan att först köra JavaScript. Servern exponerar även `robots.txt` och `sitemap.xml`, gör canonical- och delningsadresser absoluta och cachelagrar versionsmärkta resurser.
 
-Sätt `SITE_URL` till sajtens publika ursprung i produktion, till exempel `https://example.se`. Om variabeln saknas använder servern inkommande protokoll och värdnamn (inklusive `X-Forwarded-Proto` och `X-Forwarded-Host` bakom en proxy).
+Den inbyggda publika adressen är `https://partikarta.se`, så att Open Graph-fält, canonical-adress, `robots.txt` och sitemap aldrig råkar peka på en intern proxyadress. Sätt vid behov `SITE_URL` till ett annat publikt ursprung; servern använder annars vidarebefordrat protokoll och värdnamn när de inte är interna.
 
 ## Feedback
 

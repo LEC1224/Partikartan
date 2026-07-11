@@ -245,3 +245,11 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 44
 
 > Okej, vi skiter i någon fancy rubrik i thumbnailen. Gör istället "PARTIKARTAN" texten större, och ersätt "värderingar" med "GAL-TAN" i de små attributen
+
+## Prompt 45
+
+> The thumbnail doesn't seem to work when sharing the site on Facebook?
+
+## Prompt 46
+
+> Asså hemsidan är ju på partikarta.se, inte partikartan.se. men koden är i det här projektet så det går att kontrollera lokalt också

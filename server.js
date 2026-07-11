@@ -9,6 +9,7 @@ const ROOT = resolve('.')
 const DIST_DIR = resolve(ROOT, 'dist')
 const FEEDBACK_DIR = resolve(ROOT, 'feedback-data')
 const MAX_BODY_BYTES = 16 * 1024
+const DEFAULT_PUBLIC_ORIGIN = 'https://partikarta.se'
 const feedbackConfig = JSON.parse(
   await readFile(new URL('./src/data/feedbackConfig.json', import.meta.url), 'utf8'),
 )
@@ -53,7 +54,7 @@ function getPublicOrigin(request) {
       const url = new URL(configuredOrigin)
       if (url.protocol === 'http:' || url.protocol === 'https:') return url.origin
     } catch {
-      // Fall through to the request origin when SITE_URL is malformed.
+      // Fall through to a forwarded or built-in public origin when SITE_URL is malformed.
     }
   }
 
@@ -63,9 +64,18 @@ function getPublicOrigin(request) {
   const host = forwardedHost || request.headers.host || `${HOST}:${PORT}`
 
   try {
-    return new URL(`${protocol}://${host}`).origin
+    const origin = new URL(`${protocol}://${host}`).origin
+    const hostname = new URL(origin).hostname
+    const isInternalHost = hostname === 'localhost'
+      || hostname === '127.0.0.1'
+      || hostname === '::1'
+
+    // A reverse proxy may forward requests to this Node server with an internal
+    // Host header. Publishing that address in Open Graph metadata makes the
+    // preview image unreachable to Facebook and other external crawlers.
+    return isInternalHost ? DEFAULT_PUBLIC_ORIGIN : origin
   } catch {
-    return `http://${HOST}:${PORT}`
+    return DEFAULT_PUBLIC_ORIGIN
   }
 }
 
@@ -81,14 +91,16 @@ function escapeXml(value) {
 function addAbsoluteSeoUrls(html, origin) {
   const homeUrl = `${origin}/`
   const imageUrl = `${origin}/social-preview.png`
+  const defaultHomeUrl = `${DEFAULT_PUBLIC_ORIGIN}/`
+  const defaultImageUrl = `${DEFAULT_PUBLIC_ORIGIN}/social-preview.png`
 
   return html
-    .replaceAll('href="/" data-seo-origin', `href="${homeUrl}" data-seo-origin`)
-    .replaceAll('content="/" data-seo-origin', `content="${homeUrl}" data-seo-origin`)
-    .replaceAll('content="/social-preview.png" data-seo-origin', `content="${imageUrl}" data-seo-origin`)
-    .replaceAll('"@id": "/#', `"@id": "${homeUrl}#`)
-    .replaceAll('"url": "/"', `"url": "${homeUrl}"`)
-    .replaceAll('"image": "/social-preview.png"', `"image": "${imageUrl}"`)
+    .replaceAll(`href="${defaultHomeUrl}"`, `href="${homeUrl}"`)
+    .replaceAll(`content="${defaultHomeUrl}"`, `content="${homeUrl}"`)
+    .replaceAll(`content="${defaultImageUrl}"`, `content="${imageUrl}"`)
+    .replaceAll(`"@id": "${defaultHomeUrl}#`, `"@id": "${homeUrl}#`)
+    .replaceAll(`"url": "${defaultHomeUrl}"`, `"url": "${homeUrl}"`)
+    .replaceAll(`"image": "${defaultImageUrl}"`, `"image": "${imageUrl}"`)
 }
 
 function sendRobots(request, response) {
