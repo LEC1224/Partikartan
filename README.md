@@ -32,6 +32,10 @@ npm run app
 
 `npm run app` bygger appen och startar den lilla Node-servern som behövs för att feedbackformuläret ska kunna skriva textfiler till `feedback-data/`.
 
+Produktionsbygget förhandsrenderar startsidan till HTML så att sökmotorer och andra klienter kan läsa sidans huvudinnehåll utan att först köra JavaScript. Servern exponerar även `robots.txt` och `sitemap.xml`, gör canonical- och delningsadresser absoluta och cachelagrar versionsmärkta resurser.
+
+Sätt `SITE_URL` till sajtens publika ursprung i produktion, till exempel `https://example.se`. Om variabeln saknas använder servern inkommande protokoll och värdnamn (inklusive `X-Forwarded-Proto` och `X-Forwarded-Host` bakom en proxy).
+
 ## Feedback
 
 Feedback skickas till `POST /api/feedback` när appen körs via `npm run app` eller `npm run serve` efter build. Formuläret visar relevanta följdfrågor för den valda ärendetypen och varje inskick sparas som en separat, strukturerad `.txt`-fil i `feedback-data/`.

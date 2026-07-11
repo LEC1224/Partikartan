@@ -39,9 +39,84 @@ const mimeTypes = {
   '.ico': 'image/x-icon',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
   '.svg': 'image/svg+xml',
   '.txt': 'text/plain; charset=utf-8',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.webp': 'image/webp',
+}
+
+function getPublicOrigin(request) {
+  const configuredOrigin = process.env.SITE_URL?.trim()
+  if (configuredOrigin) {
+    try {
+      const url = new URL(configuredOrigin)
+      if (url.protocol === 'http:' || url.protocol === 'https:') return url.origin
+    } catch {
+      // Fall through to the request origin when SITE_URL is malformed.
+    }
+  }
+
+  const forwardedProtocol = String(request.headers['x-forwarded-proto'] ?? '').split(',')[0].trim()
+  const forwardedHost = String(request.headers['x-forwarded-host'] ?? '').split(',')[0].trim()
+  const protocol = forwardedProtocol === 'https' ? 'https' : 'http'
+  const host = forwardedHost || request.headers.host || `${HOST}:${PORT}`
+
+  try {
+    return new URL(`${protocol}://${host}`).origin
+  } catch {
+    return `http://${HOST}:${PORT}`
+  }
+}
+
+function escapeXml(value) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;')
+}
+
+function addAbsoluteSeoUrls(html, origin) {
+  const homeUrl = `${origin}/`
+  const imageUrl = `${origin}/social-preview.png`
+
+  return html
+    .replaceAll('href="/" data-seo-origin', `href="${homeUrl}" data-seo-origin`)
+    .replaceAll('content="/" data-seo-origin', `content="${homeUrl}" data-seo-origin`)
+    .replaceAll('content="/social-preview.png" data-seo-origin', `content="${imageUrl}" data-seo-origin`)
+    .replaceAll('"@id": "/#', `"@id": "${homeUrl}#`)
+    .replaceAll('"url": "/"', `"url": "${homeUrl}"`)
+    .replaceAll('"image": "/social-preview.png"', `"image": "${imageUrl}"`)
+}
+
+function sendRobots(request, response) {
+  const origin = getPublicOrigin(request)
+  const body = `User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`
+  response.writeHead(200, {
+    'content-type': mimeTypes['.txt'],
+    'cache-control': 'public, max-age=3600',
+  })
+  response.end(body)
+}
+
+function sendSitemap(request, response) {
+  const homeUrl = escapeXml(`${getPublicOrigin(request)}/`)
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${homeUrl}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`
+  response.writeHead(200, {
+    'content-type': 'application/xml; charset=utf-8',
+    'cache-control': 'public, max-age=3600',
+  })
+  response.end(body)
 }
 
 function sendJson(response, status, payload) {
@@ -201,21 +276,42 @@ async function serveStatic(request, response) {
   try {
     const stats = await stat(candidate)
     const filePath = stats.isDirectory() ? join(candidate, 'index.html') : candidate
-    const content = await readFile(filePath)
+    const isHtml = extname(filePath) === '.html'
+    const rawContent = await readFile(filePath, isHtml ? 'utf8' : undefined)
+    const content = isHtml ? addAbsoluteSeoUrls(rawContent, getPublicOrigin(request)) : rawContent
+    const isHashedAsset = requestedPath.startsWith('/assets/')
     response.writeHead(200, {
       'content-type': mimeTypes[extname(filePath)] ?? 'application/octet-stream',
+      'cache-control': isHtml
+        ? 'no-cache'
+        : isHashedAsset
+          ? 'public, max-age=31536000, immutable'
+          : 'public, max-age=604800',
     })
     response.end(content)
   } catch {
-    const fallback = await readFile(join(DIST_DIR, 'index.html'))
-    response.writeHead(200, { 'content-type': mimeTypes['.html'] })
-    response.end(fallback)
+    const fallback = await readFile(join(DIST_DIR, 'index.html'), 'utf8')
+    response.writeHead(200, {
+      'content-type': mimeTypes['.html'],
+      'cache-control': 'no-cache',
+    })
+    response.end(addAbsoluteSeoUrls(fallback, getPublicOrigin(request)))
   }
 }
 
 const server = createServer(async (request, response) => {
   if (request.url?.startsWith('/api/feedback')) {
     await handleFeedback(request, response)
+    return
+  }
+
+  if (request.url?.startsWith('/robots.txt')) {
+    sendRobots(request, response)
+    return
+  }
+
+  if (request.url?.startsWith('/sitemap.xml')) {
+    sendSitemap(request, response)
     return
   }
 

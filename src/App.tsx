@@ -289,7 +289,7 @@ function StartPage({
           <p className="eyebrow"><span /> Sverige · Politik · 2026</p>
           <h1>Var står du<br />politiskt?</h1>
           <p className="hero-intro">
-            Utforska dina värderingar på en karta anpassad efter svensk politik. Partikartan är avsedd att vara objektiv, oberoende och transparent.
+            Gör ett politiskt test på två axlar: ekonomisk vänster–höger och GAL–TAN. Partikartan är en oberoende och transparent valkompass för svensk politik 2026.
           </p>
           <div className="hero-actions">
             <button className="primary-button" onClick={complete ? onResult : hasProgress ? onResume : onStart}>
@@ -313,10 +313,52 @@ function StartPage({
           <div className="visual-note note-two"><strong>GAL–TAN</strong><br />värderingar</div>
         </div>
       </section>
+      <SeoOverview />
       <section className="principles">
         <TransparencySection onFeedback={onFeedback} />
       </section>
     </>
+  )
+}
+
+function SeoOverview() {
+  return (
+    <section className="seo-overview" aria-labelledby="gal-tan-heading">
+      <div className="page-width">
+        <div className="seo-heading">
+          <div>
+            <p className="eyebrow"><span /> Två politiska dimensioner</p>
+            <h2 id="gal-tan-heading">En svensk GAL–TAN-kompass inför valet 2026</h2>
+          </div>
+          <p>
+            Partikartan kombinerar en politisk kompass med en valkompass. Du får både se var du hamnar på kartan och hur dina enskilda svar stämmer överens med riksdagspartiernas källbelagda ståndpunkter.
+          </p>
+        </div>
+        <div className="seo-grid">
+          <article>
+            <span className="seo-number">01</span>
+            <h3>Vad betyder GAL–TAN?</h3>
+            <p>
+              GAL står för gröna, alternativa och frihetliga värderingar. TAN står för traditionella, auktoritära och nationalistiska värderingar. Axeln kompletterar den ekonomiska vänster–höger-skalan.
+            </p>
+          </article>
+          <article>
+            <span className="seo-number">02</span>
+            <h3>25 eller 74 politiska frågor</h3>
+            <p>
+              Välj ett snabbt GAL–TAN-test på cirka fem minuter eller den fullständiga politiska kompassen. Båda versionerna täcker sakpolitik och värderingsfrågor anpassade till Sverige.
+            </p>
+          </article>
+          <article>
+            <span className="seo-number">03</span>
+            <h3>Jämför med svenska partier</h3>
+            <p>
+              Se din matchning med Vänsterpartiet, Socialdemokraterna, Miljöpartiet, Centerpartiet, Liberalerna, Moderaterna, Kristdemokraterna och Sverigedemokraterna.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
   )
 }
 

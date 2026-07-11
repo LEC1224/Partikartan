@@ -233,3 +233,15 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 41
 
 > Commita detta, och granska även andra commits, fixa till Open Prompts och pusha när heal arbetsträdet är fritt
+
+## Prompt 42
+
+> Lägg en del tid och kraft på att sökmotor-optimisera den här hemsidan, så att folk som vill hitta en bra GAL-TAN kompass faktiskt kan hitta den här. Ge också lite krut till att förfina hemsidans metadata, såsom en flikikon, inbäddnings-thumbnail och sånt.
+
+## Prompt 43
+
+> Grymt! Gillar det mesta, men "Sveriges GAL-TAN-kompass" låter lite pompöst i thumbnailen. Gör den lite mer anonym, och ändra flikikonen till att matcha loggan som syns bredvid "Partikartan" på nav-fältet.
+
+## Prompt 44
+
+> Okej, vi skiter i någon fancy rubrik i thumbnailen. Gör istället "PARTIKARTAN" texten större, och ersätt "värderingar" med "GAL-TAN" i de små attributen
