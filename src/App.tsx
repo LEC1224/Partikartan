@@ -297,6 +297,11 @@ function StartPage({
               {complete ? 'Visa ditt resultat' : hasProgress ? 'Fortsätt där du slutade' : 'Starta kompassen'}
               <ArrowRight size={18} />
             </button>
+            {!complete && (
+              <button className="secondary-button" onClick={onResult}>
+                Visa partisvar <FileText size={16} />
+              </button>
+            )}
             {hasProgress && (
               <button className="secondary-button" onClick={onReset}>Börja om <RefreshCw size={16} /></button>
             )}
