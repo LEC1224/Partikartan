@@ -974,6 +974,7 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
         <div>
           <span className="overline">Svar fråga för fråga</span>
           <h2>Din matchning mot partierna</h2>
+          <p className="answer-source-hint"><Info size={14} /> Hovra över eller tryck på en partiikon för att se källorna.</p>
         </div>
         <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Samma riktning men olika styrka räknas som nästan match.</p>
       </div>
@@ -997,68 +998,59 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
               </div>
               <div className="answer-options">
                 {answerOptions.map((option) => {
-                  const markers = [
-                    ...(userAnswered && userAnswer === option.value
-                      ? [{ id: 'you', shortName: 'DU', name: 'Du', color: '#ed714f', textColor: '#fff', evidence: undefined }]
-                      : []),
-                    ...parties
-                      .map((party) => ({
-                        party,
-                        response: party.responses.find((response) => response.questionId === question.id)!,
-                      }))
-                      .filter(({ response }) => response.value === option.value)
-                      .map(({ party, response }) => ({
-                        id: party.id,
-                        shortName: party.shortName,
-                        name: party.name,
-                        color: party.color,
-                        textColor: markerTextColor(party),
-                        evidence: response.evidence,
-                      })),
-                  ]
+                  const userMatchesOption = userAnswered && userAnswer === option.value
+                  const partyMarkers = parties
+                    .map((party) => ({
+                      party,
+                      response: party.responses.find((response) => response.questionId === question.id)!,
+                    }))
+                    .filter(({ response }) => response.value === option.value)
+                    .map(({ party, response }) => ({
+                      id: party.id,
+                      shortName: party.shortName,
+                      name: party.name,
+                      color: party.color,
+                      textColor: markerTextColor(party),
+                      evidence: response.evidence,
+                    }))
 
                   return (
                     <div className="answer-option" key={option.short} role="cell">
                       <span className="answer-option-label" title={option.label}>{option.short === '?' ? 'Vet ej' : option.short}</span>
-                      <div className="answer-token-stack">
-                        {markers.length > 0 ? markers.map((marker) => {
-                          if (marker.id === 'you') {
+                      <div className="answer-marker-groups">
+                        <div className="answer-user-slot">
+                          {userMatchesOption
+                            ? <span className="answer-token you-token" title="Du">DU</span>
+                            : <span className="answer-token-placeholder" aria-hidden="true" />}
+                        </div>
+                        <span className="answer-marker-divider" aria-hidden="true" />
+                        <div className="answer-party-stack">
+                          {partyMarkers.length > 0 ? partyMarkers.map((marker) => {
+                            const popoverId = `source-${question.id}-${marker.id}`
+                            const isOpen = sourcePopover?.id === popoverId
+
                             return (
-                              <span
-                                className="answer-token you-token"
+                              <button
+                                type="button"
+                                className="answer-token source-token"
                                 key={marker.id}
                                 style={{ background: marker.color, color: marker.textColor }}
-                                title={marker.name}
+                                aria-label={marker.evidence?.length
+                                  ? `Visa källa för ${marker.name}s svar`
+                                  : `Visa källstatus för ${marker.name}s svar`}
+                                aria-expanded={isOpen}
+                                aria-controls={popoverId}
+                                onMouseEnter={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                                onMouseLeave={closeSource}
+                                onFocus={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                                onBlur={closeSource}
+                                onClick={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
                               >
                                 {marker.shortName}
-                              </span>
+                              </button>
                             )
-                          }
-
-                          const popoverId = `source-${question.id}-${marker.id}`
-                          const isOpen = sourcePopover?.id === popoverId
-
-                          return (
-                            <button
-                              type="button"
-                              className="answer-token source-token"
-                              key={marker.id}
-                              style={{ background: marker.color, color: marker.textColor }}
-                              aria-label={marker.evidence?.length
-                                ? `Visa källa för ${marker.name}s svar`
-                                : `Visa källstatus för ${marker.name}s svar`}
-                              aria-expanded={isOpen}
-                              aria-controls={popoverId}
-                              onMouseEnter={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
-                              onMouseLeave={closeSource}
-                              onFocus={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
-                              onBlur={closeSource}
-                              onClick={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
-                            >
-                              {marker.shortName}
-                            </button>
-                          )
-                        }) : <span className="answer-token-placeholder" aria-hidden="true" />}
+                          }) : <span className="answer-token-placeholder" aria-hidden="true" />}
+                        </div>
                       </div>
                     </div>
                   )

@@ -253,3 +253,25 @@ Kontext: prompten innehöll en bifogad screenshot från "Om Partikartan"-modalen
 ## Prompt 46
 
 > Asså hemsidan är ju på partikarta.se, inte partikartan.se. men koden är i det här projektet så det går att kontrollera lokalt också
+
+## Prompt 47
+
+> Jag vill göra ett par förbrättringar till resultat-sidan. Framförallt listan över partier och användares svar på enskilda frågor.
+>
+> När man hovrar/tappar på en parti-ikon för en fråga, så ska det komma fram en liten ruta som innehåller en länk till källan som partiets svar utgår ifrån, så att användare kan granska svaren lättare.
+
+## Prompt 48
+
+> Commita det där. Sen lägger du till en knapp på startsidan för att ta användaren direkt till resultat-sidan, utan att behöva genomföra testet. Det kan stå "Visa partisvar" till exmepel
+
+## Prompt 49
+
+> Just nu blandas "Du" in bland alla partiers svar i kolumnerna för frågeresultaten. Jag tror det vore tydligare om "Du" hamnade över ett horisontellt sträck, och alla partier under det.
+
+## Prompt 50
+
+Kontext: prompten innehöll en bifogad screenshot av frågeresultaten där ytan direkt under rubriken "Din matchning mot partierna" var markerad.
+
+> Grymt! Lägg till en liten info här under rubriken om att man kan hovra över partiernas ikoner för att se källor. Uppdatera Open Prompts, lägg in OPEN_FACTCHECK_PROMPT.md i git efter att lagt in lite kontext till den, alltså att prompten användes för dubbelkoll av källor i en lokalt körd agent med den öppna modellen ornith:35b. Sen commita
+
+Kontextnotering: Den separata kontrollprompten finns i [`OPEN_FACTCHECK_PROMPT.md`](OPEN_FACTCHECK_PROMPT.md).
