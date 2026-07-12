@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
   ArrowLeft,
   ArrowRight,
@@ -32,7 +33,7 @@ import {
   COORDINATE_SCALE,
   countKnownPartyResponses,
 } from './lib/scoring'
-import type { Answers, AnswerValue, Coordinate, Party, Question, TopicId } from './types'
+import type { Answers, AnswerValue, Coordinate, Evidence, Party, Question, TopicId } from './types'
 import type { PartyMatch } from './lib/scoring'
 
 type View = 'start' | 'quiz-mode' | 'priorities' | 'quiz' | 'result'
@@ -891,6 +892,77 @@ function PoliticalChart({
 }
 
 function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answers; questions: Question[] }) {
+  const [sourcePopover, setSourcePopover] = useState<{
+    id: string
+    partyName: string
+    evidence: Evidence[]
+    top: number
+    left: number
+  } | null>(null)
+  const [closeTimer, setCloseTimer] = useState<number | null>(null)
+
+  const cancelClose = () => {
+    if (closeTimer != null) {
+      window.clearTimeout(closeTimer)
+      setCloseTimer(null)
+    }
+  }
+
+  const closeSource = () => {
+    cancelClose()
+    setCloseTimer(window.setTimeout(() => {
+      setSourcePopover(null)
+      setCloseTimer(null)
+    }, 140))
+  }
+
+  const openSource = (
+    id: string,
+    partyName: string,
+    evidence: Evidence[],
+    target: HTMLElement,
+  ) => {
+    cancelClose()
+    const rect = target.getBoundingClientRect()
+    const popoverWidth = Math.min(280, window.innerWidth - 24)
+    const estimatedHeight = evidence.length > 1 ? 164 : 116
+    const left = Math.min(
+      Math.max(12, rect.left + rect.width / 2 - popoverWidth / 2),
+      window.innerWidth - popoverWidth - 12,
+    )
+    const top = rect.bottom + estimatedHeight + 12 > window.innerHeight && rect.top > estimatedHeight
+      ? rect.top - estimatedHeight - 8
+      : rect.bottom + 8
+
+    setSourcePopover({ id, partyName, evidence, top, left })
+  }
+
+  useEffect(() => () => {
+    if (closeTimer != null) window.clearTimeout(closeTimer)
+  }, [closeTimer])
+
+  useEffect(() => {
+    if (!sourcePopover) return
+
+    const closeOnOutsideInteraction = (event: PointerEvent | KeyboardEvent) => {
+      if (event instanceof KeyboardEvent) {
+        if (event.key === 'Escape') setSourcePopover(null)
+        return
+      }
+
+      if (!(event.target instanceof Element) || !event.target.closest('.source-token, .source-popover')) {
+        setSourcePopover(null)
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsideInteraction)
+    document.addEventListener('keydown', closeOnOutsideInteraction)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideInteraction)
+      document.removeEventListener('keydown', closeOnOutsideInteraction)
+    }
+  }, [sourcePopover])
+
   return (
     <section className="answer-comparison">
       <div className="answer-comparison-heading">
@@ -900,7 +972,12 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
         </div>
         <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Samma riktning men olika styrka räknas som nästan match.</p>
       </div>
-      <div className="answer-table" role="table" aria-label="Svar per fråga och parti">
+      <div
+        className="answer-table"
+        role="table"
+        aria-label="Svar per fråga och parti"
+        onScrollCapture={() => setSourcePopover(null)}
+      >
         {quizQuestions.map((question, index) => {
           const userAnswered = question.id in answers
           const userAnswer = answers[question.id]
@@ -917,16 +994,21 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
                 {answerOptions.map((option) => {
                   const markers = [
                     ...(userAnswered && userAnswer === option.value
-                      ? [{ id: 'you', shortName: 'DU', name: 'Du', color: '#ed714f', textColor: '#fff' }]
+                      ? [{ id: 'you', shortName: 'DU', name: 'Du', color: '#ed714f', textColor: '#fff', evidence: undefined }]
                       : []),
                     ...parties
-                      .filter((party) => party.responses.find((response) => response.questionId === question.id)?.value === option.value)
                       .map((party) => ({
+                        party,
+                        response: party.responses.find((response) => response.questionId === question.id)!,
+                      }))
+                      .filter(({ response }) => response.value === option.value)
+                      .map(({ party, response }) => ({
                         id: party.id,
                         shortName: party.shortName,
                         name: party.name,
                         color: party.color,
                         textColor: markerTextColor(party),
+                        evidence: response.evidence,
                       })),
                   ]
 
@@ -934,16 +1016,44 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
                     <div className="answer-option" key={option.short} role="cell">
                       <span className="answer-option-label" title={option.label}>{option.short === '?' ? 'Vet ej' : option.short}</span>
                       <div className="answer-token-stack">
-                        {markers.length > 0 ? markers.map((marker) => (
-                          <span
-                            className={`answer-token ${marker.id === 'you' ? 'you-token' : ''}`}
-                            key={marker.id}
-                            style={{ background: marker.color, color: marker.textColor }}
-                            title={marker.name}
-                          >
-                            {marker.shortName}
-                          </span>
-                        )) : <span className="answer-token-placeholder" aria-hidden="true" />}
+                        {markers.length > 0 ? markers.map((marker) => {
+                          if (marker.id === 'you') {
+                            return (
+                              <span
+                                className="answer-token you-token"
+                                key={marker.id}
+                                style={{ background: marker.color, color: marker.textColor }}
+                                title={marker.name}
+                              >
+                                {marker.shortName}
+                              </span>
+                            )
+                          }
+
+                          const popoverId = `source-${question.id}-${marker.id}`
+                          const isOpen = sourcePopover?.id === popoverId
+
+                          return (
+                            <button
+                              type="button"
+                              className="answer-token source-token"
+                              key={marker.id}
+                              style={{ background: marker.color, color: marker.textColor }}
+                              aria-label={marker.evidence?.length
+                                ? `Visa källa för ${marker.name}s svar`
+                                : `Visa källstatus för ${marker.name}s svar`}
+                              aria-expanded={isOpen}
+                              aria-controls={popoverId}
+                              onMouseEnter={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                              onMouseLeave={closeSource}
+                              onFocus={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                              onBlur={closeSource}
+                              onClick={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                            >
+                              {marker.shortName}
+                            </button>
+                          )
+                        }) : <span className="answer-token-placeholder" aria-hidden="true" />}
                       </div>
                     </div>
                   )
@@ -953,6 +1063,34 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
           )
         })}
       </div>
+      {sourcePopover && typeof document !== 'undefined' && createPortal(
+        <aside
+          className="source-popover"
+          id={sourcePopover.id}
+          role="dialog"
+          aria-label={`Källor för ${sourcePopover.partyName}`}
+          style={{ top: sourcePopover.top, left: sourcePopover.left }}
+          onMouseEnter={cancelClose}
+          onMouseLeave={closeSource}
+        >
+          <strong>{sourcePopover.partyName}</strong>
+          {sourcePopover.evidence.length > 0 ? (
+            <>
+              <span>Källa till partiets svar</span>
+              <ul>
+                {sourcePopover.evidence.map((item) => (
+                  <li key={item.url}>
+                    <a href={item.url} target="_blank" rel="noreferrer">
+                      {item.title} <ExternalLink size={12} aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : <p>Inget tydligt källbelägg har hittats för den här frågan.</p>}
+        </aside>,
+        document.body,
+      )}
     </section>
   )
 }
