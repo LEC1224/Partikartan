@@ -6,8 +6,8 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 
 ## Funktioner
 
-- 51 sakfrågor och 23 värderingsfrågor.
-- Val mellan ett snabbtest med 25 fasta frågor och det fullständiga testet med 74 frågor.
+- 51 sakfrågor och 22 värderingsfrågor.
+- Val mellan ett snabbtest med 25 fasta frågor och det fullständiga testet med 73 frågor.
 - Svarsskala 1-5 plus `Vet ej`.
 - Resultat på två axlar: ekonomisk vänster-höger och GAL-TAN.
 - Partijämförelse som räknas fråga för fråga, där nära svar ger delpoäng.

@@ -2,11 +2,12 @@ import type { AnswerValue, Evidence, Party, PartyResponse } from '../types'
 import { questions } from './questions'
 
 const ACCESSED_AT = '2026-07-09'
+const REVIEWED_AT = '2026-07-16'
 
-const source = (url: string, title: string): Evidence => ({
+const source = (url: string, title: string, accessedAt = ACCESSED_AT): Evidence => ({
   url,
   title,
-  accessedAt: ACCESSED_AT,
+  accessedAt,
 })
 
 const response = (
@@ -54,6 +55,21 @@ const sources = {
   vAkassa: source(
     'https://www.vansterpartiet.se/var-politik/politik-a-o/a-kassa/',
     'Vänsterpartiet om a-kassa',
+  ),
+  vHousing: source(
+    'https://www.vansterpartiet.se/var-politik/politik-a-o/hyresratter/',
+    'Vänsterpartiet om hyresrätter och marknadshyror',
+    REVIEWED_AT,
+  ),
+  vHealthcare: source(
+    'https://www.vansterpartiet.se/var-politik/politik-a-o/sjukvard/',
+    'Vänsterpartiet om vård efter behov och privata sjukvårdsförsäkringar',
+    REVIEWED_AT,
+  ),
+  vElection2026: source(
+    'https://www.vansterpartiet.se/val2026/darfor-ska-du-rosta-pa-vansterpartiet/',
+    'Vänsterpartiets valplattform 2026',
+    REVIEWED_AT,
   ),
   vPropertyTax: source(
     'https://www.vansterpartiet.se/wp-content/uploads/2026/02/K26-A-motionssvar.pdf',
@@ -127,6 +143,16 @@ const sources = {
     'https://www.socialdemokraterna.se/var-politik/a-till-o/religiosa-skolor',
     'Socialdemokraterna om religiösa skolor',
   ),
+  sPrivateInsurance: source(
+    'https://www.socialdemokraterna.se/nyheter/nyheter/2022-07-08-den-med-privat-sjukvardsforsakring-ska-inte-snabbare-fa-vard',
+    'Socialdemokraterna om privata sjukvårdsförsäkringar och remisser',
+    REVIEWED_AT,
+  ),
+  sTotalDefense: source(
+    'https://www.socialdemokraterna.se/var-politik/a-till-o/totalforsvar',
+    'Socialdemokraterna om totalförsvar och beredskapsskatt',
+    REVIEWED_AT,
+  ),
   mpProgram: source(
     'https://www.mp.se/wp-content/uploads/2025/12/miljopartiets-partiprogram-2025.pdf',
     'Miljöpartiets partiprogram 2025',
@@ -155,6 +181,21 @@ const sources = {
     'https://www.mp.se/politik/bostader/',
     'Miljöpartiet om bostäder',
   ),
+  mpAkassa: source(
+    'https://www.mp.se/politik/arbetsmarknad-och-integration/',
+    'Miljöpartiet om arbetsmarknad och a-kassa',
+    REVIEWED_AT,
+  ),
+  mpHealthcare: source(
+    'https://www.mp.se/politik/halso-och-sjukvard/',
+    'Miljöpartiet om offentligt finansierad vård och privata sjukvårdsförsäkringar',
+    REVIEWED_AT,
+  ),
+  mpEconomy: source(
+    'https://www.mp.se/politik/gron-ekonomi/',
+    'Miljöpartiet om grön ekonomi och beskattning av den rikaste procenten',
+    REVIEWED_AT,
+  ),
   mpWelfareProfits: source(
     'https://www.mp.se/politik/vinster-i-valfarden/',
     'Miljöpartiet om vinster i välfärden',
@@ -164,8 +205,9 @@ const sources = {
     'Miljöpartiet om gårdsförsäljning av alkohol',
   ),
   mpNato: source(
-    'https://www.mp.se/politik/motion-om-sveriges-medlemskap-i-nato/',
-    'Miljöpartiet om Sveriges medlemskap i Nato',
+    'https://www.mp.se/politik/forsvar-och-sakerhet/',
+    'Miljöpartiet om försvar, säkerhet och medlemskapet i Nato',
+    REVIEWED_AT,
   ),
   mpSchoolProgram: source(
     'https://www.mp.se/wp-content/uploads/2024/05/utbildningspolitiskt-program.pdf',
@@ -198,6 +240,11 @@ const sources = {
   cAkassa: source(
     'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/jobb/a-kassa-och-omstallningsforsakring',
     'Centerpartiet om a-kassa och omställningsförsäkring',
+  ),
+  cIncomeTax: source(
+    'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/ekonomi-och-skatter/inkomstskatt',
+    'Centerpartiet om inkomstskatt och gränsen för statlig inkomstskatt',
+    REVIEWED_AT,
   ),
   cHousingTaxes: source(
     'https://www.centerpartiet.se/centerpartiets-politik/centerpartiets-politik-a-o/bostader/bostadsskatter',
@@ -255,6 +302,11 @@ const sources = {
     'https://www.liberalerna.se/politik/rut-och-rot-avdrag',
     'Liberalerna om RUT- och ROT-avdrag',
   ),
+  lStateIncomeTax: source(
+    'https://www.liberalerna.se/nyheter/liberalerna-kraver-sankt-statlig-inkomstskatt',
+    'Liberalerna om sänkt statlig inkomstskatt',
+    REVIEWED_AT,
+  ),
   lWelfareProfits: source(
     'https://www.liberalerna.se/politik/vinstintresset-i-skolan',
     'Liberalerna om vinstintresset i skolan',
@@ -270,6 +322,11 @@ const sources = {
   lFamilyMigration: source(
     'https://www.liberalerna.se/nyheter/tydligare-arbetslinje-okar-integrationen',
     'Liberalerna om försörjningskrav vid anhöriginvandring',
+  ),
+  lImmigration: source(
+    'https://www.liberalerna.se/politik/invandring',
+    'Liberalerna om asylrätt och skyddsskäl',
+    REVIEWED_AT,
   ),
   lReligiousSchools: source(
     'https://www.liberalerna.se/politik/religiosa-friskolor',
@@ -326,6 +383,11 @@ const sources = {
   mEconomy: source(
     'https://moderaterna.se/moderatkvinnorna/var-politik/ekonomi-och-jobb/',
     'Moderaterna om ekonomi och jobb',
+  ),
+  mIncomeTax: source(
+    'https://moderaterna.se/skolarbete/',
+    'Moderaterna om statlig inkomstskatt',
+    REVIEWED_AT,
   ),
   mEmployerFees: source(
     'https://moderaterna.se/nyhet/nytt-foretagarpaket-i-hostbudgeten/',
@@ -435,10 +497,6 @@ const sources = {
     'https://kristdemokraterna.se/var-politik/politik-a-till-o/kvotflyktingsystem',
     'Kristdemokraterna om kvotflyktingsystem',
   ),
-  kdRut: source(
-    'https://kristdemokraterna.se/var-politik/politik-a-till-o/rot--och-rut-avdrag',
-    'Kristdemokraterna om ROT- och RUT-avdrag',
-  ),
   kdWitnesses: source(
     'https://kristdemokraterna.se/var-politik/politik-a-till-o/anonyma-vittnen',
     'Kristdemokraterna om anonyma vittnen',
@@ -515,10 +573,6 @@ const sources = {
     'https://event.sd.se/wp-content/uploads/2025/09/politiska-motioner-am-lo_final.pdf?251121090338=',
     'Sverigedemokraternas motionshandlingar 2025',
   ),
-  sdElectionPlatform: source(
-    'https://www.sd.se/wp-content/uploads/2022/07/sverigedemokraternas-valplattform-2022-april.pdf',
-    'Sverigedemokraternas valplattform 2022',
-  ),
   sdSpringBudget: source(
     'https://www.sd.se/wp-content/uploads/2022/07/varbudget-2022-formgiven.pdf',
     'Sverigedemokraternas vårbudget 2022',
@@ -564,17 +618,19 @@ const codedParties: Party[] = [
     name: 'Vänsterpartiet',
     color: '#DA291C',
     responses: [
-      response('s01', 5, 'medium', sources.vProgram),
+      response('s01', 4, 'medium', sources.vTax),
       response('s02', 1, 'high', sources.vProgram),
       response('s03', 5, 'high', sources.vAkassa),
+      response('s04', 1, 'high', sources.vHousing),
       response('s05', 4, 'medium', sources.vPropertyTax),
       response('s07', 5, 'high', sources.vProgram),
       response('s08', 1, 'medium', sources.vProgram),
       response('s09', 5, 'high', sources.vProgram),
       response('s10', 1, 'medium', sources.vTax),
-      response('s11', 5, 'medium', sources.vProgram),
+      response('s11', 4, 'medium', sources.vHealthcare),
       response('s13', 5, 'high', sources.vProgram),
       response('s14', 1, 'high', sources.vProgram),
+      response('s15', 4, 'medium', sources.vElection2026),
       response('s17', 1, 'high', sources.vProgram),
       response('s22', 1, 'high', sources.vAlcohol),
       response('s23', 5, 'high', sources.vProgram),
@@ -611,7 +667,6 @@ const codedParties: Party[] = [
       response('v15', 5, 'high', sources.vProgram),
       response('v17', 5, 'high', sources.vProgram),
       response('v19', 2, 'high', sources.vProgram),
-      response('v22', 2, 'medium', sources.vProgram),
       response('v23', 5, 'high', sources.vProgram),
     ],
   },
@@ -621,14 +676,13 @@ const codedParties: Party[] = [
     name: 'Socialdemokraterna',
     color: '#E8112D',
     responses: [
-      response('s01', 4, 'high', sources.sGuidelines),
       response('s02', 1, 'high', sources.sGuidelines),
       response('s03', 5, 'high', sources.sAkassa),
       response('s05', 1, 'high', sources.sPropertyTax),
       response('s08', 2, 'medium', sources.sGuidelines),
       response('s09', 5, 'high', sources.sProgram),
       response('s10', 2, 'medium', sources.sGuidelines),
-      response('s11', 5, 'medium', sources.sProgram),
+      response('s11', 5, 'high', sources.sPrivateInsurance),
       response('s13', 4, 'medium', sources.sProgram),
       response('s14', 1, 'high', sources.sGuidelines),
       response('s17', 5, 'high', sources.sMigration),
@@ -667,6 +721,7 @@ const codedParties: Party[] = [
       response('v15', 4, 'high', sources.sGuidelines),
       response('v18', 4, 'high', sources.sGuidelines),
       response('v19', 4, 'high', sources.sGuidelines),
+      response('v21', 5, 'high', sources.sTotalDefense),
       response('v23', 5, 'medium', sources.sProgram),
     ],
   },
@@ -676,14 +731,15 @@ const codedParties: Party[] = [
     name: 'Miljöpartiet',
     color: '#53A045',
     responses: [
-      response('s01', 4, 'high', sources.mpProgram),
       response('s02', 1, 'high', sources.mpWelfareProfits),
+      response('s03', 4, 'medium', sources.mpAkassa),
       response('s04', 1, 'high', sources.mpHousing),
       response('s08', 2, 'medium', sources.mpProgram),
       response('s09', 5, 'high', sources.mpProgram),
       response('s10', 2, 'medium', sources.mpProgram),
-      response('s11', 5, 'medium', sources.mpProgram),
+      response('s11', 4, 'medium', sources.mpHealthcare),
       response('s13', 5, 'high', sources.mpProgram),
+      response('s15', 4, 'medium', sources.mpEconomy),
       response('s16', 5, 'high', sources.mpMigration),
       response('s17', 1, 'high', sources.mpProgram),
       response('s21', 1, 'high', sources.mpProgram),
@@ -695,7 +751,7 @@ const codedParties: Party[] = [
       response('s28', 5, 'high', sources.mpProgram),
       response('s30', 4, 'high', sources.mpProgram),
       response('s32', 5, 'high', sources.mpEuManifest),
-      response('s33', 2, 'medium', sources.mpNato),
+      response('s33', 4, 'high', sources.mpNato),
       response('s34', 1, 'high', [sources.mpProgram, sources.mpActionProgram]),
       response('s35', 2, 'medium', [sources.mpProgram, sources.mpActionProgram]),
       response('s37', 5, 'high', [sources.mpProgram, sources.mpActionProgram]),
@@ -720,7 +776,6 @@ const codedParties: Party[] = [
       response('v15', 5, 'high', sources.mpProgram),
       response('v17', 5, 'high', sources.mpProgram),
       response('v19', 5, 'high', sources.mpProgram),
-      response('v22', 2, 'medium', [sources.mpProgram, sources.mpActionProgram]),
       response('v23', 5, 'high', sources.mpDemocracy),
     ],
   },
@@ -730,14 +785,13 @@ const codedParties: Party[] = [
     name: 'Centerpartiet',
     color: '#009933',
     responses: [
-      response('s01', 2, 'high', [sources.cIdea, sources.cManifest]),
+      response('s01', 1, 'high', sources.cIncomeTax),
       response('s02', 4, 'high', sources.cIdea),
       response('s03', 4, 'medium', sources.cAkassa),
       response('s05', 1, 'high', sources.cHousingTaxes),
       response('s06', 5, 'high', [sources.cIdea, sources.cManifest]),
       response('s08', 4, 'high', sources.cManifest),
       response('s10', 5, 'high', [sources.cIdea, sources.cManifest]),
-      response('s11', 3, 'medium', [sources.cIdea, sources.cManifest]),
       response('s13', 1, 'medium', sources.cManifest),
       response('s14', 4, 'medium', sources.cFriskolor),
       response('s16', 4, 'medium', sources.cManifest),
@@ -776,7 +830,6 @@ const codedParties: Party[] = [
       response('v17', 5, 'high', sources.cManifest),
       response('v19', 5, 'high', [sources.cIdea, sources.cManifest]),
       response('v21', 4, 'medium', sources.cSpringBudget),
-      response('v22', 4, 'medium', [sources.cIdea, sources.cManifest]),
       response('v23', 5, 'high', [sources.cDemocracy, sources.cMedia]),
     ],
   },
@@ -786,14 +839,13 @@ const codedParties: Party[] = [
     name: 'Liberalerna',
     color: '#006AB3',
     responses: [
-      response('s01', 2, 'high', sources.lManifest),
+      response('s01', 1, 'high', sources.lStateIncomeTax),
       response('s02', 3, 'high', sources.lManifest),
       response('s03', 4, 'medium', sources.lAkassa),
       response('s04', 5, 'high', sources.lBostad),
       response('s06', 4, 'high', sources.lManifest),
       response('s08', 4, 'medium', sources.lManifest),
       response('s10', 5, 'medium', sources.lManifest),
-      response('s11', 3, 'medium', sources.lManifest),
       response('s12', 5, 'high', sources.lRut),
       response('s14', 4, 'medium', [sources.lSchoolChoice, sources.lWelfareProfits]),
       response('s18', 5, 'high', sources.lManifest),
@@ -814,6 +866,7 @@ const codedParties: Party[] = [
       response('s42', 1, 'medium', sources.lManifest),
       response('s44', 3, 'medium', sources.lManifest),
       response('s46', 1, 'high', sources.lNarcotics),
+      response('s47', 1, 'high', sources.lImmigration),
       response('s48', 4, 'high', sources.lEuthanasia),
       response('s49', 4, 'high', sources.lFamilyMigration),
       response('s50', 1, 'high', sources.lManifest),
@@ -833,7 +886,6 @@ const codedParties: Party[] = [
       response('v18', 4, 'high', sources.lManifest),
       response('v19', 5, 'high', sources.lManifest),
       response('v21', 4, 'medium', sources.lManifest),
-      response('v22', 5, 'high', sources.lManifest),
       response('v23', 5, 'high', sources.lManifest),
     ],
   },
@@ -843,7 +895,7 @@ const codedParties: Party[] = [
     name: 'Moderaterna',
     color: '#52BDEC',
     responses: [
-      response('s01', 1, 'medium', [sources.mIdea, sources.mEconomy]),
+      response('s01', 1, 'high', sources.mIncomeTax),
       response('s02', 4, 'high', [sources.mHealthcareCurrent, sources.mSchoolCurrent]),
       response('s03', 4, 'medium', sources.mAkassa),
       response('s04', 4, 'medium', sources.mHousing),
@@ -851,7 +903,6 @@ const codedParties: Party[] = [
       response('s06', 4, 'high', [sources.mIdea, sources.mEmployerFees]),
       response('s08', 5, 'high', sources.mLabor),
       response('s10', 5, 'medium', [sources.mEconomy, sources.mTaxMeeting]),
-      response('s11', 2, 'medium', sources.mHealthcareCurrent),
       response('s12', 5, 'high', sources.mRut),
       response('s13', 1, 'high', sources.mLabor),
       response('s14', 4, 'medium', sources.mSchoolCurrent),
@@ -894,7 +945,6 @@ const codedParties: Party[] = [
       response('v19', 4, 'high', sources.mEu),
       response('v20', 4, 'high', sources.mIdea),
       response('v21', 5, 'high', [sources.mIdea, sources.mDefense]),
-      response('v22', 5, 'high', [sources.mIdea, sources.mNuclear]),
       response('v23', 5, 'high', sources.mIdea),
     ],
   },
@@ -911,8 +961,6 @@ const codedParties: Party[] = [
       response('s08', 4, 'medium', sources.kdProgram),
       response('s09', 4, 'high', sources.kdDental),
       response('s10', 5, 'high', sources.kdIncomeTax),
-      response('s11', 3, 'medium', sources.kdStateHealthcare),
-      response('s12', 4, 'high', sources.kdRut),
       response('s14', 5, 'high', sources.kdFriskolor),
       response('s15', 1, 'high', sources.kdWealthTax),
       response('s16', 4, 'medium', sources.kdQuotaRefugees),
@@ -953,7 +1001,6 @@ const codedParties: Party[] = [
       response('v18', 5, 'high', [sources.kdWitnesses, sources.kdCameras]),
       response('v20', 5, 'high', sources.kdProgram),
       response('v21', 5, 'medium', [sources.kdProgram, sources.kdDefense]),
-      response('v22', 4, 'medium', [sources.kdProgram, sources.kdNuclearReport]),
       response('v23', 4, 'medium', sources.kdPublicService),
     ],
   },
@@ -969,7 +1016,6 @@ const codedParties: Party[] = [
       response('s08', 4, 'medium', sources.sdProgram),
       response('s09', 4, 'medium', sources.sdDental),
       response('s10', 4, 'medium', sources.sdProgram),
-      response('s11', 4, 'medium', sources.sdHealthcare),
       response('s14', 4, 'high', sources.sdFriskolor),
       response('s17', 5, 'high', sources.sdParadigm),
       response('s18', 5, 'high', sources.sdCitizenship),
@@ -1008,7 +1054,6 @@ const codedParties: Party[] = [
       response('v19', 1, 'high', sources.sdEu),
       response('v20', 5, 'high', sources.sdProgram),
       response('v21', 5, 'high', sources.sdProgram),
-      response('v22', 5, 'high', sources.sdElectionPlatform),
     ],
   },
 ]

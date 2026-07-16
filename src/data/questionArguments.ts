@@ -2,8 +2,8 @@ import type { QuestionArguments } from '../types'
 
 export const questionArguments: Record<string, QuestionArguments> = {
   s01: {
-    for: 'Högre skatt på de högsta inkomsterna kan finansiera gemensamma åtaganden och minska ekonomiska klyftor.',
-    against: 'Höga marginalskatter kan minska drivkrafter att arbeta, utbilda sig eller investera i Sverige.',
+    for: 'En höjning över brytpunkten kan finansiera gemensamma åtaganden och göra beskattningen mer progressiv.',
+    against: 'Högre marginalskatt kan minska drivkrafter att arbeta mer, utbilda sig eller ta större ansvar.',
   },
   s02: {
     for: 'Vinstmöjlighet kan locka fler aktörer, öka valfriheten och göra det lättare att bygga ut kapacitet.',
@@ -42,8 +42,8 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Lägre kapitalskatter gynnar ofta dem som redan äger mycket och kan minska skatteintäkter till gemensamma ändamål.',
   },
   s11: {
-    for: 'Vård efter behov kan urholkas om privata försäkringar ger en snabbare väg in i samma offentligt finansierade system.',
-    against: 'Privata försäkringar kan ge fler valmöjligheter och ibland avlasta köer, även när vården är offentligt finansierad.',
+    for: 'Förbudet kan hindra att en privatfinansierad första bedömning blir en särskild ingång till den offentligt finansierade vården.',
+    against: 'Förbudet kan bryta vårdkedjan och tvinga patienten att söka en ny bedömning i den offentligt finansierade vården.',
   },
   s12: {
     for: 'Högre RUT-tak kan göra fler tjänster vita och skapa arbetstillfällen i serviceyrken.',
@@ -58,8 +58,8 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Kommunalt veto kan behövas för att planera skolutbud, ekonomi och likvärdighet i hela kommunen.',
   },
   s15: {
-    for: 'Förmögenhetsskatt kan motverka koncentrerat ägande och ge intäkter från mycket stora tillgångar.',
-    against: 'Skatten kan driva kapital ur landet och vara svår att utforma utan höga kontrollkostnader.',
+    for: 'En skatt på den rikaste procentens nettoförmögenhet kan motverka koncentrerat ägande och finansiera gemensamma åtaganden.',
+    against: 'Skatten kan driva kapital ur landet och vara svår att värdera, kontrollera och avgränsa rättvist.',
   },
   s16: {
     for: 'Fler kvotflyktingar ger skydd till särskilt utsatta personer genom en ordnad och laglig väg.',
@@ -248,10 +248,6 @@ export const questionArguments: Record<string, QuestionArguments> = {
   v21: {
     for: 'Säkerhet och beredskap kan ses som grundläggande uppgifter som måste prioriteras även när de kostar.',
     against: 'Höga säkerhetsutgifter kan ge mindre utrymme för välfärd, skattesänkningar eller civila reformer.',
-  },
-  v22: {
-    for: 'Teknik och energiproduktion kan minska utsläpp utan att människor behöver sänka levnadsstandard kraftigt.',
-    against: 'Teknik räcker inte alltid om total konsumtion och resursanvändning fortsätter öka.',
   },
   v23: {
     for: 'Oberoende institutioner och fri press kan stoppa maktmissbruk även när majoriteten är stark.',

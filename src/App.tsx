@@ -350,7 +350,7 @@ function SeoOverview() {
           </article>
           <article>
             <span className="seo-number">02</span>
-            <h3>25 eller 74 politiska frågor</h3>
+            <h3>{quickQuestions.length} eller {questions.length} politiska frågor</h3>
             <p>
               Välj ett snabbt GAL–TAN-test på cirka fem minuter eller den fullständiga politiska kompassen. Båda versionerna täcker sakpolitik och värderingsfrågor anpassade till Sverige.
             </p>
