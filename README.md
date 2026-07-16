@@ -13,6 +13,7 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 - Partijämförelse som räknas fråga för fråga, där nära svar ger delpoäng.
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.
 - Svenska riksdagspartier visas både på kartan och i en skrollbar svarsmatris.
+- Resultatet kan exporteras som en fullständig PDF med samtliga svar och partiernas svar, eller som en kompakt PNG med kompassen och partimatchningen sida vid sida.
 - Snabbtestets frågor har källbelagda svar från minst sju av åtta partier och är balanserade mellan kompassens riktningar.
 - Partisvar lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`; saknade eller oklara belägg visas som `Vet ej`.
 - Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
@@ -57,7 +58,7 @@ Tillåtna feedbackanledningar:
 
 ## Open prompts
 
-Se [`PROMPTS/OPEN_PROMPTS_v1.md`](PROMPTS/OPEN_PROMPTS_v1.md). Där loggas Carl Månssons prompts till Codex så att även utvecklingsprocessen kan granskas. Framtida utvecklingsstadier sparas i nya filer i samma katalog.
+Se [`PROMPTS/OPEN_PROMPTS_v2.md`](PROMPTS/OPEN_PROMPTS_v2.md). Där loggas Carl Månssons prompts till Codex så att även utvecklingsprocessen kan granskas. Tidigare utvecklingsstadier finns kvar som versionsarkiverade filer i samma katalog.
 
 ## Koda partisvar från partiprogram
 

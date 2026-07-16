@@ -578,6 +578,25 @@ main { flex: 1; }
 .match-tooltip strong, .match-tooltip span { display: block; }
 .match-tooltip span { color: rgba(255,255,255,.72); margin-top: 2px; }
 .match-bar:hover .match-tooltip, .match-bar:focus .match-tooltip { display: block; }
+.export-panel { margin-top: 24px; padding: 24px; display: grid; grid-template-columns: minmax(250px, .72fr) minmax(460px, 1.28fr); gap: 20px 28px; align-items: center; border: 1px solid var(--line); border-radius: 6px; background: linear-gradient(125deg, rgba(226,238,231,.82), rgba(255,254,249,.78)); }
+.export-intro { display: grid; grid-template-columns: 45px 1fr; gap: 14px; align-items: start; }
+.export-icon { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 50%; background: var(--green); color: var(--white); }
+.export-intro h2 { margin: 5px 0 7px; font: 500 1.65rem/1.05 Georgia, serif; }
+.export-intro p { margin: 0; max-width: 370px; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+.export-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.export-option { min-height: 92px; display: grid; grid-template-columns: 34px 1fr auto; gap: 11px; align-items: center; padding: 14px; border: 1px solid rgba(31,87,66,.2); border-radius: 5px; background: rgba(255,254,249,.78); color: var(--ink); text-align: left; cursor: pointer; transition: border-color 130ms, transform 130ms, background 130ms; }
+.export-option:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--green); background: var(--white); }
+.export-option:disabled { cursor: wait; opacity: .7; }
+.export-option-icon { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 4px; background: #e1ebe4; color: var(--green); }
+.export-option > span:nth-child(2) { min-width: 0; }
+.export-option strong, .export-option small { display: block; }
+.export-option strong { font-size: .8rem; }
+.export-option small { margin-top: 5px; color: var(--muted); font-size: .65rem; line-height: 1.4; }
+.export-option > svg { color: var(--green); }
+.export-spinner { animation: export-spin .85s linear infinite; }
+.export-status { min-height: 16px; grid-column: 1 / -1; margin: -9px 0 0; color: var(--green); font-size: .72rem; font-weight: 700; text-align: right; }
+.export-status.error { color: #99533f; }
+@keyframes export-spin { to { transform: rotate(360deg); } }
 .result-details { border-top: 1px solid var(--line); margin-top: 24px; padding-top: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; }
 .result-details h3 { font: 500 1.25rem Georgia, serif; margin: 6px 0 11px; }
 .priority-tags { display: flex; gap: 7px; flex-wrap: wrap; }
@@ -699,6 +718,8 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .result-heading { align-items: flex-start; flex-direction: column; }
   .result-layout { grid-template-columns: 1fr; }
   .chart-card { min-height: auto; }
+  .export-panel { grid-template-columns: 1fr; }
+  .export-status { text-align: left; }
   .answer-comparison-heading { align-items: flex-start; flex-direction: column; gap: 10px; }
   .comparison-row { grid-template-columns: 1fr; }
   .answer-options { width: 100%; min-width: 0; overflow-x: auto; }
@@ -760,6 +781,9 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
   .chart-label.left { left: -3px; }
   .chart-label.right { right: -6px; }
   .chart-legend { font-size: .56rem; }
+  .export-panel { padding: 19px; }
+  .export-options { grid-template-columns: 1fr; }
+  .export-option { min-height: 84px; }
   .result-details { align-items: flex-start; flex-direction: column; }
   .result-actions { justify-content: flex-start; }
   .answer-comparison-heading h2 { font-size: 1.65rem; }
@@ -787,5 +811,5 @@ footer .page-width { min-height: 70px; display: flex; align-items: center; justi
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }

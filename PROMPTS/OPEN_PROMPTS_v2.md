@@ -73,3 +73,9 @@ Kontextnotering: Codex reviderade Nato-bedömningen till 4 av 5 med hög säkerh
 > Avsluta med en commit.
 
 Kontextnotering: Under genomförandet visade den exakta källkontrollen att s01 och s11 inte längre hade tillräckligt många partisvar för snabbtestet, eftersom flera gamla belägg gällde bredare frågor. De ersattes därför där av frågor med minst sju tydliga partisvar. Den dubblerade v22 togs bort, s35 behölls med partisvaren omprövade och utan GAL–TAN-vikt, och snabbtestet kontrollerades på nytt till 25 frågor, samtliga tolv ämnen och nära neutralt resultat vid raka svar.
+
+## Prompt 4
+
+> Lägg till ett sett att exportera sitt resultat, antingen som en PDF med ens fullständiga svar, inklusive GAL-TAN-kompassen, partimatchningen och ens matchning mot partier i alla svar, eller som en ofullständig PNG som bara har GAL-TAN-kompassen och partimatchningen sida vid sida! Avsluta med att uppdatera open prompts och en commit
+
+Kontextnotering: Resultatsidan fick två lokala exporter som inte skickar användarens svar till servern. Den fullständiga PDF-filen innehåller en sammanfattningssida med GAL–TAN-kompass och partimatchning samt en flersidig svarsbilaga där varje påstående, användarens fullständiga svar och samtliga partiers svar jämförs. Exakta svar och svar i samma riktning skiljs visuellt åt. Den kompakta PNG-filen innehåller endast kompassen och partimatchningen sida vid sida i ett delningsvänligt 16:9-format. Båda filerna genereras i webbläsaren, och PDF-layouten verifierades genom att rendera första sidan, en full svarssida och slutsidan till bilder.

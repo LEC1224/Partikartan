@@ -8,10 +8,14 @@ import {
   ChevronRight,
   CircleHelp,
   Compass,
+  Download,
   ExternalLink,
+  FileDown,
+  FileImage,
   FileText,
   GitBranch,
   Info,
+  LoaderCircle,
   MessageSquare,
   RefreshCw,
   ShieldCheck,
@@ -33,6 +37,7 @@ import {
   COORDINATE_SCALE,
   countKnownPartyResponses,
 } from './lib/scoring'
+import { exportResultAsPdf, exportResultAsPng } from './lib/exportResults'
 import type { Answers, AnswerValue, Coordinate, Evidence, Party, Question, TopicId } from './types'
 import type { PartyMatch } from './lib/scoring'
 
@@ -41,7 +46,7 @@ type QuizMode = 'quick' | 'full'
 type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode }
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
-const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/PROMPTS/OPEN_PROMPTS_v1.md`
+const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/PROMPTS/OPEN_PROMPTS_v2.md`
 const CHART_AXIS_LIMIT = COORDINATE_SCALE
 const CHART_AXIS_LABEL = `±${CHART_AXIS_LIMIT}`
 
@@ -734,6 +739,8 @@ function ResultPage({
   onFeedback: () => void
   onReset: () => void
 }) {
+  const [exporting, setExporting] = useState<'pdf' | 'png' | null>(null)
+  const [exportError, setExportError] = useState<string | null>(null)
   const partyResults = parties
     .map((party) => {
       const partyCoordinate = calculatePartyCoordinate(party, quizQuestions)
@@ -747,6 +754,28 @@ function ResultPage({
       return 0
     })
   const allUnscored = partyResults.every(({ party }) => countKnownPartyResponses(party, quizQuestions) === 0)
+
+  async function handleExport(format: 'pdf' | 'png') {
+    setExporting(format)
+    setExportError(null)
+    try {
+      const exportInput = {
+        answers,
+        coordinate,
+        parties: partyResults,
+        priorities,
+        questions: quizQuestions,
+        quizMode,
+      }
+      if (format === 'pdf') await exportResultAsPdf(exportInput)
+      else await exportResultAsPng(exportInput)
+    } catch (error) {
+      console.error('Kunde inte exportera resultatet', error)
+      setExportError('Exporten misslyckades. Försök igen eller använd en annan webbläsare.')
+    } finally {
+      setExporting(null)
+    }
+  }
 
   return (
     <section className="result-page page-width">
@@ -795,6 +824,47 @@ function ResultPage({
           </div>
         </aside>
       </div>
+      <section className="export-panel" aria-labelledby="export-heading">
+        <div className="export-intro">
+          <span className="export-icon"><Download size={22} /></span>
+          <div>
+            <span className="overline">Spara och dela</span>
+            <h2 id="export-heading">Exportera ditt resultat</h2>
+            <p>Filerna skapas lokalt i din webbläsare. Dina svar skickas inte till servern.</p>
+          </div>
+        </div>
+        <div className="export-options">
+          <button
+            className="export-option"
+            type="button"
+            onClick={() => handleExport('pdf')}
+            disabled={exporting !== null}
+          >
+            <span className="export-option-icon"><FileDown size={20} /></span>
+            <span>
+              <strong>Fullständig PDF</strong>
+              <small>Kompass, partimatchning och alla dina svar jämförda med samtliga partier.</small>
+            </span>
+            {exporting === 'pdf' ? <LoaderCircle className="export-spinner" size={19} /> : <Download size={18} />}
+          </button>
+          <button
+            className="export-option"
+            type="button"
+            onClick={() => handleExport('png')}
+            disabled={exporting !== null}
+          >
+            <span className="export-option-icon"><FileImage size={20} /></span>
+            <span>
+              <strong>Kompakt PNG</strong>
+              <small>Endast GAL-TAN-kompassen och partimatchningen sida vid sida.</small>
+            </span>
+            {exporting === 'png' ? <LoaderCircle className="export-spinner" size={19} /> : <Download size={18} />}
+          </button>
+        </div>
+        <p className={`export-status ${exportError ? 'error' : ''}`} aria-live="polite">
+          {exportError ?? (exporting ? `${exporting === 'pdf' ? 'PDF' : 'PNG'}-filen skapas…` : '')}
+        </p>
+      </section>
       <div className="result-details">
         <div>
           <span className="overline">Extra vikt</span>
