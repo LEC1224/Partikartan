@@ -17,7 +17,7 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 - Partisvar lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`; saknade eller oklara belägg visas som `Vet ej`.
 - Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
 - Öppen källkod på GitHub.
-- Open prompts i `OPEN_PROMPTS.md`.
+- Versionsarkiverade open prompts i `PROMPTS/`.
 - Feedbackformulär som kan spara inkommande synpunkter som textfiler i `feedback-data/`.
 
 ## Kommandon
@@ -57,7 +57,7 @@ Tillåtna feedbackanledningar:
 
 ## Open prompts
 
-Se `OPEN_PROMPTS.md`. Där loggas Carl Månssons prompts till Codex så att även utvecklingsprocessen kan granskas.
+Se [`PROMPTS/OPEN_PROMPTS_v1.md`](PROMPTS/OPEN_PROMPTS_v1.md). Där loggas Carl Månssons prompts till Codex så att även utvecklingsprocessen kan granskas. Framtida utvecklingsstadier sparas i nya filer i samma katalog.
 
 ## Koda partisvar från partiprogram
 

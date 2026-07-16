@@ -41,7 +41,7 @@ type QuizMode = 'quick' | 'full'
 type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode }
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
-const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/OPEN_PROMPTS.md`
+const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/PROMPTS/OPEN_PROMPTS_v1.md`
 const CHART_AXIS_LIMIT = COORDINATE_SCALE
 const CHART_AXIS_LABEL = `±${CHART_AXIS_LIMIT}`
 

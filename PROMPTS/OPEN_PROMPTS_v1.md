@@ -275,3 +275,7 @@ Kontext: prompten innehöll en bifogad screenshot av frågeresultaten där ytan 
 > Grymt! Lägg till en liten info här under rubriken om att man kan hovra över partiernas ikoner för att se källor. Uppdatera Open Prompts, lägg in OPEN_FACTCHECK_PROMPT.md i git efter att lagt in lite kontext till den, alltså att prompten användes för dubbelkoll av källor i en lokalt körd agent med den öppna modellen ornith:35b. Sen commita
 
 Kontextnotering: Den separata kontrollprompten finns i [`OPEN_FACTCHECK_PROMPT.md`](OPEN_FACTCHECK_PROMPT.md).
+
+## Prompt 51
+
+> Skapa en första release på github och kalla den "Beta Release 1", med versionsnummer 0.1.0. Lägg till denna prompten i OPEN_PROMPTS.md, sen flyttar du den (Och open-factcheck-prompt till en folder "PROMPTS" och döp om den första till "OPEN_PROMPTS_v1.md, så kommer framtida prompts lagras i nya filer. På så sätt håller vi och besökare på gitten koll på utvecklingens olika stadier.
