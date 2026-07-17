@@ -813,7 +813,7 @@ function ResultPage({
           {!allUnscored && (
             <div className="match-legend" aria-label="Teckenförklaring för matchningsstaplar">
               <span className="legend-segment exact" /> Exakt
-              <span className="legend-segment near" /> Nästan
+              <span className="legend-segment near" /> Samma riktning
               <small>Hovra eller tryck på en stapel</small>
             </div>
           )}
@@ -892,20 +892,20 @@ function PartyRow({ party, match, questions: quizQuestions }: { party: Party; ma
     <div className="party-row">
       <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
       <div className="party-details"><strong>{party.name}</strong><small>{sourced} källbelagda, {quizQuestions.length - sourced} Vet ej</small></div>
-      <div className="match-value"><strong>{hasComparison ? `${match.percent}%` : '—'}</strong><small>{hasComparison ? 'exakt + nästan' : 'ingen jämförelse'}</small></div>
+      <div className="match-value"><strong>{hasComparison ? `${match.percent}%` : '—'}</strong><small>{hasComparison ? 'exakt + samma riktning' : 'ingen jämförelse'}</small></div>
       <div className="match-bar-wrap">
         <button
           type="button"
           className="match-bar"
           aria-label={hasComparison
-            ? `${party.name}: ${match.percent} procent matchning, varav ${match.exactPercent} procent exakt och ${match.nearPercent} procent nästan.`
+            ? `${party.name}: ${match.percent} procent matchning, varav ${match.exactPercent} procent exakt och ${match.nearPercent} procent i samma riktning.`
             : `${party.name}: inga jämförbara svar.`}
         >
           <span className="match-fill exact" style={{ width: `${match.exactPercent}%`, backgroundColor: party.color }} />
           <span className="match-fill near" style={{ width: `${match.nearPercent}%`, backgroundColor: party.color }} />
           <span className="match-tooltip" role="tooltip">
             <strong>Exakt: {match.exactPercent}%</strong>
-            <span>Nästan: +{match.nearPercent}%</span>
+            <span>Samma riktning: +{match.nearPercent}%</span>
           </span>
         </button>
       </div>
@@ -1046,7 +1046,7 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
           <h2>Din matchning mot partierna</h2>
           <p className="answer-source-hint"><Info size={14} /> Hovra över eller tryck på en partiikon för att se källorna.</p>
         </div>
-        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Samma riktning men olika styrka räknas som nästan match.</p>
+        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Svar i samma riktning men med olika styrka räknas som match.</p>
       </div>
       <div
         className="answer-table"
@@ -1180,7 +1180,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
           <div><strong>3</strong><p><b>Dina “Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
           <div><strong>4</strong><p><b>Dina koordinater skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: svaren räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala.</p></div>
           <div><strong>5</strong><p><b>Partiernas kartposition simuleras från deras frågesvar.</b> Källbelagda partisvar poängsätts med samma axlar. Vet ej-svar flyttar inte partiet i någon riktning, men ingår i slutskalan så positionen blir mer försiktig när underlaget är glesare.</p></div>
-          <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger exakt träff. Svar i samma riktning men med olika styrka, till exempel 4 mot 5 eller 1 mot 2, ger nästan träff. Totalprocenten är exakt plus nästan, med extra vikt för dina prioriterade ämnen. Frågor där partiet saknar ett källbelagt svar lämnas utanför procenten.</p></div>
+          <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger exakt träff. Svar i samma riktning men med olika styrka, till exempel 4 mot 5 eller 1 mot 2, ger träff i samma riktning. Totalprocenten är exakt plus samma riktning, med extra vikt för dina prioriterade ämnen. Frågor där partiet saknar ett källbelagt svar lämnas utanför procenten.</p></div>
           <div><strong>7</strong><p><b>Snabbtestet använder en fast delmängd på {quickQuestions.length} frågor.</b> Varje utvald fråga har källbelagda svar från minst sju av åtta partier. Urvalet täcker alla ämnen och har kontrollerats så att raka ettor eller femmor hamnar nära origo.</p></div>
         </div>
         <div className="coding-rules">

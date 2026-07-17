@@ -79,3 +79,13 @@ Kontextnotering: Under genomförandet visade den exakta källkontrollen att s01 
 > Lägg till ett sett att exportera sitt resultat, antingen som en PDF med ens fullständiga svar, inklusive GAL-TAN-kompassen, partimatchningen och ens matchning mot partier i alla svar, eller som en ofullständig PNG som bara har GAL-TAN-kompassen och partimatchningen sida vid sida! Avsluta med att uppdatera open prompts och en commit
 
 Kontextnotering: Resultatsidan fick två lokala exporter som inte skickar användarens svar till servern. Den fullständiga PDF-filen innehåller en sammanfattningssida med GAL–TAN-kompass och partimatchning samt en flersidig svarsbilaga där varje påstående, användarens fullständiga svar och samtliga partiers svar jämförs. Exakta svar och svar i samma riktning skiljs visuellt åt. Den kompakta PNG-filen innehåller endast kompassen och partimatchningen sida vid sida i ett delningsvänligt 16:9-format. Båda filerna genereras i webbläsaren, och PDF-layouten verifierades genom att rendera första sidan, en full svarssida och slutsidan till bilder.
+
+## Prompt 5
+
+> PNGen är bra! Förutom en liten detalj: Där det står "Nästan samma riktning" kanske det ska stå "Samma riktning" eftersom man av "Exakt" fattar vad skillnaden är. "Nästan samma riktning" kan låta som att man själv svarat 4 och partiet svarat 2, till exempel.
+>
+> PDFen är värre. Dels är partisvarlistan otydlig ut ett grafiskt design-perspektiv. Jag tror det vore bättre att köra på något mer likt det vi ser på resultatsidan, fast kompaktare. Dessutom är förstasidan skalad skevt, så att den ser utdragen ut.
+>
+> Här är ett exempel på resultatfilerna som genererades nu. Se om du kan åtgärda problemen och commita om du känner dig nöjd med ditt utfall!
+
+Kontextnotering: Exportens begrepp ändrades från ”nästan” till ”samma riktning” i både exportfilerna och resultatsidan. PDF-sammanfattningen fick en separat A4-anpassad duk med korrekta proportioner i stället för att sträcka 16:9-bilden över sidan. Svarsbilagan ritades om efter webbvyn: sex kolumner för 1–5 och Vet ej, användarens markör ovanför en skiljelinje och partiernas kompakta markörer under. Den nya PNG-filen, PDF-sammanfattningen, en full svarssida och slutsidan renderades och granskades visuellt före commit.

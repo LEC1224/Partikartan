@@ -21,10 +21,6 @@ const colors = {
   white: '#fffef9',
   line: '#d2dbd5',
   coral: '#ed714f',
-  exact: '#dcece2',
-  near: '#e9f0df',
-  different: '#f3f1e9',
-  unknown: '#eee8d8',
 }
 
 export interface ExportPartyResult {
@@ -65,7 +61,7 @@ export async function exportResultAsPdf(input: ExportResultsInput): Promise<void
     creator: 'Partikartan',
   })
 
-  const summary = renderSummaryCanvas(input)
+  const summary = renderPdfSummaryCanvas(input)
   doc.addImage(summary.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, 297, 210, undefined, 'FAST')
 
   const questionGroups = chunk(input.questions, QUESTIONS_PER_PDF_PAGE)
@@ -86,6 +82,17 @@ export async function exportResultAsPng(input: ExportResultsInput): Promise<void
 
 function renderSummaryCanvas(input: ExportResultsInput): HTMLCanvasElement {
   const canvas = createCanvas(SUMMARY_WIDTH, SUMMARY_HEIGHT)
+  drawSummaryCanvas(canvas, input, 790)
+  return canvas
+}
+
+function renderPdfSummaryCanvas(input: ExportResultsInput): HTMLCanvasElement {
+  const canvas = createCanvas(PDF_CANVAS_WIDTH, PDF_CANVAS_HEIGHT)
+  drawSummaryCanvas(canvas, input, 1052)
+  return canvas
+}
+
+function drawSummaryCanvas(canvas: HTMLCanvasElement, input: ExportResultsInput, cardHeight: number) {
   const context = getContext(canvas)
 
   context.fillStyle = colors.paper
@@ -93,15 +100,12 @@ function renderSummaryCanvas(input: ExportResultsInput): HTMLCanvasElement {
   drawSummaryHeader(context, input)
 
   const cardY = 156
-  const cardHeight = 790
   const chartCard = { x: 58, y: cardY, width: 1015, height: cardHeight }
   const matchCard = { x: 1103, y: cardY, width: 639, height: cardHeight }
   drawCard(context, chartCard.x, chartCard.y, chartCard.width, chartCard.height, 12)
   drawCard(context, matchCard.x, matchCard.y, matchCard.width, matchCard.height, 12)
   drawCompass(context, input, chartCard)
   drawPartyMatches(context, input, matchCard)
-
-  return canvas
 }
 
 function drawSummaryHeader(context: CanvasRenderingContext2D, input: ExportResultsInput) {
@@ -152,9 +156,9 @@ function drawCompass(
   context.fillStyle = colors.ink
   context.fillText('Din position och partiernas positioner', card.x + 34, card.y + 87)
 
-  const size = 625
-  const x = card.x + 195
-  const y = card.y + 119
+  const size = Math.min(card.width - 120, card.height - 150)
+  const x = card.x + (card.width - size) / 2
+  const y = card.y + 98
   const inner = { x: x + 51, y: y + 47, size: size - 98 }
 
   context.fillStyle = '#fbfaf5'
@@ -264,14 +268,14 @@ function drawPartyMatches(
   context.fillStyle = colors.green
   context.fillRect(left + 84, card.y + 109, 30, 10)
   context.fillStyle = colors.muted
-  context.fillText('Nästan samma riktning', left + 135, card.y + 121)
+  context.fillText('Samma riktning', left + 135, card.y + 121)
   context.globalAlpha = 0.38
   context.fillStyle = colors.green
-  context.fillRect(left + 311, card.y + 109, 30, 10)
+  context.fillRect(left + 260, card.y + 109, 30, 10)
   context.globalAlpha = 1
 
   const rowTop = card.y + 145
-  const rowHeight = 74
+  const rowHeight = Math.min(96, (card.height - 185) / input.parties.length)
   input.parties.forEach(({ party, match }, index) => {
     const y = rowTop + index * rowHeight
     if (index > 0) {
@@ -351,12 +355,12 @@ function renderAnswerPageCanvas(
   context.fillText('Dina svar och partiernas svar', margin, 116)
   setCanvasFont(context, 500, 17)
   context.fillStyle = colors.muted
-  context.fillText('Grönt = exakt. Ljusgrönt = nästan, alltså samma riktning men annan styrka. Frågetecken = inget jämförbart svar.', margin, 148)
+  context.fillText('DU visas ovanför linjen och partierna under. Samma kolumn betyder exakt samma svar; 1-2 och 4-5 är samma riktning.', margin, 148)
 
-  const questionWidth = 640
-  const valuesX = margin + questionWidth + 28
-  const columnWidth = 111
-  const columns = ['Du', ...input.parties.map(({ party }) => party.shortName)]
+  const questionWidth = 610
+  const valuesX = margin + questionWidth + 24
+  const columnWidth = (PDF_CANVAS_WIDTH - margin - valuesX) / 6
+  const columns = ['1', '2', '3', '4', '5', 'Vet ej']
   setCanvasFont(context, 800, 17)
   context.fillStyle = colors.green
   context.fillText('FRÅGA OCH DITT FULLSTÄNDIGA SVAR', margin, 207)
@@ -419,32 +423,64 @@ function drawAnswerRow(
   context.fillStyle = userAnswered ? colors.coral : colors.muted
   context.fillText(`Ditt svar: ${userAnswered ? fullAnswerLabel(userAnswer) : 'Ej besvarad'}`, margin + 18, y + height - 34)
 
-  const answerValues: (AnswerValue | undefined)[] = [
-    userAnswered ? userAnswer : undefined,
-    ...input.parties.map(({ party }) => party.responses.find((response) => response.questionId === question.id)?.value),
-  ]
-
-  answerValues.forEach((value, columnIndex) => {
+  const answerValues: AnswerValue[] = [1, 2, 3, 4, 5, null]
+  answerValues.forEach((option, columnIndex) => {
     const cellX = valuesX + columnIndex * columnWidth
-    const cellY = y + 20
-    const cellHeight = height - 52
-    const comparisonKind = columnIndex === 0
-      ? userAnswered ? 'exact' : 'unanswered'
-      : getAnswerComparisonKind(userAnswered, userAnswer, value)
-    const fill = columnIndex === 0
-      ? userAnswered ? colors.coral : colors.different
-      : comparisonFill(comparisonKind)
-    context.fillStyle = fill
+    const cellY = y + 16
+    const cellHeight = height - 44
+    const userMatchesOption = userAnswered && userAnswer === option
+    const partyMarkers = input.parties
+      .map(({ party }) => ({
+        party,
+        value: party.responses.find((response) => response.questionId === question.id)?.value ?? null,
+      }))
+      .filter(({ value }) => value === option)
+      .map(({ party }) => party)
+
+    context.fillStyle = '#f7f5ec'
     drawRoundedRect(context, cellX + 5, cellY, columnWidth - 10, cellHeight, 8)
     context.fill()
+    context.strokeStyle = '#e1ded3'
+    context.lineWidth = 1
+    context.stroke()
 
-    context.textAlign = 'center'
-    setCanvasFont(context, 800, value == null ? 25 : 31)
-    context.fillStyle = columnIndex === 0 && userAnswered ? colors.white : colors.ink
-    context.fillText(value == null ? '?' : String(value), cellX + columnWidth / 2, cellY + 62)
-    setCanvasFont(context, 800, 12)
-    context.fillStyle = columnIndex === 0 && userAnswered ? colors.white : colors.muted
-    context.fillText(columnIndex === 0 ? userStatus(userAnswered, value) : comparisonStatus(comparisonKind), cellX + columnWidth / 2, cellY + 94)
+    const centerX = cellX + columnWidth / 2
+    if (userMatchesOption) {
+      context.fillStyle = colors.coral
+      context.beginPath()
+      context.arc(centerX, cellY + 40, 17, 0, Math.PI * 2)
+      context.fill()
+      setCanvasFont(context, 800, 12)
+      context.fillStyle = colors.white
+      context.textAlign = 'center'
+      context.fillText('DU', centerX, cellY + 44)
+    }
+
+    context.strokeStyle = '#d7d3c8'
+    context.lineWidth = 1
+    context.beginPath()
+    context.moveTo(cellX + 14, cellY + 64)
+    context.lineTo(cellX + columnWidth - 14, cellY + 64)
+    context.stroke()
+
+    const tokensPerRow = 4
+    const tokenGap = 36
+    partyMarkers.forEach((party, markerIndex) => {
+      const row = Math.floor(markerIndex / tokensPerRow)
+      const markersInRow = Math.min(tokensPerRow, partyMarkers.length - row * tokensPerRow)
+      const column = markerIndex % tokensPerRow
+      const rowWidth = (markersInRow - 1) * tokenGap
+      const markerX = centerX - rowWidth / 2 + column * tokenGap
+      const markerY = cellY + 87 + row * 36
+      context.fillStyle = party.color
+      context.beginPath()
+      context.arc(markerX, markerY, 14, 0, Math.PI * 2)
+      context.fill()
+      setCanvasFont(context, 800, 10)
+      context.fillStyle = markerTextColor(party)
+      context.textAlign = 'center'
+      context.fillText(party.shortName, markerX, markerY + 3.5)
+    })
     context.textAlign = 'left'
   })
 }
@@ -535,26 +571,6 @@ function wrapCanvasText(
     lines[lines.length - 1] = finalLine
   }
   return lines
-}
-
-function comparisonFill(kind: AnswerComparisonKind): string {
-  if (kind === 'exact') return colors.exact
-  if (kind === 'near') return colors.near
-  if (kind === 'unknown') return colors.unknown
-  return colors.different
-}
-
-function comparisonStatus(kind: AnswerComparisonKind): string {
-  if (kind === 'exact') return 'EXAKT'
-  if (kind === 'near') return 'NÄRA'
-  if (kind === 'unknown') return 'INGET'
-  if (kind === 'unanswered') return 'EJ JÄMF.'
-  return 'ANNAT'
-}
-
-function userStatus(answered: boolean, value: AnswerValue | undefined): string {
-  if (!answered) return 'EJ SVAR'
-  return value == null ? 'VET EJ' : 'DITT SVAR'
 }
 
 function fullAnswerLabel(value: AnswerValue | undefined): string {
