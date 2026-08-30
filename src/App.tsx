@@ -424,26 +424,36 @@ function AboutDialog({
           <p className="eyebrow"><span /> Om Partikartan</p>
           <h2 id="about-title">Vem driver sidan?</h2>
           <p>
-            Sidan är helt oberoende och icke-vinstdrivande. Den är inte knuten till något parti, företag eller kampanj, och den har inget ekonomiskt incitament att styra användare mot ett visst resultat.
+            Partikartan drivs av mig, Carl Månsson, mjukvaruutvecklare från Göteborg. Jag byggde sidan eftersom jag saknade en valkompass som kombinerar ekonomisk vänster–höger med GAL–TAN och samtidigt känns snabb, clean och möjlig att granska.
           </p>
           <p>
-            Jag som driver Partikartan heter Carl Månsson och är mjukvaruutvecklare från Göteborg. Jag byggde sidan för att jag saknade en valkompass som ger partirelativa svar för både vänster-höger och GAL-TAN, känns saklig, responsiv och möjlig att granska.
+            Sidan drivs inte på uppdrag av och är inte knuten till något parti, företag, kampanj eller annan intresseorganisation. Ingen extern aktör bestämmer över frågor, viktning, partipositioner eller resultat, förutom genom er sakliga och källbegrundade feedback.
           </p>
           <p>
-            För transparensens skull vill jag också upplysa om att jag är medlem i Liberalerna.
+            För transparensens skull vill jag också upplysa om att jag är medlem i Liberalerna, men partiet har inte haft något att göra med att jag valt att skapa Partikartan.
           </p>
           <p>
-            Målet är inte att påstå att kompassen är perfekt neutral. Målet är att göra antaganden, källor och möjliga fel synliga nog för att kunna granskas, kritiseras och förbättras.
+            Målet är inte att hävda att kompassen är perfekt neutral. Jag tror för övrigt inte att människor kan skapa helt objektiva verk. Målet är snarare att göra antaganden, källor och möjliga fel synliga nog för att kunna granskas, kritiseras och förbättras.
           </p>
         </div>
         <div className="about-card">
-          <span className="about-card-icon"><UserRound size={20} /></span>
-          <h2>Drift och ansvar</h2>
+          <span className="about-card-icon"><GitBranch size={20} /></span>
+          <h2>Ansvar och öppenhet</h2>
           <p>
             Frågor, viktning, partipositioner, promptar och kod hålls öppna i projektets repo. Partikartan är nästan helt utvecklad genom prompting i Codex, vilket också gör utvecklingsprocessen möjlig att följa.
           </p>
           <p>
-            Dina svar, prioriterade ämnen och ditt resultat skickas inte till servern. Pågående svar sparas bara i webbläsarens lokala lagring så att du kan fortsätta testet senare; det enda som sparas av Partikartan är feedbackmeddelanden du själv skickar in.
+            Dina svar, prioriterade ämnen och resultat skickas inte till servern. Pågående svar sparas bara lokalt i din webbläsare så att du kan fortsätta testet senare. Det enda Partikartan sparar är feedbackmeddelanden som du själv väljer att skicka in.
+          </p>
+        </div>
+        <div className="about-card">
+          <span className="about-card-icon"><UserRound size={20} /></span>
+          <h2>Drift och frivilligt stöd</h2>
+          <p>
+            Partikartan är gratis och drivs inte som en kommersiell tjänst. Den har inga annonser, sponsrade placeringar eller betalfunktioner. Jag står själv för driften, men den som vill kan frivilligt bidra till drift och fortsatt utvecklingsarbete via Swish på <strong>072‑329 77 62</strong>.
+          </p>
+          <p>
+            Skriv gärna &quot;Tack för Partikartan&quot; eller något i meddelandefältet så jag vet var pengarna kommer ifrån. Donationer med konkreta ändringsförslag i meddelande-fältet kommer tolkas som påverkansförsök och jag kommer i sådana fall återbetala beloppet och ignorera förslaget. Vill du påverka Partikartans innehåll, använd feedback-formuläret. Donationer är bara för visad uppskattning.
           </p>
         </div>
         <div className="about-card">
@@ -453,7 +463,7 @@ function AboutDialog({
             Jag värdesätter en snabb och responsiv hemsida som fungerar lika bra i mobilen som på datorn och låter dig fokusera på frågorna.
           </p>
           <p>
-            Partikartan är helt cookie- och reklamfri, utan annonsnätverk eller reklamspårning.
+            Partikartan använder inga cookies, annonsnätverk eller verktyg för reklamspårning.
           </p>
         </div>
         <div className="about-steps">
@@ -468,14 +478,14 @@ function AboutDialog({
             <span><Bot size={18} /></span>
             <h2>AI som arbetsverktyg</h2>
             <p>
-              GPT-5.5 och Codex har använts för att generera algoritmerna, bygga tjänsten och rapportera in partiernas svar utifrån källmaterialet. Det kan minska min direkta bias, men kan samtidigt föra in bias från OpenAI:s modeller.
+              OpenAI:s språkmodeller har använts genom Codex för att utveckla tjänsten, skriva stora delar av koden och strukturera partiernas svar utifrån källmaterialet. Det kan minska betydelsen av vissa direkta val från mig, men garanterar inte neutralitet och kan samtidigt föra in bias från modellerna.
             </p>
           </article>
           <article>
             <span><ShieldCheck size={18} /></span>
-            <h2>Kontroller mot vinklade frågor</h2>
+            <h2>Kontroller av frågornas balans</h2>
             <p>
-              Testet har kontrollerats genom att svara 1 på alla frågor och 5 på alla frågor. Att båda resultaten hamnar hyfsat nära origo tyder på att frågorna inte systematiskt lutar åt ett håll.
+              Som en grundläggande balanskontroll har testet genomförts genom att svara 1 på samtliga frågor i en testkörning och 5 på samtliga frågor i en annan. Att båda svarsmönstren hamnar förhållandevis nära origo säger något om testets samlade riktningsbalans, men bevisar inte att varje enskild fråga är neutralt formulerad. Därför hålls frågor och viktning öppna för granskning och feedback.
             </p>
           </article>
         </div>

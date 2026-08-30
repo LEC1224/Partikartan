@@ -89,3 +89,46 @@ Kontextnotering: Resultatsidan fick två lokala exporter som inte skickar använ
 > Här är ett exempel på resultatfilerna som genererades nu. Se om du kan åtgärda problemen och commita om du känner dig nöjd med ditt utfall!
 
 Kontextnotering: Exportens begrepp ändrades från ”nästan” till ”samma riktning” i både exportfilerna och resultatsidan. PDF-sammanfattningen fick en separat A4-anpassad duk med korrekta proportioner i stället för att sträcka 16:9-bilden över sidan. Svarsbilagan ritades om efter webbvyn: sex kolumner för 1–5 och Vet ej, användarens markör ovanför en skiljelinje och partiernas kompakta markörer under. Den nya PNG-filen, PDF-sammanfattningen, en full svarssida och slutsidan renderades och granskades visuellt före commit.
+
+## Prompt 6
+
+> I about-sidan står det att Partikartan är icke-vinstdrivande. Just nu finns det inget sätt för mig att tjäna pengar på sidan, men den har blivit avsevärt mer populär än jag trodde den skulle bli och jag skulle vilja lägga till ett enkelt swish-nummer för donationer. Vad tror du om det, givet filosofin och principerna bakom sidan?
+
+Kontextnotering: Codex bedömde att frivilliga bidrag är förenliga med Partikartans oberoende och transparens, men rekommenderade att det kategoriska ”icke-vinstdrivande” preciseras. Förslaget var att hålla stödet frivilligt och diskret, utan betalfunktioner eller inflytande över frågor och resultat, samt att öppet beskriva vad bidragen stödjer.
+
+## Prompt 7
+
+> Okej. Mitt swishnummer är 0723297762. Det är viktigt för mig att donationsfunktionen upplevs som en parantes snarare än något som besökarna bemöts av direkt. Kan du fundera lite på hur du skulle skriva om about-sidan för att göra den så konsekvent och korrekt som möjligt.
+
+Kontextnotering: Codex föreslog att Swish-informationen endast skulle finnas som vanlig brödtext under informationen om drift, utan knapp, QR-kod, färgad ruta eller placering i sidfoten. Samtidigt föreslogs tydligare formuleringar om organisatoriskt oberoende, personlig politisk hemvist, AI-användning och vad testets kontroll med raka svar faktiskt kan visa.
+
+## Prompt 8
+
+> Ändra Vem Driver Sidan till
+>
+> Partikartan drivs av mig, Carl Månsson, mjukvaruutvecklare från Göteborg. Jag byggde sidan eftersom jag saknade en valkompass som kombinerar ekonomisk vänster–höger med GAL–TAN och samtidigt känns snabb, clean och möjlig att granska.
+> Sidan drivs inte på uppdrag av och är inte knuten till något parti, företag, kampanj eller annan intresseorganisation. Ingen extern aktör bestämmer över frågor, viktning, partipositioner eller resultat, förutom genom er sakliga och källbegrundade feedback.
+> För transparensens skull vill jag också upplysa om att jag är medlem i Liberalerna, men partiet har inte haft något att göra med att jag valt att skapa Partikartan.
+> Målet är inte att hävda att kompassen är perfekt neutral. Jag tror för övrigt inte att människor kan skapa helt objektiva verk. Målet är snarare att göra antaganden, källor och möjliga fel synliga nog för att kunna granskas, kritiseras och förbättras.
+>
+> Ersätt "Ett bidrag ger ingen motprestation eller påverkan över sidans innehåll eller resultat." med "Skriv gärna "Tack för Partikartan" eller något i meddelandefältet så jag vet var pengarna kommer ifrån. Donationer med konkreta ändringsförslag i meddelande-fältet kommer tolkas som påverkansförsök och jag kommer i sådana fall återbetala beloppet och ignorera förslaget. Vill du påverka Partikartans innehåll, använd feedback-formuläret. Donationer är bara för visad uppskattning."
+
+Kontextnotering: About-sidan uppdaterades med den angivna presentationen, en diskret Swish-rad under driftinformationen och den uttryckliga gränsen mellan uppskattningsbidrag och försök att påverka innehållet. Modellspecifika formuleringar gjordes versionsoberoende och balanskontrollens begränsningar beskrevs tydligare.
+
+## Prompt 9
+
+> "Som en grundläggande balanskontroll har testet genomförts med samma ytterlighetssvar på samtliga frågor. Att båda svarsmönstren hamnar förhållandevis nära origo säger något om testets samlade riktningsbalans, men bevisar inte att varje enskild fråga är neutralt formulerad. Därför hålls frågor och viktning öppna för granskning och feedback."
+>
+> Det här är lite otydligt. Kan du förtydliga att ytterlighetssvar innebär att svara 1 eller 5 på allt?
+
+Kontextnotering: Texten ändrades så att den uttryckligen beskriver en testkörning med svaret 1 på samtliga frågor och en annan med svaret 5 på samtliga frågor.
+
+## Prompt 10
+
+> Jag tror vi ska dela upp Drift och Ansvar. Det känns som en lång div nu, och tar upp helt ortogonala saker
+
+Kontextnotering: Prompten innehöll en skärmbild av den långa sektionen i about-dialogen. Sektionen delades upp i ”Ansvar och öppenhet”, som samlar den öppna utvecklingsprocessen och dataintegriteten, och ”Drift och frivilligt stöd”, som samlar finansiering och Swish-information. Donationstexten delades i två stycken men fick ingen särskild visuell framhävning.
+
+## Prompt 11
+
+> Nice! Uppdatera Open Prompts med den här chatten, commita och pusha till GitHub
