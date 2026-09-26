@@ -3,6 +3,13 @@ import type { AnswerValue, Answers, Coordinate, Party, Question, TopicId } from 
 export const PRIORITY_MULTIPLIER = 1.75
 export const COORDINATE_SCALE = 100
 
+export function getAnsweredAxes(answers: Answers, questions: Question[]) {
+  return {
+    x: questions.some((question) => answers[question.id] != null && question.weights.x !== 0),
+    y: questions.some((question) => answers[question.id] != null && question.weights.y !== 0),
+  }
+}
+
 export function answerToScore(answer: number): number {
   return (answer - 3) / 2
 }
@@ -38,32 +45,11 @@ export function calculateCoordinate(
   }
 }
 
-export function calculatePartyCoordinate(party: Party, questions: Question[]): Coordinate {
-  const responsesByQuestion = new Map(party.responses.map((response) => [response.questionId, response.value]))
-  let xTotal = 0
-  let yTotal = 0
-  let xPossibleWeight = 0
-  let yPossibleWeight = 0
-  let answered = 0
-
-  for (const question of questions) {
-    xPossibleWeight += Math.abs(question.weights.x)
-    yPossibleWeight += Math.abs(question.weights.y)
-
-    const answer = responsesByQuestion.get(question.id) ?? null
-    if (answer == null) continue
-
-    const score = answerToScore(answer)
-    xTotal += score * question.weights.x
-    yTotal += score * question.weights.y
-    answered += 1
-  }
-
-  return {
-    x: xPossibleWeight ? (xTotal / xPossibleWeight) * COORDINATE_SCALE : 0,
-    y: yPossibleWeight ? (yTotal / yPossibleWeight) * COORDINATE_SCALE : 0,
-    answered,
-  }
+export function calculatePartyCoordinate(party: Party, questions: Question[], priorities: TopicId[] = []): Coordinate {
+  const answers = Object.fromEntries(party.responses.map((response) => [response.questionId, response.value]))
+  // Missing evidence is not a neutral political position. Use the same
+  // normalization and topic priorities as for the user; gate sparse markers separately.
+  return calculateCoordinate(answers, questions, priorities)
 }
 
 export interface PartyMatch {

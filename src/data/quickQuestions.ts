@@ -1,32 +1,33 @@
 import { questions } from './questions'
 
-// Every selected question has a sourced answer from at least seven of the eight
-// parties. The mix also keeps both axes balanced for straight-line answers.
+// Reviewed 2026-09-26: all 12 topics, concrete choices and some broader values.
+// At least seven of the eight parliamentary parties have evidence for each item.
+// Match-only questions broaden comparison without forcing an ideological axis.
 export const quickQuestionIds = [
   's02',
-  's03',
-  's08',
+  's04',
   's10',
-  's14',
+  's11',
+  's13',
+  's15',
+  's18',
+  's20',
   's22',
-  's26',
+  's25',
   's30',
   's33',
   's34',
-  's35',
+  's38',
   's39',
-  's42',
-  's44',
-  's47',
+  's40',
+  's45',
   's49',
-  's50',
   's51',
-  'v03',
-  'v06',
+  's52',
+  'v02',
   'v07',
-  'v12',
   'v13',
-  'v19',
+  'v14',
   'v23',
 ] as const
 

@@ -6,22 +6,27 @@ Partikartan är avsedd att vara objektiv, oberoende och transparent. Det betyder
 
 ## Funktioner
 
-- 51 sakfrågor och 22 värderingsfrågor.
-- Val mellan ett snabbtest med 25 fasta frågor och det fullständiga testet med 73 frågor.
-- Svarsskala 1-5 plus `Vet ej`.
+- 52 sakfrågor och 19 värderingsfrågor.
+- Val mellan ett snabbtest med 25 fasta frågor och det fullständiga testet med 71 frågor.
+- Svarsskala 1–5 plus `Vet ej` för användaren. Otillräckligt belagda partisvar visas som `Ej belagt`.
 - Resultat på två axlar: ekonomisk vänster-höger och GAL-TAN.
-- Partijämförelse som räknas fråga för fråga, där nära svar ger delpoäng.
+- Partijämförelse fråga för fråga: samma svar eller samma riktning ger full poäng. 1 och 2 matchar varandra, liksom 4 och 5; 3 matchar bara 3. Övriga kombinationer ger noll poäng. Kartan skiljer fortfarande mellan svarens styrka.
+- 14 frågor används enbart i partimatchningen, med noll vikt på båda kartaxlarna och en redovisad motivering.
 - Upp till tre prioriterade ämnen som väger 1,75x i resultatet.
-- Svenska riksdagspartier visas både på kartan och i en skrollbar svarsmatris.
+- Svenska riksdagspartier kan jämföras i en skrollbar svarsmatris; kartmarkörer kräver tillräckligt underlag.
+- Den publika jämförelsen och exporterna omfattar de åtta riksdagspartierna. Småpartiernas källmaterial och bedömningar bevaras i projektet för granskning och eventuell framtida återintroduktion; underlaget räcker ännu inte för meningsfulla resultat.
+- Matchning kräver belägg för minst 80 procent av snabbtestet (20 av 25) eller 60 procent av hela testet (43 av 71), avrundat uppåt. Kartmarkörer kräver dessutom belägg för minst 60 procent av den sammanlagda absoluta frågevikten på vardera axeln. Samma krav gäller alla partier; gränserna är publiceringsregler, inte statistiska säkerhetsmått.
 - Resultatet kan exporteras som en fullständig PDF med samtliga svar och partiernas svar, eller som en kompakt PNG med kompassen och partimatchningen sida vid sida.
-- Snabbtestets frågor har källbelagda svar från minst sju av åtta partier och är balanserade mellan kompassens riktningar.
-- Partisvar lagras med källa, citat, datum och säkerhetsnivå i `src/data/parties.ts`; saknade eller oklara belägg visas som `Vet ej`.
+- Snabbtestets urval granskas för saklig bredd, svarsriktningar och källtäckning. En jämn fördelning av ja- och nej-riktningar är inte ensam ett bevis på neutralitet.
+- Partisvar lagras med källa, åtkomstdatum, säkerhetsnivå och i tillämpliga fall motivering eller kort källutdrag i `src/data/parties.ts`, `src/data/minorParties.ts` och daterade granskningar i `src/data/reviews/`.
 - Käll-PDF:er och kompletterande källförteckning finns i `source-data/`.
 - Öppen källkod på GitHub.
 - Versionsarkiverade open prompts i `PROMPTS/`.
 - Feedbackformulär som kan spara inkommande synpunkter som textfiler i `feedback-data/`.
 
 ## Kommandon
+
+Instruktioner för att hämta en release, bygga och starta om produktionen finns i [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ```bash
 npm install
@@ -62,6 +67,8 @@ Se [`PROMPTS/OPEN_PROMPTS_v2.md`](PROMPTS/OPEN_PROMPTS_v2.md). Där loggas Carl 
 
 ## Koda partisvar från partiprogram
 
+Senaste fråge-, käll- och metodgranskningen: [26 september 2026](source-data/reviews/2026-09-26-review.md). Den tidigare [feedbackgranskningen den 25 september](source-data/reviews/2026-09-25-feedback.md) finns kvar som historik. Rapporterna redovisar beslut, motiveringar och begränsningar. Underlaget omfattar program, officiella besked, relevanta riksdagsunderlag och identifierade partisvar i förstahandsintervjuer och enkäter; det är inte en fullständig granskning av partiernas faktiska agerande.
+
 När partiprogram eller andra primärkällor matas in ska varje partisvar läggas till som en `PartyResponse` i `responses` för rätt parti.
 
 Principer:
@@ -73,4 +80,6 @@ Principer:
 - Sätt `confidence` till `high`, `medium` eller `low` efter hur direkt belägget är för källbelagda svar.
 - Lägg alltid in minst en primärkälla i `evidence` för källbelagda svar.
 
-Exporterade partier ska ha ett svar för varje fråga. Frågor utan tillräckligt belägg fylls därför som `Vet ej`, vilket gör svarsmatrisen komplett utan att appen låtsas veta mer än den gör.
+Exporterade partier ska ha ett svar för varje aktiv fråga. Otillräckligt belägg kodas som `null` och visas som `Ej belagt`. Varken detta eller användarens `Vet ej` räknas som en politisk mittenposition. Matchningsprocenten beräknas bara på frågor där både användaren och partiet har ett känt svar.
+
+Daterade rättelser i `src/data/reviews/index.ts` ersätter ursprungssvaret också när den nya kodningen är `null`. Vid ändrad frågeinnebörd ska alla berörda partier omprövas och frågans revision i `src/data/questionRevisions.ts` höjas. Versionskontrollen gäller både sparade användarsvar och partisvar: gamla partisvar blir okända tills de granskats för den nya revisionen. Varje granskningsomgång sparar vilka frågerevisioner som bedömdes. Avvecklade fråge-ID:n tas bort från aktiva svar och beräkningar, medan historiska granskningsfiler bevaras.

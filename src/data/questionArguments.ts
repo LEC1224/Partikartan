@@ -1,24 +1,36 @@
 import type { QuestionArguments } from '../types'
 
 export const questionArguments: Record<string, QuestionArguments> = {
+  s55: {
+    for: 'En gemensam valuta minskar växlingskostnader och valutarisker och ger Sverige inflytande över euroområdets penningpolitik.',
+    against: 'Med kronan kan räntan anpassas till svenska förhållanden och växelkursen hjälpa ekonomin att möta störningar.',
+  },
+  s52: {
+    for: 'Bete ger kor möjlighet att röra sig och utföra naturliga beteenden som inte fullt ut ersätts av att gå fritt i ett stall.',
+    against: 'Undantag för välskötta lösdriftsstall kan ge lantbrukare större flexibilitet och möjlighet att behålla eller utöka produktionen där betesmark saknas.',
+  },
+  s53: {
+    for: 'Ett förbud kan förebygga djurskyddsproblem och hindra att pälsdjursuppfödning återetableras.',
+    against: 'Djurskyddet kan regleras genom krav på hur djuren hålls. Ett särskilt näringsförbud kan vara onödigt när verksamheten redan har upphört.',
+  },
   s01: {
-    for: 'En höjning över brytpunkten kan finansiera gemensamma åtaganden och göra beskattningen mer progressiv.',
-    against: 'Högre marginalskatt kan minska drivkrafter att arbeta mer, utbilda sig eller ta större ansvar.',
+    for: 'Högre skatt på höga inkomster kan finansiera gemensamma uppgifter och låta dem som tjänar mer betala en större andel i skatt.',
+    against: 'Högre skatt på den del av inkomsten som ökar kan göra det mindre lönsamt att arbeta mer, utbilda sig eller ta större ansvar.',
   },
   s02: {
-    for: 'Vinstmöjlighet kan locka fler aktörer, öka valfriheten och göra det lättare att bygga ut kapacitet.',
-    against: 'Skattepengar kan behöva stanna i verksamheten för att säkra kvalitet, bemanning och likvärdighet.',
+    for: 'Möjlighet till vinstutdelning kan locka kapital och nya skolaktörer samt göra det lättare för efterfrågade skolor att växa.',
+    against: 'Om överskott stannar i skolorna kan mer av skolpengen användas till undervisning, elevhälsa och likvärdig utbildning.',
   },
   s03: {
     for: 'Högre a-kassa kan ge trygghet vid omställning och göra att fler vågar byta jobb eller utbilda sig.',
-    against: 'Högre ersättning kostar mer och kan försvaga incitamenten att snabbt ta ett nytt arbete.',
+    against: 'Högre ersättning kostar mer och kan minska den ekonomiska drivkraften att snabbt ta ett nytt arbete.',
   },
   s04: {
     for: 'Mer marknadsanpassade hyror kan göra nyproduktion mer lönsam och öka utbudet av hyresbostäder.',
-    against: 'Högre nyproduktionshyror kan göra det svårare för hushåll med vanliga inkomster att efterfråga nya bostäder.',
+    against: 'Högre hyror i nybyggda bostäder kan göra det svårare för hushåll med vanliga inkomster att ha råd med dem.',
   },
   s05: {
-    for: 'Fastighetsskatt kan bredda skattebasen och beskatta stora tillgångar som annars beskattas lågt.',
+    for: 'Fastighetsskatt kan ge fler typer av skatteintäkter och beskatta stora tillgångar som annars beskattas lågt.',
     against: 'Skatten kan slå mot hushåll med låg löpande inkomst men högt taxerat bostadsvärde.',
   },
   s06: {
@@ -26,12 +38,12 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Sänkningen minskar offentliga intäkter och kan ge svag träffsäkerhet om den ges generellt.',
   },
   s07: {
-    for: 'Offentlig kontroll kan stärka långsiktighet, robusthet och demokratisk insyn i samhällsviktig infrastruktur.',
+    for: 'Offentlig kontroll kan ge långsiktig planering, bättre motståndskraft mot störningar och demokratisk insyn i exempelvis elnät och järnväg.',
     against: 'Statlig kontroll kan minska konkurrens, effektivitet och innovationskraft om styrningen blir politiserad.',
   },
   s08: {
-    for: 'Lägre kostnader och enklare vägar in kan göra att fler med svag ställning får ett första jobb.',
-    against: 'Billigare och enklare anställningar kan pressa villkor och skapa en arbetsmarknad med större otrygghet.',
+    for: 'Lägre ingångslöner kan göra det lättare att få ett första jobb och bygga erfarenhet när arbetsgivaren annars tvekar att anställa.',
+    against: 'Lägre ingångslöner kan göra det svårt att försörja sig på arbete och pressa löner även för andra anställda.',
   },
   s09: {
     for: 'Tandhälsa påverkar övrig hälsa och ett högkostnadsskydd kan göra vården mer jämlik.',
@@ -42,15 +54,15 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Lägre kapitalskatter gynnar ofta dem som redan äger mycket och kan minska skatteintäkter till gemensamma ändamål.',
   },
   s11: {
-    for: 'Förbudet kan hindra att en privatfinansierad första bedömning blir en särskild ingång till den offentligt finansierade vården.',
-    against: 'Förbudet kan bryta vårdkedjan och tvinga patienten att söka en ny bedömning i den offentligt finansierade vården.',
+    for: 'En åtskillnad kan minska risken att betalningsförmåga påverkar prioriteringen hos vårdgivare som också använder offentliga resurser.',
+    against: 'En åtskillnad kan minska vårdgivarnas flexibilitet och leda till att personal eller kapacitet helt lämnar den offentligt finansierade vården.',
   },
   s12: {
     for: 'Högre RUT-tak kan göra fler tjänster vita och skapa arbetstillfällen i serviceyrken.',
     against: 'Avdraget gynnar främst hushåll som har råd att köpa tjänster och kostar skatteintäkter.',
   },
   s13: {
-    for: 'Kortare arbetstid kan ge bättre hälsa, mer tid för familj och en rimligare fördelning av produktivitetsvinster.',
+    for: 'Kortare arbetstid kan ge bättre hälsa, mer tid för familj och låta anställda få del av effektivare produktion genom mer ledig tid.',
     against: 'Bibehållen lön vid kortare arbetstid kan höja kostnader och försvåra bemanning i viktiga verksamheter.',
   },
   s14: {
@@ -58,52 +70,48 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Kommunalt veto kan behövas för att planera skolutbud, ekonomi och likvärdighet i hela kommunen.',
   },
   s15: {
-    for: 'En skatt på den rikaste procentens nettoförmögenhet kan motverka koncentrerat ägande och finansiera gemensamma åtaganden.',
+    for: 'En skatt på stora nettoförmögenheter kan minska förmögenhetsklyftor och finansiera gemensamma uppgifter.',
     against: 'Skatten kan driva kapital ur landet och vara svår att värdera, kontrollera och avgränsa rättvist.',
   },
   s16: {
     for: 'Fler kvotflyktingar ger skydd till särskilt utsatta personer genom en ordnad och laglig väg.',
-    against: 'Ett större mottagande kan kräva mer integrationskapacitet och resurser från kommuner och myndigheter.',
+    against: 'Ett större mottagande kan kräva mer stöd för att komma in i samhället och mer resurser från kommuner och myndigheter.',
   },
   s17: {
     for: 'Tillfälliga tillstånd kan stärka kontrollen och koppla permanent vistelse tydligare till etablering.',
     against: 'Osäker rättslig status kan försvåra integration, arbete och familjeåterförening.',
   },
   s18: {
-    for: 'Höga krav kan markera medborgarskapets betydelse och stärka språklig och samhällelig delaktighet.',
-    against: 'För hårda krav kan utestänga personer som redan lever och bidrar i Sverige.',
+    for: 'Kunskapskrav kan uppmuntra språkinlärning och ge bättre förutsättningar att delta i samhället.',
+    against: 'Bindande krav kan utestänga personer som redan lever i Sverige, särskilt om möjligheterna att studera skiljer sig åt.',
   },
   s19: {
     for: 'Anonyma vittnen kan göra det lättare att vittna mot farliga kriminella nätverk.',
-    against: 'Anonymitet kan försvaga den tilltalades möjlighet att pröva vittnets trovärdighet.',
+    against: 'Anonymitet kan göra det svårare för den som åtalas att granska om vittnet är trovärdigt.',
   },
   s20: {
-    for: 'Mer kameraövervakning kan förebygga brott och ge polisen bättre bevisning.',
-    against: 'Utökad övervakning kan normalisera intrång i privatlivet och drabba människor som inte begått brott.',
+    for: 'Snabb identifiering kan hjälpa polisen att hitta eftersökta personer och ingripa innan allvarliga brott begås.',
+    against: 'Tekniken kan identifiera fel person och behandla ansikten hos många människor som inte misstänks för brott.',
   },
   s21: {
-    for: 'Lägre straffmyndighetsålder kan markera ansvar tidigare och ge samhället fler verktyg mot unga förövare.',
-    against: 'Yngre barn har begränsad mognad och riskerar att skadas mer av straffsystemet än av sociala insatser.',
+    for: 'En lägre åldersgräns vid allvarliga brott kan ge fler möjligheter att ingripa och markera ansvar även för yngre förövare.',
+    against: 'Barn i den åldern har begränsad mognad. Straff kan försvåra rehabiliteringen, och åtgärder mot rekrytering till brott kan vara mer verksamma.',
   },
   s22: {
-    for: 'Friare försäljning kan ge vuxna större självbestämmande och göra reglerna mer anpassade till människors vardag.',
-    against: 'Ett starkt detaljhandelsmonopol kan hålla nere tillgänglighet, skydda folkhälsan och motverka ökad konsumtion.',
+    for: 'Fler butiker kan ge vuxna större valfrihet och göra det enklare att handla, medan tillstånd och ålderskontroller kan reglera försäljningen.',
+    against: 'Fler försäljningsställen och kommersiella säljintressen kan öka drickandet och alkoholskadorna även med tillståndskrav.',
   },
   s23: {
-    for: 'Enklare juridisk ändring stärker självbestämmande och minskar onödiga administrativa hinder.',
-    against: 'Medicinsk prövning kan ses som ett skydd för rättssäkerhet och stabilitet i folkbokföringen.',
-  },
-  s24: {
-    for: 'Gemensamma EU-beslut kan hantera klimat och energi där utsläpp, elmarknad och investeringar går över gränser.',
-    against: 'Mer EU-makt kan minska Sveriges möjlighet att anpassa politiken efter nationella förutsättningar.',
+    for: 'En administrativ anmälan ger vuxna större självbestämmande och gör juridisk registrering oberoende av tillgången till vård.',
+    against: 'Ett intyg kan ge myndigheten ett underlag för prövningen och minska risken för ogenomtänkta eller felaktiga ändringar.',
   },
   s25: {
-    for: 'Ett slutdatum kan driva investeringar, innovation och snabbare minskning av transportutsläpp.',
-    against: 'Förbud kan bli dyrt för hushåll och företag om teknik, laddning eller alternativ inte hinner med.',
+    for: 'Ett tydligt slutdatum kan ge långsiktiga spelregler och snabba på utvecklingen av bilar utan avgasutsläpp.',
+    against: 'Ett krav enbart på avgasutsläpp kan utestänga lösningar med låga utsläpp över hela livscykeln och göra omställningen svårare där elbilar ännu inte passar.',
   },
   s26: {
-    for: 'Höga klimatmål kan driva fram investeringar och ge långsiktig trovärdighet i omställningen.',
-    against: 'För hårda mål kan bli dyra eller slå orimligt mot hushåll, jobb och konkurrenskraft på kort sikt.',
+    for: 'Ett tidigare målår kan påskynda utsläppsminskningar och ge företag incitament att utveckla fossilfria lösningar.',
+    against: 'Ett gemensamt målår kan ge mer tid för omställningen och minska risken för extra kostnader som flyttar produktion och utsläpp till andra länder.',
   },
   s27: {
     for: 'Ett svagare veto kan göra energiutbyggnaden snabbare och minska lokala stopp mot nationellt viktiga projekt.',
@@ -115,15 +123,11 @@ export const questionArguments: Record<string, QuestionArguments> = {
   },
   s29: {
     for: 'Fler folkomröstningar kan ge medborgare direkt inflytande i frågor med stor långsiktig betydelse.',
-    against: 'Komplexa frågor kan förenklas för mycket och försvaga det representativa ansvarstagandet.',
+    against: 'Komplicerade frågor kan förenklas för mycket och göra det svårare att hålla valda politiker ansvariga för besluten.',
   },
   s30: {
-    for: 'Mer EU-beslut kan ge kraft i frågor som klimat, säkerhet och migration där länder är beroende av varandra.',
-    against: 'Mer överstatlighet kan minska nationellt självbestämmande och göra besluten mer avlägsna.',
-  },
-  s31: {
-    for: 'Större försvarsanslag kan stärka avskräckning och beredskap i ett osäkrare säkerhetsläge.',
-    against: 'Högre anslag innebär att andra reformer eller skattesänkningar får mindre utrymme.',
+    for: 'Gemensamma beslut kan fattas snabbare när ett enskilt land inte kan blockera exempelvis sanktioner.',
+    against: 'Vetorätten låter Sverige och andra medlemsländer stoppa beslut som strider mot deras utrikespolitiska intressen.',
   },
   s32: {
     for: 'Militärt stöd till Ukraina kan försvara folkrätten och minska risken för rysk expansion.',
@@ -138,8 +142,8 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Stöd kan flytta stora ekonomiska risker från bolag till skattebetalare och tränga undan billigare lösningar.',
   },
   s35: {
-    for: 'Teknikskiften och mer fossilfri energi kan minska utsläpp utan att politiken behöver styra människors vardag lika hårt.',
-    against: 'Om konsumtion och resursanvändning fortsätter öka kan teknik och elproduktion ensamma vara otillräckliga.',
+    for: 'Teknisk utveckling kan minska utsläppen samtidigt som människor kan behålla sin konsumtion och levnadsstandard.',
+    against: 'Åtgärder som minskar konsumtion med stor klimatpåverkan kan ge snabbare utsläppsminskningar och minska behovet av energi och råvaror.',
   },
   s36: {
     for: 'Lägre drivmedelsskatt kan minska kostnader där bilen är svår att ersätta.',
@@ -147,31 +151,31 @@ export const questionArguments: Record<string, QuestionArguments> = {
   },
   s37: {
     for: 'Mer järnväg och kollektivtrafik kan minska utsläpp, trängsel och transportberoende av bil.',
-    against: 'Vägar kan vara viktigare för gods, landsbygd och områden där kollektivtrafikunderlaget är svagt.',
+    against: 'Vägar kan vara viktigare för gods, landsbygd och områden där få skulle använda kollektivtrafik.',
   },
   s38: {
-    for: 'Starkare oberoende kan skydda rättsstat och förvaltning från kortsiktig politisk detaljstyrning.',
-    against: 'För starka spärrar kan göra det svårt för väljarna att utkräva ansvar av den regering de valt.',
+    for: 'Starkare skydd kan göra det svårare för en regering att påverka domstolar genom utnämningar eller administration.',
+    against: 'En mer självständig domstolsorganisation kan minska folkvaldas möjlighet att styra resurser och utkräva administrativt ansvar.',
   },
   s39: {
-    for: 'Ett smalare uppdrag kan minska kostnader och lämna mer utrymme för privata medier.',
-    against: 'Brett public service kan ge oberoende nyheter, kultur och krisinformation i hela landet.',
+    for: 'Ett tydligare uppdrag kan samla resurser kring samhällsinformation och innehåll som privata medier har svårt att erbjuda.',
+    against: 'Ett brett utbud kan nå fler människor och ge hela befolkningen tillgång till både information och underhållning.',
   },
   s40: {
     for: 'Statligt huvudansvar kan ge mer jämlik vård och tydligare nationell styrning.',
     against: 'Regionalt ansvar kan ge närhet till verksamheten och bättre anpassning till lokala behov.',
   },
   s41: {
-    for: 'Större befogenheter kan skydda studiero och trygghet för elever och lärare.',
-    against: 'Hårda disciplinåtgärder kan slå mot elever med stora behov om stödinsatser saknas.',
+    for: 'En tillfällig placering kan ge andra elever studiero och skolan tid att ordna en fungerande lösning.',
+    against: 'Ett skolbyte kan bryta elevens kontinuitet och flytta problemet om eleven inte samtidigt får rätt stöd.',
   },
   v01: {
     for: 'Små klyftor kan stärka sammanhållning, tillit och lika livschanser.',
     against: 'Större belöningar kan ge drivkrafter för risktagande, utbildning och entreprenörskap.',
   },
   v02: {
-    for: 'Mer privat beslutanderätt över inkomsten kan ses som respekt för individens arbete och prioriteringar.',
-    against: 'Gemensam finansiering kan ge trygghet och tjänster som enskilda inte kan ordna lika jämlikt själva.',
+    for: 'Lägre inkomstskatt ger människor mer att bestämma över själva och kan göra det mer lönsamt att arbeta.',
+    against: 'Skatteintäkter finansierar gemensamma tjänster och trygghet. Lägre skatter kan minska utrymmet för sådan verksamhet.',
   },
   v03: {
     for: 'Offentlig drift kan göra välfärden mer likvärdig och minska risken att vinstintresse styr.',
@@ -182,8 +186,8 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Fackligt inflytande kan balansera makt och skydda anställda från oskäliga villkor.',
   },
   v05: {
-    for: 'En gemensam kö kan uttrycka principen att vård ska ges efter behov, inte betalningsförmåga.',
-    against: 'Privat finansierad vård kan ge fler alternativ och ibland avlasta det offentliga systemet.',
+    for: 'Om tillgången till vård inte påverkas av betalningsförmåga kan medicinska behov styra hur vårdens personal och kapacitet används.',
+    against: 'Möjligheten att köpa snabbare vård ger större valfrihet och kan tillföra resurser, även om effekten på den offentliga vården beror på hur systemen samspelar.',
   },
   v06: {
     for: 'Konkurrens kan pressa fram bättre service, lägre kostnader och tydligare fokus på användaren.',
@@ -209,17 +213,13 @@ export const questionArguments: Record<string, QuestionArguments> = {
     for: 'Ett fritt samhälle behöver skydda även livsval som majoriteten ogillar.',
     against: 'Samhället kan behöva gemensamma normer när enskilda val påverkar andra indirekt.',
   },
-  v12: {
-    for: 'Viss integritetsbegränsning kan vara rimlig om den skyddar människor från allvarliga brott.',
-    against: 'Integritet är svår att återvinna när staten väl har byggt upp bred övervakningskapacitet.',
-  },
   v13: {
     for: 'Öppenhet kan göra kultur rikare, mer dynamisk och bättre anpassad till en global värld.',
     against: 'Snabb kulturell förändring kan skapa rotlöshet och oro om gemensamma referenser försvagas.',
   },
   v14: {
-    for: 'Tydliga auktoriteter kan skapa ordning, ansvar och respekt för gemensamma institutioner.',
-    against: 'För stark auktoritetstro kan hämma kritiskt tänkande och individuell frihet.',
+    for: 'En monark kan ge kontinuitet och representera landet utanför partipolitiken.',
+    against: 'Ämbetet går i arv; en vald statschef skulle ge alla möjlighet att utses och kunna utkrävas ansvar.',
   },
   v15: {
     for: 'Klimat och miljö sätter ramarna för långsiktig välfärd och kan inte alltid underordnas tillväxt.',
@@ -227,11 +227,11 @@ export const questionArguments: Record<string, QuestionArguments> = {
   },
   v16: {
     for: 'Egen anpassning kan underlätta tillit, gemenskap och deltagande i samhället.',
-    against: 'För stark anpassningsnorm kan göra det svårare att leva med flera identiteter och traditioner.',
+    against: 'För starka förväntningar på anpassning kan göra det svårare att leva med flera identiteter och traditioner.',
   },
-  v17: {
-    for: 'Statlig neutralitet kan skydda lika värde och frihet för olika familje- och relationsformer.',
-    against: 'Vissa familjeformer kan anses ha särskild social betydelse som staten bör värna tydligare.',
+  s54: {
+    for: 'Förmågan att ge ett barn en trygg uppväxt bör prövas hos det enskilda paret, utan att samkönade par utesluts på förhand.',
+    against: 'Barnets behov kan anses motivera att adoption förbehålls föräldrapar med både en kvinna och en man.',
   },
   v18: {
     for: 'Straff kan uttrycka samhällets syn på brottets allvar och ge brottsoffer erkännande.',
@@ -241,13 +241,9 @@ export const questionArguments: Record<string, QuestionArguments> = {
     for: 'Bindande samarbete kan lösa problem som inget land klarar ensamt.',
     against: 'Självbestämmande gör det lättare för väljare att påverka och utkräva ansvar nationellt.',
   },
-  v20: {
-    for: 'Försiktighet kan skydda institutioner, normer och tillit som är svåra att bygga upp igen.',
-    against: 'För långsam förändring kan bevara orättvisor och göra samhället sämre rustat för nya problem.',
-  },
   v21: {
-    for: 'Säkerhet och beredskap kan ses som grundläggande uppgifter som måste prioriteras även när de kostar.',
-    against: 'Höga säkerhetsutgifter kan ge mindre utrymme för välfärd, skattesänkningar eller civila reformer.',
+    for: 'Försvar och beredskap kan behöva mer resurser även när det ökar de totala offentliga utgifterna.',
+    against: 'Att hålla tillbaka de totala utgifterna kan begränsa behovet av skatter och lån och ge stabilare offentliga finanser.',
   },
   v23: {
     for: 'Oberoende institutioner och fri press kan stoppa maktmissbruk även när majoriteten är stark.',
@@ -258,16 +254,16 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Hårdare beskattning av kapital kan göra det mindre attraktivt att spara, investera och äga företag i Sverige.',
   },
   s43: {
-    for: 'Lägre skatt på kapital kan locka investeringar, entreprenörskap och ägande till Sverige.',
-    against: 'Att helt avskaffa kapitalskatter kan öka klyftor och flytta skattebördan till arbete och konsumtion.',
+    for: 'Utan arvsskatt kan tillgångar och familjeföretag föras vidare utan att mottagaren behöver sälja delar för att betala skatten.',
+    against: 'En skatt på stora arv kan minska ärvda ekonomiska skillnader och finansiera gemensamma uppgifter.',
   },
   s44: {
     for: 'Kollektivavtal kan ge gemensamma spelregler, balansera makt på arbetsmarknaden och skydda löner och villkor.',
     against: 'Mer individuell avtalsfrihet kan ge företag och anställda större flexibilitet när förutsättningarna skiljer sig åt.',
   },
   s45: {
-    for: 'Individuella avtal kan ge större flexibilitet för både arbetsgivare och personer med stark förhandlingsposition.',
-    against: 'Utan gemensamma regler kan maktbalansen på arbetsmarknaden bli mycket ojämn.',
+    for: 'Begränsningar kan minska följderna för företag och anställda utanför huvudkonflikten och göra konflikter mer förutsägbara.',
+    against: 'Sympatiåtgärder stärker möjligheten att försvara kollektivavtal; begränsningar kan försvaga arbetstagarnas förhandlingsposition.',
   },
   s46: {
     for: 'En reglerad marknad kan minska kriminalitet, ge kontroll över kvalitet och frigöra polisresurser.',
@@ -282,15 +278,11 @@ export const questionArguments: Record<string, QuestionArguments> = {
     against: 'Även strikt prövning kan skapa svåra gränsdragningar och press på sårbara personer.',
   },
   s49: {
-    for: 'Tydliga försörjningskrav och andra begränsningar kan minska trycket på mottagandet och stärka incitament till etablering.',
-    against: 'Hårda villkor kan splittra familjer och göra det svårare för människor som redan har skydds- eller anknytningsskäl att leva tillsammans.',
-  },
-  s50: {
-    for: 'Starkare direktstyrning kan göra staten snabbare och tydligare när samhällsproblem måste lösas.',
-    against: 'Om regeringen kan styra enskilda ärenden hotas rättssäkerheten och myndigheternas oberoende från politisk makt.',
+    for: 'Ett försörjningskrav kan minska behovet av offentligt stöd och ge incitament att få en egen inkomst innan familjen flyttar hit.',
+    against: 'Ett försörjningskrav kan hålla familjer åtskilda länge när arbete är svårt att få, även om de annars har rätt att återförenas.',
   },
   s51: {
-    for: 'Ett stopp för nya konfessionella friskolor kan stärka likvärdighet, integration och ett tydligt sekulärt skoluppdrag.',
-    against: 'Förbud kan begränsa valfriheten och slå mot huvudmän som vill kombinera kunskapsuppdraget med en religiös profil.',
+    for: 'Tillåtelsen kan värna familjers valfrihet och religionsfrihet när samma kunskaps- och kvalitetskrav gäller för alla skolor.',
+    against: 'Religiösa inslag kan påverka barns fria val och bidra till att elever med olika bakgrund går i skilda skolor.',
   },
 }

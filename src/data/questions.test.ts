@@ -13,8 +13,14 @@ describe('question data', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('keeps every question attached to at least one axis', () => {
-    expect(questions.every((question) => question.weights.x !== 0 || question.weights.y !== 0)).toBe(true)
+  it('documents questions that only affect the party match', () => {
+    for (const question of questions) {
+      if (question.weights.x === 0 && question.weights.y === 0) {
+        expect(question.matchOnlyReason?.trim().length).toBeGreaterThan(30)
+      } else {
+        expect(question.matchOnlyReason).toBeUndefined()
+      }
+    }
   })
 
   it('has for and against arguments for every question', () => {
@@ -30,7 +36,7 @@ describe('question data', () => {
     ).toBe(true)
   })
 
-  it('keeps straight-line answering near the origin', () => {
+  it('uses substantial weight in both directions on each full-test axis', () => {
     const allOnes: Answers = Object.fromEntries(questions.map((question) => [question.id, 1]))
     const allFives: Answers = Object.fromEntries(questions.map((question) => [question.id, 5]))
 
@@ -38,8 +44,10 @@ describe('question data', () => {
       calculateCoordinate(allOnes, questions),
       calculateCoordinate(allFives, questions),
     ]) {
-      expect(Math.abs(coordinate.x)).toBeLessThanOrEqual(5)
-      expect(Math.abs(coordinate.y)).toBeLessThanOrEqual(5)
+      // At least 40% of absolute weight points each way. This is a framing
+      // imbalance guard, not validation of political neutrality or party positions.
+      expect(Math.abs(coordinate.x)).toBeLessThanOrEqual(20)
+      expect(Math.abs(coordinate.y)).toBeLessThanOrEqual(20)
     }
   })
 
@@ -64,7 +72,7 @@ describe('question data', () => {
     }
   })
 
-  it('keeps straight-line answering near the origin in the quick quiz', () => {
+  it('uses substantial weight in both directions on each quick-test axis', () => {
     const allOnes: Answers = Object.fromEntries(quickQuestions.map((question) => [question.id, 1]))
     const allFives: Answers = Object.fromEntries(quickQuestions.map((question) => [question.id, 5]))
 
@@ -72,8 +80,8 @@ describe('question data', () => {
       calculateCoordinate(allOnes, quickQuestions),
       calculateCoordinate(allFives, quickQuestions),
     ]) {
-      expect(Math.abs(coordinate.x)).toBeLessThanOrEqual(5)
-      expect(Math.abs(coordinate.y)).toBeLessThanOrEqual(5)
+      expect(Math.abs(coordinate.x)).toBeLessThanOrEqual(20)
+      expect(Math.abs(coordinate.y)).toBeLessThanOrEqual(20)
     }
   })
 

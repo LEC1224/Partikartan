@@ -29,6 +29,8 @@ export interface Question {
   statement: string
   context: string
   weights: AxisWeights
+  /** A policy comparison without a defensible direction on either chart axis. */
+  matchOnlyReason?: string
 }
 
 export interface QuestionArguments {
@@ -51,6 +53,8 @@ export interface PartyResponse {
   value: AnswerValue
   confidence: 'high' | 'medium' | 'low' | 'unknown'
   evidence: Evidence[]
+  /** Editorial reasoning, distinct from a quotation of the party's own words. */
+  rationale?: string
 }
 
 export interface Party {
@@ -58,6 +62,8 @@ export interface Party {
   shortName: string
   name: string
   color: string
+  textColor?: string
+  kind?: 'minor'
   responses: PartyResponse[]
 }
 

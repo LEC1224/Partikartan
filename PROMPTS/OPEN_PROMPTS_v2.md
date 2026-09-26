@@ -1,6 +1,6 @@
 # Open prompts
 
-Partikartan ska vara öppen med både källkod och promptarbete. Den här filen fortsätter loggen efter Beta Release 1 och dokumenterar de användarprompter som styr den fortsatta utvecklingen i Codex.
+Partikartan ska vara öppen med både källkod och promptarbete. Den här filen fortsätter loggen efter Beta Release 1 och dokumenterar de användarprompter som styr den fortsatta utvecklingen i Codex. Hädanefter är GPT-5.6 Sol den primära modellen som använts.
 
 Plattforms- och systeminstruktioner från Codex/OpenAI ingår inte här. Filen dokumenterar de prompts som projektägaren har gett Codex för just detta projekt, plus korta kontextnoteringar och en uttryckligen efterfrågad sammanfattning av Codex återrapportering när det behövs för spårbarhet.
 
@@ -132,3 +132,49 @@ Kontextnotering: Prompten innehöll en skärmbild av den långa sektionen i abou
 ## Prompt 11
 
 > Nice! Uppdatera Open Prompts med den här chatten, commita och pusha till GitHub
+
+## Prompt 12
+
+> Jag har lagt till alla feedback-inskick som kommit in sedan vi senast gick igenom feedback och uppdaterade sidan. Din första uppgift blir att gå igenom de nya önskemålen och avgöra om de är rättfärdigade eller inte, och om deras förslag skulle vinkla Partikartan i någon politisk riktning. Återkom med din bedömning.
+
+Kontextnotering: Codex bedömde att rättelsen av V:s RUT-svar, en precis granskning av straffbarhetsåldern, granskning av många saknade partisvar, klarspråk och tydligare information om vad partipositionerna mäter var berättigade. Frågorna om inkomstskatt, försvarsutgifter och teknik kontra konsumtion behövde förtydligas utan att styra mot en politisk uppfattning. Djurpolitik identifierades som en relevant lucka, men nya frågor behövde jämförbara källor och motiverad axelkodning. Manuella förflyttningar av partier utifrån samarbeten eller allmänna politiska intryck avvisades. Saknade belägg skulle inte ersättas med antagna åsikter eller mittenvärden.
+
+## Prompt 13
+
+> Jag tycker att du kan gå vidare med att fixa alla rättfärdigade förslag. Se till att dokumentera, motivera och källunderbygga där det behövs. För frågor du formulerar om såpass att de till viss graqd ändrar innebörd, se till att partiernas svar uppdateras med god källgrund som vanligt.
+>
+> Det är viktigare att Partikartan förblir korrekt, faktagrundad och neutral än att du implementerar alla ändringsförslag.
+
+Kontextnotering: Omformuleringarna av s21, s35, v02 och v21 åtföljdes av omprövning för samtliga tretton partier. Tidigare obelagda riksdagspartisvar i de 30 mest källglesa frågorna granskades, med både nya belägg och återställning av överdrivet säkra tidigare svar till okänt. Djurfrågorna sköts upp eftersom källtäckning och axelkodning inte var tillräckligt beredda. Snabbtestets s35 ersattes med v21 för att behålla kravet på minst sju belagda riksdagspartisvar per fråga. Gamla användarsvar på de fyra ändrade frågorna återanvänds inte. Beslut, källor, kontrollresultat och kvarstående begränsningar dokumenteras i [feedbackgranskningen 25 september 2026](../source-data/reviews/2026-09-25-feedback.md).
+
+## Prompt 14
+
+> Vad menar du med "19 otillräckligt underbyggda svar har återställts till ”Vet ej”."
+
+Kontextnotering: De nitton avsåg enskilda kombinationer av parti och fråga i föregående granskning, inte nitton frågor. ”Ändrats till ej belagt” är tydligare än ”återställts”: kodningen säger att projektets belägg inte räcker, inte att partiet självt har svarat att det inte vet.
+
+## Prompt 15
+
+> Jag tror vi kan förtydliga/förenkla forumleringen på fler frågor, och om jag låter dig söka internet längre och noggrannare efter goda belägg för partisvar som fortfarande står på "Vet ej", kan vi skapa en mer pålitlig kompass. Kompassen byggdes i stort av GPT 5.5, så nu när du kör GPT-6 Astra borde du kunna förbättra den avsevärt. Jag sätter dig på Ultra och låter dig jobba hur länge du vill för att förbättra formuläret. Du får även lägga till fler frågor till det stora testet och byta ut frågor till snabbtestet om du gör det noggrant och uppdaterar alla beroende delar av programvaran i enhet med ändringarna. Du måste såklart hela tiden värna de höga kraven på källbegrundning, neutralitet och transparens. Återkom med en lista/rapport av allt du ändrat.
+>
+> Om du tycker att sidan behöver snyggas till eller ges ett bättre UX så så får du även justera kosmetiska aspekter.
+
+Kontextnotering: Granskningen den 26 september omprövade 22 frågeinnebörder för alla tretton partier, lade till fyra frågor och tog bort sex överlappande eller alltför oprecisa frågor. Fulltestet omfattar nu 71 frågor och snabbtestet 25. Källunderlaget prövades mot frågornas exakta avgränsningar; både nya belägg och tillbakadragna gamla kodningar redovisas. Modellen fick gemensam beräkningsmetod för användare och partier, separata krav på axeltäckning och frågor som enbart påverkar partimatchningen. Källmotiveringar, sökning, källluckefilter, versionsskydd och exportlogik uppdaterades. Detaljer och före–efter-underlag finns i [granskningen 26 september 2026](../source-data/reviews/2026-09-26-review.md). Modellen i sig behandlas inte som bevis för korrekthet eller neutralitet. Denna begäran resulterade i lokala ändringar; ingen publicering ingick.
+
+## Prompt 16
+
+> Vi kanske borde ta bort småpartierna om de inte kan tillföra något till siten ändå.
+
+Kontextnotering: Codex rekommenderade att ta bort småpartivalet från den publika sidan tills underlaget räcker för meningsfulla jämförelser. Enskilda sakpositioner finns belagda, men inget av de fem partierna når underlagskraven för matchning eller kartplacering. Källmaterialet och granskningshistoriken bör behållas för eventuell återintroduktion. Samma underlagskrav ska gälla alla partier; beslutet grundas på bristande belägg, inte partiernas storlek eller åsikter.
+
+## Prompt 17
+
+> Kör på det, sen kan du uppdatera Open Prompts med vad vi snackar om här, publicera en ny release på GitHub och lansera den nya versionen på prodservern.
+
+Kontextnotering: Användaren godkände borttagningen och GitHub-publiceringen. Småpartierna tas bort från startsidans beskrivning, resultatväljaren, svarsmatrisen och de publika exporternas underlag. Källmaterial, kodningar och granskningskontroller bevaras. Nästa release benämns Beta Release 2, version 0.2.0, och omfattar även de tidigare genomförda formulär- och källförbättringarna. Feedbackkatalogens underkataloger undantas från Git så att arkiverade privata inskick inte publiceras.
+
+## Prompt 18
+
+> Jag kan faktiskt bygga den själv, skit i att lösa launchen, men berätta hur jag gör
+
+Kontextnotering: Detta var användarens svar på frågan om produktionsserver och driftsättningsflöde. Instruktionen ersätter begäran att Codex ska genomföra produktionslanseringen; GitHub-releasen är fortfarande godkänd. Bygg- och omstartsinstruktioner finns i [DEPLOYMENT.md](../DEPLOYMENT.md). Ingen produktionsserver ska ändras av Codex i denna omgång.

@@ -2,6 +2,8 @@
 
 Den här katalogen innehåller de partiprogram, principprogram, idéprogram och valmanifest som användes som huvudsakligt källmaterial vid kodningen av partiernas positioner.
 
+Senaste granskningen finns i [översikten den 26 september 2026](reviews/2026-09-26-review.md), med länkar till delrapporter och daterade ersättningskodningar i `src/data/reviews/`. Listorna nedan bevarar också historiskt underlag; de innebär inte att alla gamla länkar eller partisvar har återverifierats.
+
 ## Arkiverade programfiler
 
 | Parti | Lokal fil | Ursprunglig källa |
@@ -16,9 +18,33 @@ Den här katalogen innehåller de partiprogram, principprogram, idéprogram och 
 | Sverigedemokraterna | `sverigedemokraterna-principprogram-2023.pdf` | https://www.sd.se/wp-content/uploads/2024/01/sverigedemokraternas-principprogram-2023.pdf |
 | Vänsterpartiet | `vansterpartiet-partiprogram-2024.pdf` | https://www.vansterpartiet.se/wp-content/uploads/2024/11/partiprogram_2024_skrivare.pdf |
 
+## Småpartier – bevarat granskningsunderlag
+
+Inför version 0.2.0 togs småpartivalet bort från den publika jämförelsen och exporterna. Inget av de fem partierna når nu underlagskraven. Källmaterial, kodningar och tester bevaras för granskning och eventuell återintroduktion med samma underlagskrav som för andra partier. De daterade rapporterna beskriver granskningsläget före detta senare visningsbeslut.
+
+Alla fem partier nedan uppfyllde urvalskriteriet för småpartier: anmält deltagande i riksdagsvalet 2026 och högst röstandel i riksdagsvalet 2022 eller Europaparlamentsvalet 2024. När partiet saknade en nedladdningsbar program-PDF skapades en daterad, printvänlig PDF-kopia av partiets egen programsida. Texten är inte redaktionellt kompletterad.
+
+| Parti | Lokal fil | Ursprunglig källa |
+| --- | --- | --- |
+| Folklistan | `folklistan-prioriteringar-2024.pdf` | https://web.archive.org/web/20240521141157/https://folklistan.se/prioriteringar/ |
+| Partiet Nyans | `partiet-nyans-partiprogram-2026.pdf` | https://www.partietnyans.se/var-politik/ |
+| Alternativ för Sverige | `alternativ-for-sverige-partiprogram-2026.pdf` | https://alternativforsverige.se/politik/ samt de elva programområden som länkas därifrån |
+| Piratpartiet | `piratpartiet-principprogram-2021.pdf` | https://piratpartiet.se/principprogram/ |
+| Piratpartiet | `piratpartiet-valmanifest-2022.pdf` | https://piratpartiet.se/valmanifest-2022/ |
+| Medborgerlig Samling | `medborgerlig-samling-partiprogram-2026.pdf` | https://www.med.se/politik |
+| Medborgerlig Samling | `medborgerlig-samling-ideprogram-2019.pdf` | https://med.se/wp-content/uploads/2021/03/Ideprogram-rev2-stamma-2019.pdf |
+
+De kompletterande primärkällorna för småpartiernas enskilda svar finns i `src/data/minorParties.ts` och de daterade granskningsmodulerna. Piratpartiets sakpolitiska översikt och Medborgerlig Samlings aktuella program används på samma sätt som riksdagspartiernas kompletterande webbkällor.
+
+Matchning kräver belägg för minst 80 procent av snabbtestets 25 frågor (20 svar) eller 60 procent av hela testets 71 frågor (43 svar), avrundat uppåt. För en kartmarkör krävs dessutom minst 60 procents täckning av den absoluta frågevikten på vardera axeln. Samma krav gäller alla partier. Småpartiernas svar granskas nu i projektets data och rapporter, medan den publika matrisen visar riksdagspartierna. Gränserna är publiceringsregler och garanterar inte statistisk säkerhet.
+
+### MED:s aktuella programåtkomst, 26 september 2026
+
+Den nya React-webbplatsen visar program på `https://med.se/politik/partiprogram/{slug}`. Dess offentliga programlista länkar till officiella originalfiler i den publika lagringen `https://fuksyfcthmbxxwxpcguk.supabase.co/storage/v1/object/public/documents/partiprogram/{slug}/program.md` (även PDF finns för flera program). Exempel: [företagsprogrammet](https://med.se/politik/partiprogram/foretagspolitiskt-program) och [dess originaltext](https://fuksyfcthmbxxwxpcguk.supabase.co/storage/v1/object/public/documents/partiprogram/foretagspolitiskt-program/program.md). Detta användes när webbplatsens vanliga textutdrag var tomt. Programmens egna antagnings- och revisionsdatum gäller; åtkomsten 2026 gör inte äldre beslut till nya.
+
 ## Kompletterande källor
 
-Följande källor användes när partiprogram, principprogram eller valmanifest inte gav ett tillräckligt konkret svar på en viss kompassfråga. De är partiernas egna sidor eller dokument och används som stöd för de kodade `responses` i `src/data/parties.ts`.
+Följande historiska källförteckning avser partiernas egna sidor och dokument som användes i grundkodningen. Nyare granskningar kan ersätta eller ogiltigförklara dessa kodningar. För aktuellt belägg, motivering och säkerhetsnivå: följ den aktiva svarsposten och granskningsrapporten, inte enbart denna lista.
 
 ### Vänsterpartiet
 
@@ -164,10 +190,14 @@ Följande källor användes när partiprogram, principprogram eller valmanifest 
 
 ## Åtkomstdatum
 
-De kompletterande källorna användes vid kodningen den 2026-07-08 och 2026-07-09. Centerpartiets PDF-filer hämtades till den här katalogen den 2026-07-09.
+Källor till granskningarna [2026-09-25](reviews/2026-09-25-feedback.md) och [2026-09-26](reviews/2026-09-26-review.md), inklusive avgränsningar och osäkra besked, redovisas i respektive översikt och delrapporter. Daterade ersättningskodningar finns i `src/data/reviews/` och kan även återställa ett tidigare svar till okänt. Äldre källors åtkomstdatum skrivs inte om när en annan källa granskas. En hämtad programsida är inte heller bevis på att dess politiska innehåll nyligen beslutats.
 
-## Kvarvarande hål och Vet ej
+De kompletterande källorna för riksdagspartierna användes vid kodningen den 2026-07-08 och 2026-07-09. Centerpartiets PDF-filer hämtades till den här katalogen den 2026-07-09. Småpartiernas källor hämtades och kodades den 2026-07-21.
 
-Den 2026-07-09 kompletterades datamodellen så att varje parti exporterar ett svar för varje fråga. Där arkiverade program, manifest, kompletterande partikälla eller riktat webbsök inte gav ett tydligt och tillförlitligt belägg kodas frågan som `value: null`, `confidence: unknown` och visas som `Vet ej` i resultatsidans svarsmatris.
+## Kvarvarande luckor och Ej belagt
 
-Detta är avsiktligt konservativt: `Vet ej` betyder inte att partiet saknar åsikt, utan att projektet inte har tillräckligt robust belägg för att redovisa en 1-5-position öppet.
+Den 2026-07-09 kompletterades datamodellen så att varje parti exporterar ett svar för varje fråga. Där tillräckligt tydligt belägg saknas kodas svaret som `value: null`, `confidence: unknown`. Det visas nu som `Ej belagt` för partier; användarens eget svarsalternativ heter fortfarande `Vet ej`.
+
+`Ej belagt` betyder inte att partiet saknar åsikt. Det betyder att projektet inte har tillräckligt underlag för en offentlig 1–5-kodning. Okända svar får ingen mittenpoäng och utesluts ur matchningens jämförelseunderlag.
+
+Frågerevisioner skyddar även partisvaren: en äldre bedömning används inte automatiskt efter en betydelseändring. Granskningsomgången måste avse den aktuella revisionen, annars blir svaret okänt. Endast aktiva fråge-ID:n exporteras; avvecklade ID:n finns kvar i historiken men påverkar inte resultatet.

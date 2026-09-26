@@ -28,25 +28,31 @@ import { parties } from './data/parties'
 import { partyCodingRules } from './data/partyCoding'
 import { questionArguments } from './data/questionArguments'
 import { questions } from './data/questions'
+import { questionRevisions } from './data/questionRevisions'
 import { quickQuestions } from './data/quickQuestions'
 import { topics } from './data/topics'
 import {
   calculateCoordinate,
   calculatePartyCoordinate,
+  getAnsweredAxes,
   calculatePartyMatch,
   COORDINATE_SCALE,
   countKnownPartyResponses,
 } from './lib/scoring'
 import { exportResultAsPdf, exportResultAsPng } from './lib/exportResults'
-import type { Answers, AnswerValue, Coordinate, Evidence, Party, Question, TopicId } from './types'
+import { getPartyCoverage, requiredPartyResponses } from './lib/partyCoverage'
+import { restoreAnswers } from './lib/savedAnswers'
+import type { PartyCoverage } from './lib/partyCoverage'
+import type { Answers, AnswerValue, Coordinate, Party, PartyResponse, Question, TopicId } from './types'
 import type { PartyMatch } from './lib/scoring'
 
 type View = 'start' | 'quiz-mode' | 'priorities' | 'quiz' | 'result'
 type QuizMode = 'quick' | 'full'
-type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode }
+type SavedProgress = { answers: Answers; priorities: TopicId[]; quizMode: QuizMode; questionRevisions?: Record<string, number>; revisedQuestionIds?: string[] }
 const STORAGE_KEY = 'partikartan-progress-v2'
 const GITHUB_URL = 'https://github.com/LEC1224/Partikartan'
 const OPEN_PROMPTS_URL = `${GITHUB_URL}/blob/main/PROMPTS/OPEN_PROMPTS_v2.md`
+const REVIEW_URL = `${GITHUB_URL}/blob/main/source-data/reviews/2026-09-26-review.md`
 const CHART_AXIS_LIMIT = COORDINATE_SCALE
 const CHART_AXIS_LABEL = `±${CHART_AXIS_LIMIT}`
 
@@ -60,7 +66,11 @@ const answerOptions: { value: AnswerValue; short: string; label: string }[] = [
 ]
 
 function markerTextColor(party: Party): string {
-  return party.id === 'sd' || party.id === 'm' ? '#1c2520' : '#fff'
+  return party.textColor ?? (party.id === 'sd' || party.id === 'm' ? '#1c2520' : '#fff')
+}
+
+function swedishGenitive(name: string): string {
+  return /[sxz]$/i.test(name) ? name : `${name}s`
 }
 
 function readSavedProgress(): SavedProgress {
@@ -72,7 +82,7 @@ function readSavedProgress(): SavedProgress {
   try {
     const parsed = JSON.parse(saved) as Partial<SavedProgress>
     return {
-      answers: parsed.answers ?? {},
+      ...restoreAnswers(parsed.answers, parsed.questionRevisions),
       priorities: parsed.priorities ?? [],
       quizMode: parsed.quizMode === 'quick' ? 'quick' : 'full',
     }
@@ -98,7 +108,7 @@ function App() {
   }, [view])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, priorities, quizMode }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ answers, priorities, quizMode, questionRevisions }))
   }, [answers, priorities, quizMode])
 
   const activeQuestions = quizMode === 'quick' ? quickQuestions : questions
@@ -149,6 +159,12 @@ function App() {
         onResume={beginQuiz}
       />
       <main>
+        {initialProgress.revisedQuestionIds?.some((id) => activeQuestions.some((question) => question.id === id) && !(id in answers)) && (
+          <div className="page-width data-notice" role="status">
+            <Info size={18} />
+            <p>Några frågor har fått en ny formulering eller förklaring och behöver besvaras på nytt. Dina övriga sparade svar finns kvar.</p>
+          </div>
+        )}
         {view === 'start' && (
           <StartPage
             answeredCount={answeredCount}
@@ -339,7 +355,7 @@ function SeoOverview() {
         <div className="seo-heading">
           <div>
             <p className="eyebrow"><span /> Två politiska dimensioner</p>
-            <h2 id="gal-tan-heading">En svensk GAL–TAN-kompass inför valet 2026</h2>
+            <h2 id="gal-tan-heading">En svensk GAL–TAN-kompass för politikens vägval</h2>
           </div>
           <p>
             Partikartan kombinerar en politisk kompass med en valkompass. Du får både se var du hamnar på kartan och hur dina enskilda svar stämmer överens med riksdagspartiernas källbelagda ståndpunkter.
@@ -364,7 +380,7 @@ function SeoOverview() {
             <span className="seo-number">03</span>
             <h3>Jämför med svenska partier</h3>
             <p>
-              Se din matchning med Vänsterpartiet, Socialdemokraterna, Miljöpartiet, Centerpartiet, Liberalerna, Moderaterna, Kristdemokraterna och Sverigedemokraterna.
+              Jämför dina svar med de åtta riksdagspartierna. Källor och motiveringar visar hur deras ståndpunkter har bedömts.
             </p>
           </article>
         </div>
@@ -402,7 +418,7 @@ function QuizModePage({
           <span className="mode-action">Starta fullständiga testet <ArrowRight size={17} /></span>
         </button>
       </div>
-      <p className="mode-note"><ShieldCheck size={17} /> Båda varianterna är balanserade så att raka ettor eller femmor hamnar nära origo.</p>
+      <p className="mode-note"><ShieldCheck size={17} /> Båda testversionerna innehåller påståenden i båda politiska riktningarna. Frågor, vikter och källor är öppna för granskning.</p>
     </section>
   )
 }
@@ -471,7 +487,7 @@ function AboutDialog({
             <span><FileText size={18} /></span>
             <h2>Partiernas egna texter som grund</h2>
             <p>
-              Partipositionerna kodas i första hand från partiernas egna partiprogram, principprogram, idéprogram och valmanifest. Där materialet inte räcker används kompletterande officiella källor från partierna.
+              Partipositionerna bygger på partiernas egna program och officiella ställningstaganden. Även motioner, reservationer och omröstningar används när de tydligt gäller just frågan. Det är en sammanställning av belagda ståndpunkter, inte en fullständig granskning av hur partierna har röstat eller genomfört sin politik.
             </p>
           </article>
           <article>
@@ -485,7 +501,7 @@ function AboutDialog({
             <span><ShieldCheck size={18} /></span>
             <h2>Kontroller av frågornas balans</h2>
             <p>
-              Som en grundläggande balanskontroll har testet genomförts genom att svara 1 på samtliga frågor i en testkörning och 5 på samtliga frågor i en annan. Att båda svarsmönstren hamnar förhållandevis nära origo säger något om testets samlade riktningsbalans, men bevisar inte att varje enskild fråga är neutralt formulerad. Därför hålls frågor och viktning öppna för granskning och feedback.
+              Som en grundläggande balanskontroll testar vi svaret 1 på samtliga frågor och svaret 5 på samtliga frågor, utan prioriterade ämnen. På varje axel ska minst 40 procent av frågornas sammanlagda vikt peka åt vardera hållet. Det är en redaktionell kontroll av påståenderiktningar, inte ett bevis på neutralitet eller en vetenskapligt validerad modell. Därför hålls frågor och viktning öppna för granskning och feedback.
             </p>
           </article>
         </div>
@@ -643,6 +659,12 @@ function QuizPage({
           </div>
           <h1>{question.statement}</h1>
           <p className="question-context"><Info size={16} /> {question.context}</p>
+          {question.matchOnlyReason && (
+            <details className="question-scoring-note">
+              <summary>Påverkar partimatchningen, inte kartpositionen</summary>
+              <p>{question.matchOnlyReason}</p>
+            </details>
+          )}
           <button
             className={`argument-toggle ${argumentsOpen ? 'active' : ''}`}
             onClick={() => setOpenArgumentId((id) => (id === question.id ? null : question.id))}
@@ -753,17 +775,25 @@ function ResultPage({
   const [exportError, setExportError] = useState<string | null>(null)
   const partyResults = parties
     .map((party) => {
-      const partyCoordinate = calculatePartyCoordinate(party, quizQuestions)
-      return { party, coordinate: partyCoordinate, match: calculatePartyMatch(answers, party, quizQuestions, priorities) }
+      const partyCoordinate = calculatePartyCoordinate(party, quizQuestions, priorities)
+      return {
+        party,
+        coordinate: partyCoordinate,
+        match: calculatePartyMatch(answers, party, quizQuestions, priorities),
+        coverage: getPartyCoverage(party, quizQuestions),
+      }
     })
     .sort((left, right) => {
-      const leftSourced = countKnownPartyResponses(left.party, quizQuestions) > 0
-      const rightSourced = countKnownPartyResponses(right.party, quizQuestions) > 0
-      if (leftSourced !== rightSourced) return Number(rightSourced) - Number(leftSourced)
-      if (leftSourced && rightSourced) return right.match.percent - left.match.percent
-      return 0
+      if (left.coverage.sufficient !== right.coverage.sufficient) {
+        return Number(right.coverage.sufficient) - Number(left.coverage.sufficient)
+      }
+      if (left.coverage.sufficient && right.coverage.sufficient) {
+        return right.match.percent - left.match.percent
+      }
+      return right.coverage.known - left.coverage.known
     })
-  const allUnscored = partyResults.every(({ party }) => countKnownPartyResponses(party, quizQuestions) === 0)
+  const allUnscored = partyResults.every(({ coverage }) => !coverage.sufficient)
+  const answeredAxes = getAnsweredAxes(answers, quizQuestions)
 
   async function handleExport(format: 'pdf' | 'png') {
     setExporting(format)
@@ -796,13 +826,13 @@ function ResultPage({
           <p>Det här är en riktning, inte en etikett. Närliggande positioner kan bygga på ganska olika svar.</p>
         </div>
         <div className="coordinate-readout">
-          <div><span>Ekonomi</span><strong>{formatAxis(coordinate.x, 'Vänster', 'Höger')}</strong><small>{Math.abs(Math.round(coordinate.x))} / {CHART_AXIS_LIMIT}</small></div>
-          <div><span>Värderingar</span><strong>{formatAxis(coordinate.y, 'TAN', 'GAL')}</strong><small>{Math.abs(Math.round(coordinate.y))} / {CHART_AXIS_LIMIT}</small></div>
+          <div><span>Ekonomi</span><strong>{answeredAxes.x ? formatAxis(coordinate.x, 'Vänster', 'Höger') : '—'}</strong><small>{answeredAxes.x ? `${Math.abs(Math.round(coordinate.x))} / ${CHART_AXIS_LIMIT}` : 'Inga svar på axeln'}</small></div>
+          <div><span>Värderingar</span><strong>{answeredAxes.y ? formatAxis(coordinate.y, 'TAN', 'GAL') : '—'}</strong><small>{answeredAxes.y ? `${Math.abs(Math.round(coordinate.y))} / ${CHART_AXIS_LIMIT}` : 'Inga svar på axeln'}</small></div>
           <div><span>Inräknade svar</span><strong>{coordinate.answered}</strong><small>av {quizQuestions.length}</small></div>
         </div>
       </div>
       <div className="result-layout">
-        <PoliticalChart user={coordinate} partyResults={partyResults} />
+        <PoliticalChart user={coordinate} showUser={answeredAxes.x && answeredAxes.y} partyResults={partyResults} />
         <aside className="party-panel">
           <div className="panel-title">
             <div><span className="overline">Partijämförelse</span><h2>Svenska partier</h2></div>
@@ -811,13 +841,13 @@ function ResultPage({
           {!allUnscored && (
             <div className="data-notice">
               <Info size={18} />
-              <p><strong>Partiernas markörer är simulerade kompassresultat.</strong> Vet ej-svar flyttar inte ett parti i någon riktning på kartan, så svagare källunderlag ger en mer försiktig position. Matchningsprocenten jämför bara frågor där både du och partiet har ett svar.</p>
+              <p><strong>Matchningen bygger på belagda svar.</strong> Ett parti behöver minst {requiredPartyResponses(quizQuestions)} av {quizQuestions.length} svar. Procenten jämför bara frågor där både du och partiet har ett svar. Kartan kräver dessutom belägg för minst 60 % av frågevikten på vardera axeln.</p>
             </div>
           )}
           {allUnscored && (
             <div className="data-notice">
               <Info size={18} />
-              <p><strong>Inga källbelagda partisvar finns i den inlästa datan.</strong> När underlag saknas visas partierna i origo.</p>
+              <p><strong>Inget parti når gränsen för tillräckligt källunderlag.</strong> Då visas ingen partimarkör eller matchningsprocent.</p>
             </div>
           )}
           {!allUnscored && (
@@ -828,8 +858,8 @@ function ResultPage({
             </div>
           )}
           <div className="party-list">
-            {partyResults.map(({ party, match }) => (
-              <PartyRow key={party.id} party={party} match={match} questions={quizQuestions} />
+            {partyResults.map(({ party, match, coverage }) => (
+              <PartyRow key={party.id} party={party} match={match} coverage={coverage} questions={quizQuestions} />
             ))}
           </div>
         </aside>
@@ -853,7 +883,7 @@ function ResultPage({
             <span className="export-option-icon"><FileDown size={20} /></span>
             <span>
               <strong>Fullständig PDF</strong>
-              <small>Kompass, partimatchning och alla dina svar jämförda med samtliga partier.</small>
+              <small>Kompass, partimatchning och alla dina svar jämförda med de partier som visas.</small>
             </span>
             {exporting === 'pdf' ? <LoaderCircle className="export-spinner" size={19} /> : <Download size={18} />}
           </button>
@@ -890,34 +920,56 @@ function ResultPage({
           <button className="danger-link" onClick={onReset}><RefreshCw size={15} /> Börja om</button>
         </div>
       </div>
-      <AnswerComparison answers={answers} questions={quizQuestions} />
+      <AnswerComparison answers={answers} parties={parties} questions={quizQuestions} />
     </section>
   )
 }
 
-function PartyRow({ party, match, questions: quizQuestions }: { party: Party; match: PartyMatch; questions: Question[] }) {
+function PartyRow({
+  party,
+  match,
+  coverage,
+  questions: quizQuestions,
+}: {
+  party: Party
+  match: PartyMatch
+  coverage: PartyCoverage
+  questions: Question[]
+}) {
   const sourced = countKnownPartyResponses(party, quizQuestions)
-  const hasComparison = match.knownPartyAnswers > 0
+  const hasComparison = coverage.sufficient && match.knownPartyAnswers > 0
+  const hasInsufficientCoverage = !coverage.sufficient
   return (
     <div className="party-row">
       <span className="party-logo" style={{ background: party.color, color: markerTextColor(party) }}>{party.shortName}</span>
-      <div className="party-details"><strong>{party.name}</strong><small>{sourced} källbelagda, {quizQuestions.length - sourced} Vet ej</small></div>
-      <div className="match-value"><strong>{hasComparison ? `${match.percent}%` : '—'}</strong><small>{hasComparison ? 'exakt + samma riktning' : 'ingen jämförelse'}</small></div>
+      <div className="party-details"><strong>{party.name}</strong><small>{sourced} belagda · {quizQuestions.length - sourced} ej belagda</small>{coverage.sufficient && !coverage.chartSufficient && <small>För glest underlag på en kartaxel</small>}</div>
+      <div className="match-value">
+        <strong>{hasComparison ? `${match.percent}%` : '—'}</strong>
+        <small>{hasComparison ? `${match.knownPartyAnswers} jämförda svar` : hasInsufficientCoverage ? 'otillräckligt underlag' : 'inga jämförbara svar'}</small>
+      </div>
       <div className="match-bar-wrap">
-        <button
-          type="button"
-          className="match-bar"
-          aria-label={hasComparison
-            ? `${party.name}: ${match.percent} procent matchning, varav ${match.exactPercent} procent exakt och ${match.nearPercent} procent i samma riktning.`
-            : `${party.name}: inga jämförbara svar.`}
-        >
-          <span className="match-fill exact" style={{ width: `${match.exactPercent}%`, backgroundColor: party.color }} />
-          <span className="match-fill near" style={{ width: `${match.nearPercent}%`, backgroundColor: party.color }} />
-          <span className="match-tooltip" role="tooltip">
-            <strong>Exakt: {match.exactPercent}%</strong>
-            <span>Samma riktning: +{match.nearPercent}%</span>
-          </span>
-        </button>
+        {hasComparison ? (
+          <button
+            type="button"
+            className="match-bar"
+            aria-label={`${party.name}: ${match.percent} procent matchning på ${match.knownPartyAnswers} jämförda svar, varav ${match.exactPercent} procent exakt och ${match.nearPercent} procent i samma riktning.`}
+          >
+            <span className="match-fill exact" style={{ width: `${match.exactPercent}%`, backgroundColor: party.color }} />
+            <span className="match-fill near" style={{ width: `${match.nearPercent}%`, backgroundColor: party.color }} />
+            <span className="match-tooltip" role="tooltip">
+              <strong>Exakt: {match.exactPercent}%</strong>
+              <span>Samma riktning: +{match.nearPercent}%</span>
+              <span>Jämförda svar: {match.knownPartyAnswers} av dina {match.comparedQuestions}</span>
+            </span>
+          </button>
+        ) : hasInsufficientCoverage ? (
+          <div className="coverage-bar" aria-label={`${party.name}: ${coverage.known} källbelagda svar av ${coverage.required} som krävs.`}>
+            <span style={{ width: `${Math.min(100, (coverage.known / coverage.required) * 100)}%` }} />
+            <small>{coverage.known} av {coverage.required} krävs</small>
+          </div>
+        ) : (
+          <div className="match-bar match-bar-static" aria-label={`${party.name}: ingen matchning eftersom inga frågor har besvarats.`} />
+        )}
       </div>
     </div>
   )
@@ -925,16 +977,17 @@ function PartyRow({ party, match, questions: quizQuestions }: { party: Party; ma
 
 function PoliticalChart({
   user,
+  showUser,
   partyResults,
 }: {
   user: Coordinate
-  partyResults: { party: Party; coordinate: Coordinate; match: PartyMatch }[]
+  showUser: boolean
+  partyResults: { party: Party; coordinate: Coordinate; match: PartyMatch; coverage: PartyCoverage }[]
 }) {
   const clampToChart = (value: number) => Math.max(-CHART_AXIS_LIMIT, Math.min(CHART_AXIS_LIMIT, value))
   const toX = (x: number) => 8 + ((clampToChart(x) + CHART_AXIS_LIMIT) / (CHART_AXIS_LIMIT * 2)) * 84
   const toY = (y: number) => 8 + ((CHART_AXIS_LIMIT - clampToChart(y)) / (CHART_AXIS_LIMIT * 2)) * 84
-  const unscored = partyResults.filter(({ party }) => countKnownPartyResponses(party) === 0)
-  const scored = partyResults.filter(({ party }) => countKnownPartyResponses(party) > 0)
+  const scored = partyResults.filter(({ coverage }) => coverage.chartSufficient)
 
   return (
     <div className="chart-card">
@@ -942,7 +995,7 @@ function PoliticalChart({
       <div className="chart-label bottom">TAN <small>traditionell · auktoritär · nationalistisk</small></div>
       <div className="chart-label left">VÄNSTER <small>ekonomisk</small></div>
       <div className="chart-label right">HÖGER <small>ekonomisk</small></div>
-      <svg viewBox="0 0 100 100" role="img" aria-label={`Din position: ${Math.round(user.x)} på vänster–höger och ${Math.round(user.y)} på GAL–TAN`}>
+      <svg viewBox="0 0 100 100" role="img" aria-label={showUser ? `Din position: ${Math.round(user.x)} på vänster–höger och ${Math.round(user.y)} på GAL–TAN` : 'Partikarta. Din position saknas eftersom du inte besvarat frågor på båda axlarna.'}>
         <defs>
           <pattern id="smallGrid" width="8.4" height="8.4" patternUnits="userSpaceOnUse">
             <path d="M 8.4 0 L 0 0 0 8.4" fill="none" stroke="#d9d7cc" strokeWidth="0.22" />
@@ -952,35 +1005,47 @@ function PoliticalChart({
         <rect x="8" y="8" width="84" height="84" rx="1" fill="url(#smallGrid)" />
         <line x1="50" y1="8" x2="50" y2="92" stroke="#8f9189" strokeWidth="0.45" />
         <line x1="8" y1="50" x2="92" y2="50" stroke="#8f9189" strokeWidth="0.45" />
-        {scored.map(({ party, coordinate }) => (
+        {scored.map(({ party, coordinate, coverage }) => (
           <g key={party.id} transform={`translate(${toX(coordinate.x)} ${toY(coordinate.y)})`}>
+            <title>{party.name}: {Math.round(coordinate.x)}, {Math.round(coordinate.y)}. Källunderlag ekonomi {Math.round(coverage.xCoverage * 100)} %, GAL–TAN {Math.round(coverage.yCoverage * 100)} % av frågevikterna.</title>
             <circle r="3.1" fill={party.color} stroke="#fff" strokeWidth="0.8" />
             <text y="1.25" textAnchor="middle" fontSize="3.4" fontWeight="800" fill={markerTextColor(party)}>{party.shortName}</text>
           </g>
         ))}
-        {unscored.length > 0 && (
-          <g transform="translate(50 50)">
-            <circle r="4.8" fill="#fff" stroke="#68746b" strokeWidth="0.6" />
-            <text y="-0.1" textAnchor="middle" fontSize="3.4" fontWeight="800" fill="#24342b">{unscored.length}</text>
-            <text y="2.7" textAnchor="middle" fontSize="1.55" fontWeight="700" fill="#68746b">PARTIER</text>
-          </g>
-        )}
-        <g transform={`translate(${toX(user.x)} ${toY(user.y)})`}>
+        {showUser && <g transform={`translate(${toX(user.x)} ${toY(user.y)})`}>
           <circle r="6.2" fill="#ed714f" opacity="0.16" />
           <circle r="3.65" fill="#ed714f" stroke="#fff" strokeWidth="0.8" />
           <text y="1.05" textAnchor="middle" fontSize="2.8" fontWeight="800" fill="#fff">DU</text>
-        </g>
+        </g>}
       </svg>
-      <div className="chart-legend"><span className="legend-you" /> Din position <span className="legend-parties" /> Partiernas simulerade positioner</div>
+      <div className="chart-legend">{showUser && <><span className="legend-you" /> Din position </>}<span className="legend-parties" /> Partiernas beräknade positioner</div>
+      {!showUser && <p className="chart-empty-note">Besvara minst en fråga på vardera axeln för att se din kartposition.</p>}
     </div>
   )
 }
 
-function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answers; questions: Question[] }) {
+function AnswerComparison({
+  answers,
+  parties: visibleParties,
+  questions: quizQuestions,
+}: {
+  answers: Answers
+  parties: Party[]
+  questions: Question[]
+}) {
+  const [query, setQuery] = useState('')
+  const [topicFilter, setTopicFilter] = useState('all')
+  const [showGaps, setShowGaps] = useState(false)
+  const filteredQuestions = quizQuestions.filter((question) => {
+    const topic = topics.find((item) => item.id === question.topic)
+    return (topicFilter === 'all' || question.topic === topicFilter)
+      && `${question.statement} ${question.id} ${topic?.label}`.toLocaleLowerCase('sv').includes(query.trim().toLocaleLowerCase('sv'))
+      && (!showGaps || visibleParties.some((party) => party.responses.find((response) => response.questionId === question.id)?.value == null))
+  })
   const [sourcePopover, setSourcePopover] = useState<{
     id: string
     partyName: string
-    evidence: Evidence[]
+    response: PartyResponse
     top: number
     left: number
   } | null>(null)
@@ -1004,13 +1069,13 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
   const openSource = (
     id: string,
     partyName: string,
-    evidence: Evidence[],
+    response: PartyResponse,
     target: HTMLElement,
   ) => {
     cancelClose()
     const rect = target.getBoundingClientRect()
     const popoverWidth = Math.min(280, window.innerWidth - 24)
-    const estimatedHeight = evidence.length > 1 ? 164 : 116
+    const estimatedHeight = Math.min(420, 140 + (response.rationale ? 100 : 0) + response.evidence.reduce((height, item) => height + 72 + (item.quote ? 84 : 0), 0))
     const left = Math.min(
       Math.max(12, rect.left + rect.width / 2 - popoverWidth / 2),
       window.innerWidth - popoverWidth - 12,
@@ -1019,7 +1084,7 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
       ? rect.top - estimatedHeight - 8
       : rect.bottom + 8
 
-    setSourcePopover({ id, partyName, evidence, top, left })
+    setSourcePopover({ id, partyName, response, top, left })
   }
 
   useEffect(() => () => {
@@ -1056,7 +1121,16 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
           <h2>Din matchning mot partierna</h2>
           <p className="answer-source-hint"><Info size={14} /> Hovra över eller tryck på en partiikon för att se källorna.</p>
         </div>
-        <p>Partier utan tydligt källbelägg visas som Vet ej. Det betyder inte att partiet är osäkert, utan att jag inte kunnat hitta en tillräckligt tydlig källa till partiets ståndpunkt. Procenten ovan bygger på frågor där både du och partiet har svarat. Svar i samma riktning men med olika styrka räknas som match.</p>
+        <div className="answer-comparison-explanation">
+          <p>Svaren sammanfattar partiernas belagda ståndpunkter. De är inte en fullständig granskning av partiernas omröstningar eller genomförda politik. Öppna en partimarkör för att se källan till just det svaret.</p>
+          <p><strong>Ej belagt</strong> betyder att underlaget inte räcker för en bedömning av partiets ståndpunkt. Det är skilt från ditt ”Vet ej”. Svar i samma riktning, exempelvis 4 och 5, räknas som match. Olika partiers procentsiffror kan bygga på olika frågor.</p>
+        </div>
+      </div>
+      <div className="comparison-filters">
+        <label>Sök fråga<input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setSourcePopover(null) }} placeholder="Ämne, påstående eller fråge-id" /></label>
+        <label>Ämne<select value={topicFilter} onChange={(event) => { setTopicFilter(event.target.value); setSourcePopover(null) }}><option value="all">Alla ämnen</option>{topics.map((topic) => <option key={topic.id} value={topic.id}>{topic.label}</option>)}</select></label>
+        <label className="gap-filter"><input type="checkbox" checked={showGaps} onChange={(event) => { setShowGaps(event.target.checked); setSourcePopover(null) }} /> Visa frågor med källluckor</label>
+        <span role="status">{filteredQuestions.length} av {quizQuestions.length} frågor</span>
       </div>
       <div
         className="answer-table"
@@ -1064,7 +1138,8 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
         aria-label="Svar per fråga och parti"
         onScrollCapture={() => setSourcePopover(null)}
       >
-        {quizQuestions.map((question, index) => {
+        {filteredQuestions.map((question) => {
+          const index = quizQuestions.findIndex((item) => item.id === question.id)
           const userAnswered = question.id in answers
           const userAnswer = answers[question.id]
           const topic = topics.find((item) => item.id === question.topic)
@@ -1075,11 +1150,12 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
                 <span>{index + 1}. {question.kind === 'sakfraga' ? 'Sakfråga' : 'Värdering'} · {topic?.label}</span>
                 <h3>{question.statement}</h3>
                 <p>Du: {userAnswered ? answerLabel(userAnswer) : 'Ej besvarad'}</p>
+                {question.matchOnlyReason && <small className="match-only-label">Räknas i partimatchningen, inte på kartan</small>}
               </div>
               <div className="answer-options">
                 {answerOptions.map((option) => {
                   const userMatchesOption = userAnswered && userAnswer === option.value
-                  const partyMarkers = parties
+                  const partyMarkers = visibleParties
                     .map((party) => ({
                       party,
                       response: party.responses.find((response) => response.questionId === question.id)!,
@@ -1091,12 +1167,12 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
                       name: party.name,
                       color: party.color,
                       textColor: markerTextColor(party),
-                      evidence: response.evidence,
+                      response,
                     }))
 
                   return (
                     <div className="answer-option" key={option.short} role="cell">
-                      <span className="answer-option-label" title={option.label}>{option.short === '?' ? 'Vet ej' : option.short}</span>
+                      <span className="answer-option-label" title={option.value == null ? 'Du: Vet ej. Partier: ej belagt.' : option.label}>{option.short === '?' ? <>Vet ej<small>Parti: ej belagt</small></> : option.short}</span>
                       <div className="answer-marker-groups">
                         <div className="answer-user-slot">
                           {userMatchesOption
@@ -1115,16 +1191,16 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
                                 className="answer-token source-token"
                                 key={marker.id}
                                 style={{ background: marker.color, color: marker.textColor }}
-                                aria-label={marker.evidence?.length
-                                  ? `Visa källa för ${marker.name}s svar`
-                                  : `Visa källstatus för ${marker.name}s svar`}
+                                aria-label={marker.response.evidence.length
+                                  ? `Visa källa för ${swedishGenitive(marker.name)} svar`
+                                  : `Visa källstatus för ${swedishGenitive(marker.name)} svar`}
                                 aria-expanded={isOpen}
                                 aria-controls={popoverId}
-                                onMouseEnter={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                                onMouseEnter={(event) => openSource(popoverId, marker.name, marker.response, event.currentTarget)}
                                 onMouseLeave={closeSource}
-                                onFocus={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                                onFocus={(event) => openSource(popoverId, marker.name, marker.response, event.currentTarget)}
                                 onBlur={closeSource}
-                                onClick={(event) => openSource(popoverId, marker.name, marker.evidence ?? [], event.currentTarget)}
+                                onClick={(event) => openSource(popoverId, marker.name, marker.response, event.currentTarget)}
                               >
                                 {marker.shortName}
                               </button>
@@ -1140,26 +1216,31 @@ function AnswerComparison({ answers, questions: quizQuestions }: { answers: Answ
           )
         })}
       </div>
+      {filteredQuestions.length === 0 && <p className="empty-filter">Inga frågor passar filtret. Prova ett annat sökord eller ämne.</p>}
       {sourcePopover && typeof document !== 'undefined' && createPortal(
         <aside
           className="source-popover"
           id={sourcePopover.id}
           role="dialog"
           aria-label={`Källor för ${sourcePopover.partyName}`}
-          style={{ top: sourcePopover.top, left: sourcePopover.left }}
+          style={{ top: sourcePopover.top, left: sourcePopover.left, maxHeight: `min(420px, calc(100dvh - ${sourcePopover.top + 12}px))` }}
           onMouseEnter={cancelClose}
           onMouseLeave={closeSource}
         >
           <strong>{sourcePopover.partyName}</strong>
-          {sourcePopover.evidence.length > 0 ? (
+          <span>{sourcePopover.response.value == null ? 'Ej belagt' : `${answerLabel(sourcePopover.response.value)} · ${confidenceLabel(sourcePopover.response.confidence)}`}</span>
+          {sourcePopover.response.rationale && <p className="source-rationale"><b>Bedömning: </b>{sourcePopover.response.rationale}</p>}
+          {sourcePopover.response.evidence.length > 0 ? (
             <>
-              <span>Källa till partiets svar</span>
+              <span>Källunderlag till bedömningen</span>
               <ul>
-                {sourcePopover.evidence.map((item) => (
+                {sourcePopover.response.evidence.map((item) => (
                   <li key={item.url}>
                     <a href={item.url} target="_blank" rel="noreferrer">
                       {item.title} <ExternalLink size={12} aria-hidden="true" />
                     </a>
+                    {item.quote && <blockquote>”{item.quote}”</blockquote>}
+                    <small>Kontrollerad {item.accessedAt}</small>
                   </li>
                 ))}
               </ul>
@@ -1177,6 +1258,10 @@ function answerLabel(value: AnswerValue | undefined): string {
   return `${value} - ${answerOptions.find((option) => option.value === value)?.label ?? ''}`
 }
 
+function confidenceLabel(value: PartyResponse['confidence']): string {
+  return { high: 'hög säkerhet', medium: 'medelhög säkerhet', low: 'låg säkerhet', unknown: 'ej belagt' }[value]
+}
+
 function MethodDialog({ onClose }: { onClose: () => void }) {
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
@@ -1185,16 +1270,17 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
         <p className="eyebrow"><span /> Öppen metod</p>
         <h2 id="method-title">Så räknas kompassen</h2>
         <div className="method-list">
-          <div><strong>1</strong><p><b>Varje påstående har en fördefinierad riktning.</b> Ekonomiska frågor påverkar vänster–höger. Frågor om frihet, tradition och auktoritet påverkar GAL–TAN.</p></div>
+          <div><strong>1</strong><p><b>Kartan är en förenkling.</b> Ekonomisk fördelning och marknadens roll påverkar vänster–höger. Frihet, tradition, auktoritet och miljövärderingar påverkar GAL–TAN. Sakfrågor utan en tydlig riktning på dessa axlar påverkar bara partimatchningen. Det framgår vid frågan.</p></div>
           <div><strong>2</strong><p><b>Svarsskalan omvandlas symmetriskt.</b> 1–5 blir −1, −0,5, 0, +0,5 och +1. Omvända formuleringar minskar risken för ja-sägareffekt.</p></div>
           <div><strong>3</strong><p><b>Dina “Vet ej” lämnas utanför.</b> Det drar dig inte mot mitten. Valda prioriteringar får vikten 1,75; övriga vikten 1.</p></div>
           <div><strong>4</strong><p><b>Dina koordinater skalas till {CHART_AXIS_LABEL} efter sammanvägningen.</b> Det är inte en enkel summa av frågorna: svaren räknas först som ett viktat genomsnitt per axel och multipliceras sedan med samma skala.</p></div>
-          <div><strong>5</strong><p><b>Partiernas kartposition simuleras från deras frågesvar.</b> Källbelagda partisvar poängsätts med samma axlar. Vet ej-svar flyttar inte partiet i någon riktning, men ingår i slutskalan så positionen blir mer försiktig när underlaget är glesare.</p></div>
+          <div><strong>5</strong><p><b>Du och partierna räknas med samma metod.</b> Bara källbelagda partisvar ingår i genomsnittet, med samma ämnesprioriteringar som dina. Saknade belägg räknas inte som mittenåsikter. Positionerna är redaktionella beräkningar, inte en vetenskapligt validerad mätning av partiernas ideologi.</p></div>
           <div><strong>6</strong><p><b>Partimatchningen räknas fråga för fråga.</b> Exakt samma svar ger exakt träff. Svar i samma riktning men med olika styrka, till exempel 4 mot 5 eller 1 mot 2, ger träff i samma riktning. Totalprocenten är exakt plus samma riktning, med extra vikt för dina prioriterade ämnen. Frågor där partiet saknar ett källbelagt svar lämnas utanför procenten.</p></div>
-          <div><strong>7</strong><p><b>Snabbtestet använder en fast delmängd på {quickQuestions.length} frågor.</b> Varje utvald fråga har källbelagda svar från minst sju av åtta partier. Urvalet täcker alla ämnen och har kontrollerats så att raka ettor eller femmor hamnar nära origo.</p></div>
+          <div><strong>7</strong><p><b>Underlagsgränserna är lika för alla partier.</b> Matchning kräver belägg för minst 80 % av snabbtestet ({requiredPartyResponses(quickQuestions)} svar) eller 60 % av hela testet ({requiredPartyResponses(questions)} svar), avrundat uppåt. Kartan kräver också minst 60 % av frågevikten på varje axel. Det är redaktionella gränser, inte statistiska säkerhetsnivåer. Olika partier kan jämföras på olika frågor; antalet jämförda svar visas vid matchningen.</p></div>
+          <div><strong>8</strong><p><b>Snabbtestet använder {quickQuestions.length} fasta frågor.</b> Urvalet tar hänsyn till tydlighet, källunderlag, ämnesbredd och påståenden i båda riktningarna. Minst 40 procent av den sammanlagda axelvikten ska peka åt vardera hållet, utan ämnesprioritering. Detta kontrollerar svarsriktningar men bevisar inte politisk neutralitet.</p></div>
         </div>
         <div className="coding-rules">
-          <h3>Regler för partiprogram</h3>
+          <h3>Så beläggs partiernas svar</h3>
           <ul>
             {partyCodingRules.map((rule) => <li key={rule}>{rule}</li>)}
           </ul>
@@ -1202,6 +1288,7 @@ function MethodDialog({ onClose }: { onClose: () => void }) {
         <div className="method-links">
           <a href={GITHUB_URL} target="_blank" rel="noreferrer"><GitBranch size={16} /> Källkod</a>
           <a href={OPEN_PROMPTS_URL} target="_blank" rel="noreferrer"><FileText size={16} /> Open prompts</a>
+          <a href={REVIEW_URL} target="_blank" rel="noreferrer"><FileText size={16} /> Granskning 26 september 2026</a>
         </div>
         <div className="method-caveat"><Info size={19} /><p>Ingen modell är helt värderingsfri: val av frågor och axlar påverkar resultatet. Därför ligger frågetexter, vikter och partibelägg öppet i projektets datafiler.</p></div>
         <button className="primary-button" onClick={onClose}>Jag förstår</button>

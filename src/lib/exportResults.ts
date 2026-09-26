@@ -1,5 +1,6 @@
-import { answerSimilarity } from './scoring'
+import { answerSimilarity, getAnsweredAxes } from './scoring'
 import type { PartyMatch } from './scoring'
+import type { PartyCoverage } from './partyCoverage'
 import type { Answers, AnswerValue, Coordinate, Party, Question, TopicId } from '../types'
 
 export const PDF_EXPORT_FILENAME = 'partikartan-resultat-fullstandigt.pdf'
@@ -27,6 +28,7 @@ export interface ExportPartyResult {
   party: Party
   coordinate: Coordinate
   match: PartyMatch
+  coverage: PartyCoverage
 }
 
 export interface ExportResultsInput {
@@ -202,7 +204,7 @@ function drawCompass(
     y: inner.y + ((AXIS_LIMIT - clampAxis(coordinate.y)) / (AXIS_LIMIT * 2)) * inner.size,
   })
 
-  input.parties.forEach(({ party, coordinate }) => {
+  input.parties.filter(({ coverage }) => coverage.chartSufficient).forEach(({ party, coordinate }) => {
     const point = toPoint(coordinate)
     context.fillStyle = party.color
     context.strokeStyle = colors.white
@@ -217,32 +219,36 @@ function drawCompass(
     context.fillText(party.shortName, point.x, point.y + 6)
   })
 
-  const userPoint = toPoint(input.coordinate)
-  context.fillStyle = 'rgba(237, 113, 79, 0.18)'
-  context.beginPath()
-  context.arc(userPoint.x, userPoint.y, 42, 0, Math.PI * 2)
-  context.fill()
-  context.fillStyle = colors.coral
-  context.strokeStyle = colors.white
-  context.lineWidth = 6
-  context.beginPath()
-  context.arc(userPoint.x, userPoint.y, 27, 0, Math.PI * 2)
-  context.fill()
-  context.stroke()
-  setCanvasFont(context, 800, 16)
-  context.fillStyle = colors.white
-  context.textAlign = 'center'
-  context.fillText('DU', userPoint.x, userPoint.y + 6)
+  const answeredAxes = getAnsweredAxes(input.answers, input.questions)
+  const showUser = answeredAxes.x && answeredAxes.y
+  if (showUser) {
+    const userPoint = toPoint(input.coordinate)
+    context.fillStyle = 'rgba(237, 113, 79, 0.18)'
+    context.beginPath()
+    context.arc(userPoint.x, userPoint.y, 42, 0, Math.PI * 2)
+    context.fill()
+    context.fillStyle = colors.coral
+    context.strokeStyle = colors.white
+    context.lineWidth = 6
+    context.beginPath()
+    context.arc(userPoint.x, userPoint.y, 27, 0, Math.PI * 2)
+    context.fill()
+    context.stroke()
+    setCanvasFont(context, 800, 16)
+    context.fillStyle = colors.white
+    context.textAlign = 'center'
+    context.fillText('DU', userPoint.x, userPoint.y + 6)
+  }
 
   context.textAlign = 'left'
   const readoutY = card.y + card.height - 52
-  drawLegendDot(context, card.x + 38, readoutY, colors.coral, 'Din position')
+  if (showUser) drawLegendDot(context, card.x + 38, readoutY, colors.coral, 'Din position')
   drawLegendDot(context, card.x + 204, readoutY, colors.white, 'Partier', '#68746b')
   setCanvasFont(context, 600, 17)
   context.fillStyle = colors.muted
   context.textAlign = 'right'
   context.fillText(
-    `${formatAxisValue(input.coordinate.x, 'Vänster', 'Höger')}  ·  ${formatAxisValue(input.coordinate.y, 'TAN', 'GAL')}`,
+    showUser ? `${formatAxisValue(input.coordinate.x, 'Vänster', 'Höger')}  ·  ${formatAxisValue(input.coordinate.y, 'TAN', 'GAL')}` : 'Din position: svar saknas på en eller båda axlarna',
     card.x + card.width - 34,
     readoutY + 6,
   )
@@ -276,8 +282,10 @@ function drawPartyMatches(
 
   const rowTop = card.y + 145
   const rowHeight = Math.min(96, (card.height - 185) / input.parties.length)
-  input.parties.forEach(({ party, match }, index) => {
+  input.parties.forEach(({ party, match, coverage }, index) => {
     const y = rowTop + index * rowHeight
+    const compact = rowHeight < 65
+    const centerY = y + rowHeight / 2
     if (index > 0) {
       context.strokeStyle = '#e2dfd5'
       context.lineWidth = 1
@@ -289,50 +297,60 @@ function drawPartyMatches(
 
     context.fillStyle = party.color
     context.beginPath()
-    context.arc(left + 21, y + 32, 20, 0, Math.PI * 2)
+    context.arc(left + 21, centerY, compact ? 15 : 20, 0, Math.PI * 2)
     context.fill()
-    setCanvasFont(context, 800, 15)
+    setCanvasFont(context, 800, compact ? 12 : 15)
     context.fillStyle = markerTextColor(party)
     context.textAlign = 'center'
-    context.fillText(party.shortName, left + 21, y + 37)
+    context.fillText(party.shortName, left + 21, centerY + (compact ? 4 : 5))
 
     context.textAlign = 'left'
-    setCanvasFont(context, 700, 18)
+    setCanvasFont(context, 700, compact ? 15 : 18)
     context.fillStyle = colors.ink
-    context.fillText(party.name, left + 55, y + 25)
-    setCanvasFont(context, 500, 14)
+    context.fillText(party.name, left + 55, y + (compact ? 17 : 25))
+    setCanvasFont(context, 500, compact ? 11 : 14)
     context.fillStyle = colors.muted
-    context.fillText(`${match.knownPartyAnswers} jämförbara svar`, left + 55, y + 48)
+    context.fillText(
+      coverage.sufficient
+        ? `${match.knownPartyAnswers} jämförbara svar`
+        : `${coverage.known} av ${coverage.required} källbelagda svar krävs`,
+      left + 55,
+      y + (compact ? 34 : 48),
+    )
 
-    const value = match.knownPartyAnswers > 0 ? `${match.percent}%` : '-'
-    setCanvasFont(context, 800, 21)
+    const value = coverage.sufficient && match.knownPartyAnswers > 0 ? `${match.percent}%` : '-'
+    setCanvasFont(context, 800, compact ? 17 : 21)
     context.fillStyle = colors.ink
     context.textAlign = 'right'
-    context.fillText(value, right, y + 26)
+    context.fillText(value, right, y + (compact ? 18 : 26))
 
     const barX = left + 310
     const barWidth = right - barX
-    const barY = y + 40
+    const barY = y + (compact ? 39 : 40)
+    const barHeight = compact ? 7 : 12
     context.fillStyle = '#e4e4dc'
-    drawRoundedRect(context, barX, barY, barWidth, 12, 6)
+    drawRoundedRect(context, barX, barY, barWidth, barHeight, barHeight / 2)
     context.fill()
-    if (match.knownPartyAnswers > 0) {
+    if (coverage.sufficient && match.knownPartyAnswers > 0) {
       context.fillStyle = party.color
       const exactWidth = (barWidth * match.exactPercent) / 100
       const nearWidth = (barWidth * match.nearPercent) / 100
-      if (exactWidth > 0) context.fillRect(barX, barY, exactWidth, 12)
+      if (exactWidth > 0) context.fillRect(barX, barY, exactWidth, barHeight)
       if (nearWidth > 0) {
         context.globalAlpha = 0.38
-        context.fillRect(barX + exactWidth, barY, nearWidth, 12)
+        context.fillRect(barX + exactWidth, barY, nearWidth, barHeight)
         context.globalAlpha = 1
       }
+    } else if (!coverage.sufficient) {
+      context.fillStyle = 'rgba(104, 116, 107, 0.28)'
+      context.fillRect(barX, barY, barWidth * Math.min(1, coverage.known / coverage.required), barHeight)
     }
     context.textAlign = 'left'
   })
 
   setCanvasFont(context, 500, 13)
   context.fillStyle = colors.muted
-  context.fillText('Procenten bygger bara på frågor där både du och partiet har svarat.', left, card.y + card.height - 25)
+  context.fillText('Procent visas bara vid tillräckligt källunderlag och bygger på jämförbara svar.', left, card.y + card.height - 25)
 }
 
 function renderAnswerPageCanvas(
@@ -360,7 +378,7 @@ function renderAnswerPageCanvas(
   const questionWidth = 610
   const valuesX = margin + questionWidth + 24
   const columnWidth = (PDF_CANVAS_WIDTH - margin - valuesX) / 6
-  const columns = ['1', '2', '3', '4', '5', 'Vet ej']
+  const columns = ['1', '2', '3', '4', '5', '?']
   setCanvasFont(context, 800, 17)
   context.fillStyle = colors.green
   context.fillText('FRÅGA OCH DITT FULLSTÄNDIGA SVAR', margin, 207)
@@ -381,7 +399,7 @@ function renderAnswerPageCanvas(
 
   setCanvasFont(context, 500, 14)
   context.fillStyle = colors.muted
-  context.fillText('Partier utan tydligt källbelägg visas som Vet ej. Prioriterade ämnen påverkar procenten men inte partisvaren.', margin, PDF_CANVAS_HEIGHT - 37)
+  context.fillText('? betyder Vet ej för dig och ej belagt för partierna. Saknade belägg ingår inte i matchning eller kartposition.', margin, PDF_CANVAS_HEIGHT - 37)
   context.textAlign = 'right'
   context.fillText(`Svarsbilaga ${pageIndex + 1} av ${answerPageCount}  ·  PDF-sida ${pageIndex + 2}`, PDF_CANVAS_WIDTH - margin, PDF_CANVAS_HEIGHT - 37)
   context.textAlign = 'left'
@@ -463,15 +481,15 @@ function drawAnswerRow(
     context.lineTo(cellX + columnWidth - 14, cellY + 64)
     context.stroke()
 
-    const tokensPerRow = 4
-    const tokenGap = 36
+    const tokensPerRow = 5
+    const tokenGap = 30
     partyMarkers.forEach((party, markerIndex) => {
       const row = Math.floor(markerIndex / tokensPerRow)
       const markersInRow = Math.min(tokensPerRow, partyMarkers.length - row * tokensPerRow)
       const column = markerIndex % tokensPerRow
       const rowWidth = (markersInRow - 1) * tokenGap
       const markerX = centerX - rowWidth / 2 + column * tokenGap
-      const markerY = cellY + 87 + row * 36
+      const markerY = cellY + 84 + row * 30
       context.fillStyle = party.color
       context.beginPath()
       context.arc(markerX, markerY, 14, 0, Math.PI * 2)
@@ -604,7 +622,7 @@ function topicName(topic: TopicId): string {
 }
 
 function markerTextColor(party: Party): string {
-  return party.id === 'sd' || party.id === 'm' ? '#1c2520' : '#ffffff'
+  return party.textColor ?? (party.id === 'sd' || party.id === 'm' ? '#1c2520' : '#ffffff')
 }
 
 function formatAxisValue(value: number, negative: string, positive: string): string {

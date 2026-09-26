@@ -1,5 +1,6 @@
 import type { AnswerValue, Evidence, Party, PartyResponse } from '../types'
 import { questions } from './questions'
+import { applyResponseReviews } from './reviews'
 
 const ACCESSED_AT = '2026-07-09'
 const REVIEWED_AT = '2026-07-16'
@@ -1060,5 +1061,5 @@ const codedParties: Party[] = [
 
 export const parties: Party[] = codedParties.map((party) => ({
   ...party,
-  responses: completeResponses(party.responses),
+  responses: completeResponses(applyResponseReviews(party.id, party.responses)),
 }))

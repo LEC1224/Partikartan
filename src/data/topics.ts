@@ -7,7 +7,7 @@ export const topics: Topic[] = [
   { id: 'bostad', label: 'Bostad', description: 'Hyror, byggande och boendeskatter' },
   { id: 'forsvar', label: 'Försvar & säkerhet', description: 'Försvar, beredskap och säkerhet' },
   { id: 'energi', label: 'Energi & infrastruktur', description: 'Energi, transporter och robusthet' },
-  { id: 'klimat', label: 'Klimat & natur', description: 'Omställning, energi och miljö' },
+  { id: 'klimat', label: 'Klimat, natur & djur', description: 'Utsläpp, naturvård och djurskydd' },
   { id: 'lagordning', label: 'Lag & ordning', description: 'Brott, straff och övervakning' },
   { id: 'migration', label: 'Migration', description: 'Asyl, integration och medborgarskap' },
   { id: 'frihet', label: 'Fri- & rättigheter', description: 'Integritet, livsval och minoriteter' },
